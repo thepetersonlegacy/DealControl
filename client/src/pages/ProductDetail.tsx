@@ -13,6 +13,13 @@ export default function ProductDetail() {
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ["/api/products", id],
+    queryFn: async () => {
+      const response = await fetch(`/api/products/${id}`);
+      if (!response.ok) {
+        throw new Error("Product not found");
+      }
+      return response.json();
+    },
   });
 
   const features = [
