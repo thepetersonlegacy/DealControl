@@ -49,11 +49,16 @@ Preferred communication style: Simple, everyday language.
 
 **API Design:**
 - RESTful API endpoints under `/api` prefix
+- Authentication endpoints:
+  - `GET /api/login` - Initiate Replit Auth login flow
+  - `GET /api/logout` - Log out and redirect to Replit logout
+  - `GET /api/callback` - OAuth callback handler
+  - `GET /api/auth/user` - Get current authenticated user (protected)
 - Product endpoints:
-  - `GET /api/products` - Fetch all products
-  - `GET /api/products/featured` - Fetch featured products
-  - `GET /api/products/:id` - Fetch single product by ID
-  - `GET /api/products/category/:category` - Fetch products by category
+  - `GET /api/products` - Fetch all products (public)
+  - `GET /api/products/featured` - Fetch featured products (public)
+  - `GET /api/products/:id` - Fetch single product by ID (public)
+  - `GET /api/products/category/:category` - Fetch products by category (public)
 
 **Server Architecture:**
 - Express middleware for JSON parsing with raw body verification
@@ -63,9 +68,10 @@ Preferred communication style: Simple, everyday language.
 - Custom error handling and 404 responses
 
 **Storage Layer:**
-- In-memory storage implementation (`MemStorage`) for development/testing
-- Interface-based design (`IStorage`) allows easy swapping to database implementation
-- Product seeding functionality for initial data
+- PostgreSQL database with DatabaseStorage implementation (production-ready)
+- Interface-based design (`IStorage`) allows easy swapping between implementations
+- Product seeding functionality with 16 pre-loaded products
+- MemStorage class available for testing purposes
 
 ### Data Storage Solutions
 
@@ -77,13 +83,35 @@ Preferred communication style: Simple, everyday language.
   - `category`: Text, required
   - `format`: Text, required
   - `imageUrl`: Text, required
-  - `price`: Integer, required
+  - `price`: Integer (cents), required
   - `isFeatured`: Integer (0/1), defaults to 0
 
-- **Users Table**:
+- **Users Table** (Replit Auth):
+  - `id`: Varchar primary key (from Replit Auth)
+  - `email`: Varchar, unique
+  - `firstName`: Varchar
+  - `lastName`: Varchar
+  - `profileImageUrl`: Varchar
+  - `createdAt`: Timestamp with default
+  - `updatedAt`: Timestamp with default
+
+- **Sessions Table** (Replit Auth):
+  - `sid`: Varchar primary key
+  - `sess`: JSONB, required
+  - `expire`: Timestamp, required, indexed
+
+- **Purchases Table**:
   - `id`: UUID primary key (auto-generated)
-  - `username`: Text, unique, required
-  - `password`: Text, required
+  - `userId`: Varchar, FK to users.id
+  - `productId`: UUID, FK to products.id
+  - `amount`: Integer (cents), required
+  - `stripePaymentId`: Text (nullable)
+  - `purchasedAt`: Timestamp with default
+
+- **Downloads Table**:
+  - `id`: UUID primary key (auto-generated)
+  - `purchaseId`: UUID, FK to purchases.id
+  - `downloadedAt`: Timestamp with default
 
 **Schema Validation:**
 - Drizzle Zod integration for runtime type validation
@@ -97,14 +125,29 @@ Preferred communication style: Simple, everyday language.
 
 ### Authentication and Authorization
 
-**Current State:**
-- User schema defined but authentication not yet implemented
-- Password field suggests planned password-based authentication
-- No session management or JWT implementation visible
+**Replit Auth Integration (OpenID Connect):**
+- **Provider**: Replit as OpenID Connect provider
+- **Supported Login Methods**: Google, GitHub, X (Twitter), Apple, Email/Password
+- **Session Management**: PostgreSQL-backed sessions via `connect-pg-simple`
+- **Session Duration**: 7 days
+- **Token Refresh**: Automatic token refresh using refresh tokens
 
-**Planned Architecture (Based on Dependencies):**
-- Session-based authentication using `connect-pg-simple` for PostgreSQL session store
-- User creation and retrieval methods defined in storage interface
+**Implementation Details:**
+- **Backend**: `server/replitAuth.ts` handles OAuth flow, session management, and token refresh
+- **Frontend**: `useAuth()` hook provides authentication state across all components
+- **Protected Routes**: `isAuthenticated` middleware protects endpoints requiring login
+- **User Storage**: Automatic user upsert on login with Replit profile data
+
+**Authentication Flow:**
+1. User clicks "Log In" → Redirected to `/api/login`
+2. Replit handles authentication (user chooses login method)
+3. OAuth callback to `/api/callback` → Creates/updates user in database
+4. Session created and user redirected to home or original destination
+5. Frontend `useAuth()` hook fetches user data from `/api/auth/user`
+
+**Frontend Auth Hooks:**
+- `useAuth()`: Returns `{ user, isLoading, isAuthenticated }`
+- `isUnauthorizedError()`: Helper to detect 401 errors and redirect to login
 
 ### External Dependencies
 
