@@ -1,5 +1,8 @@
-import { type User, type InsertUser, type Product, type InsertProduct } from "@shared/schema";
+import { type User, type InsertUser, type Product, type InsertProduct, type Purchase, type InsertPurchase, type Download, type InsertDownload, products, users, purchases, downloads } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { Pool } from "@neondatabase/serverless";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -11,6 +14,12 @@ export interface IStorage {
   getProductsByCategory(category: string): Promise<Product[]>;
   getFeaturedProducts(): Promise<Product[]>;
   createProduct(product: InsertProduct): Promise<Product>;
+  
+  createPurchase(purchase: InsertPurchase): Promise<Purchase>;
+  getUserPurchases(userId: string): Promise<Purchase[]>;
+  
+  createDownload(download: InsertDownload): Promise<Download>;
+  getPurchaseDownloads(purchaseId: string): Promise<Download[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -229,6 +238,86 @@ export class MemStorage implements IStorage {
       this.products.set(id, product);
     });
   }
+
+  async createPurchase(purchase: InsertPurchase): Promise<Purchase> {
+    throw new Error("Purchases not supported in MemStorage");
+  }
+
+  async getUserPurchases(userId: string): Promise<Purchase[]> {
+    return [];
+  }
+
+  async createDownload(download: InsertDownload): Promise<Download> {
+    throw new Error("Downloads not supported in MemStorage");
+  }
+
+  async getPurchaseDownloads(purchaseId: string): Promise<Download[]> {
+    return [];
+  }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  private db;
+
+  constructor() {
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    this.db = drizzle(pool);
+  }
+
+  async getUser(id: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const result = await this.db.select().from(users).where(eq(users.username, username)).limit(1);
+    return result[0];
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const result = await this.db.insert(users).values(insertUser).returning();
+    return result[0];
+  }
+
+  async getAllProducts(): Promise<Product[]> {
+    return await this.db.select().from(products);
+  }
+
+  async getProduct(id: string): Promise<Product | undefined> {
+    const result = await this.db.select().from(products).where(eq(products.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getProductsByCategory(category: string): Promise<Product[]> {
+    return await this.db.select().from(products).where(eq(products.category, category));
+  }
+
+  async getFeaturedProducts(): Promise<Product[]> {
+    return await this.db.select().from(products).where(eq(products.isFeatured, 1));
+  }
+
+  async createProduct(insertProduct: InsertProduct): Promise<Product> {
+    const result = await this.db.insert(products).values(insertProduct).returning();
+    return result[0];
+  }
+
+  async createPurchase(purchase: InsertPurchase): Promise<Purchase> {
+    const result = await this.db.insert(purchases).values(purchase).returning();
+    return result[0];
+  }
+
+  async getUserPurchases(userId: string): Promise<Purchase[]> {
+    return await this.db.select().from(purchases).where(eq(purchases.userId, userId));
+  }
+
+  async createDownload(download: InsertDownload): Promise<Download> {
+    const result = await this.db.insert(downloads).values(download).returning();
+    return result[0];
+  }
+
+  async getPurchaseDownloads(purchaseId: string): Promise<Download[]> {
+    return await this.db.select().from(downloads).where(eq(downloads.purchaseId, purchaseId));
+  }
+}
+
+export const storage = new DatabaseStorage();
