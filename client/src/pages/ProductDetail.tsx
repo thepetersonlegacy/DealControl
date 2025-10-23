@@ -110,9 +110,13 @@ export default function ProductDetail() {
               </div>
 
               <div className="space-y-4 mb-8">
-                <Button size="lg" className="w-full text-lg py-6" data-testid="button-purchase">
-                  <Download className="w-5 h-5 mr-2" />
-                  Purchase & Download
+                <Button asChild size="lg" className="w-full text-lg py-6" data-testid="button-purchase">
+                  <Link href={`/checkout?productId=${product.id}`}>
+                    <a>
+                      <Download className="w-5 h-5 mr-2" />
+                      Purchase & Download
+                    </a>
+                  </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="w-full text-lg py-6" data-testid="button-learn-more">
                   <Link href="/library">
