@@ -60,6 +60,35 @@ async function seedAdminUser() {
   }
 }
 
+async function seedTestUser() {
+  const testEmail = process.env.TEST_USER_EMAIL;
+  const testPassword = process.env.TEST_USER_PASSWORD;
+  
+  if (!testEmail || !testPassword) {
+    return;
+  }
+
+  try {
+    const existingUser = await storage.getUserByEmail(testEmail);
+    if (existingUser) {
+      console.log("Test user already exists");
+      return;
+    }
+
+    const passwordHash = await bcrypt.hash(testPassword, 12);
+    await storage.createUser({
+      email: testEmail,
+      passwordHash,
+      firstName: "Test",
+      lastName: "User",
+      isAdmin: 0,
+    });
+    console.log("Test user created successfully");
+  } catch (error) {
+    console.error("Error seeding test user:", error);
+  }
+}
+
 export async function setupLocalAuth(app: Express) {
   app.set("trust proxy", 1);
   app.use(getSession());
@@ -115,6 +144,7 @@ export async function setupLocalAuth(app: Express) {
   });
 
   await seedAdminUser();
+  await seedTestUser();
 
   app.post("/api/auth/register", async (req, res) => {
     try {
