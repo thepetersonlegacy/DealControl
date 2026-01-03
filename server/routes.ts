@@ -866,7 +866,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/order-bumps", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get("/api/admin/order-bumps", isAuthenticated, localIsAdmin, async (req: any, res) => {
     try {
       const orderBumps = await storage.getAllOrderBumps();
       
@@ -892,7 +892,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/sessions", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get("/api/admin/sessions", isAuthenticated, localIsAdmin, async (req: any, res) => {
     try {
       const sessions = await storage.getAllFunnelSessions();
       res.json(sessions);
@@ -902,7 +902,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/analytics/funnels", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get("/api/admin/analytics/funnels", isAuthenticated, localIsAdmin, async (req: any, res) => {
     try {
       const funnels = await storage.getAllFunnels();
       const sessions = await storage.getAllFunnelSessions();
@@ -957,7 +957,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/analytics/funnels/:id", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get("/api/admin/analytics/funnels/:id", isAuthenticated, localIsAdmin, async (req: any, res) => {
     try {
       const { id } = req.params;
       const funnel = await storage.getFunnel(id);
@@ -1059,7 +1059,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/subscribers", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get("/api/admin/subscribers", isAuthenticated, localIsAdmin, async (req: any, res) => {
     try {
       const subscribers = await storage.getAllSubscribers();
       res.json(subscribers);
