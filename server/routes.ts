@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupLocalAuth, isAuthenticated, isAdmin as localIsAdmin } from "./localAuth";
 import Stripe from "stripe";
 import { insertProductSchema, insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema, insertDownloadEventSchema } from "@shared/schema";
 import { z } from "zod";
@@ -26,35 +26,9 @@ if (!process.env.STRIPE_SECRET_KEY) {
 }
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-async function isAdmin(req: any, res: Response, next: NextFunction) {
-  try {
-    const userId = req.user?.claims?.sub;
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-    // For now, all authenticated users can access admin
-    // This can be enhanced later with proper role-based access
-    next();
-  } catch (error) {
-    res.status(500).json({ error: "Failed to verify admin status" });
-  }
-}
-
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication
-  await setupAuth(app);
-
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
+  // Setup authentication (local auth with username/password)
+  await setupLocalAuth(app);
 
   // Public product routes
   app.get("/api/products", async (req, res) => {
