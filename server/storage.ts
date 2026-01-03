@@ -1,4 +1,14 @@
-import { type User, type UpsertUser, type Product, type InsertProduct, type Purchase, type InsertPurchase, type Download, type InsertDownload, products, users, purchases, downloads } from "@shared/schema";
+import { 
+  type User, type UpsertUser, 
+  type Product, type InsertProduct, 
+  type Purchase, type InsertPurchase, 
+  type Download, type InsertDownload,
+  type Funnel, type InsertFunnel,
+  type FunnelStep, type InsertFunnelStep,
+  type OrderBump, type InsertOrderBump,
+  type FunnelSession, type InsertFunnelSession,
+  products, users, purchases, downloads, funnels, funnelSteps, orderBumps, funnelSessions 
+} from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-serverless";
 import { Pool } from "@neondatabase/serverless";
@@ -19,6 +29,28 @@ export interface IStorage {
   
   createDownload(download: InsertDownload): Promise<Download>;
   getPurchaseDownloads(purchaseId: string): Promise<Download[]>;
+
+  createFunnel(funnel: InsertFunnel): Promise<Funnel>;
+  getFunnel(id: string): Promise<Funnel | undefined>;
+  getFunnelByEntryProduct(productId: string): Promise<Funnel | undefined>;
+  updateFunnel(id: string, funnel: Partial<InsertFunnel>): Promise<Funnel | undefined>;
+  deleteFunnel(id: string): Promise<boolean>;
+  getAllFunnels(): Promise<Funnel[]>;
+
+  createFunnelStep(step: InsertFunnelStep): Promise<FunnelStep>;
+  getFunnelSteps(funnelId: string): Promise<FunnelStep[]>;
+  updateFunnelStep(id: string, step: Partial<InsertFunnelStep>): Promise<FunnelStep | undefined>;
+  deleteFunnelStep(id: string): Promise<boolean>;
+
+  createOrderBump(bump: InsertOrderBump): Promise<OrderBump>;
+  getOrderBumpByProduct(productId: string): Promise<OrderBump | undefined>;
+  updateOrderBump(id: string, bump: Partial<InsertOrderBump>): Promise<OrderBump | undefined>;
+  deleteOrderBump(id: string): Promise<boolean>;
+
+  createFunnelSession(session: InsertFunnelSession): Promise<FunnelSession>;
+  getFunnelSession(id: string): Promise<FunnelSession | undefined>;
+  updateFunnelSession(id: string, session: Partial<InsertFunnelSession>): Promise<FunnelSession | undefined>;
+  getUserFunnelSessions(userId: string): Promise<FunnelSession[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -256,6 +288,78 @@ export class MemStorage implements IStorage {
   async getPurchaseDownloads(purchaseId: string): Promise<Download[]> {
     return [];
   }
+
+  async createFunnel(funnel: InsertFunnel): Promise<Funnel> {
+    throw new Error("Funnels not supported in MemStorage");
+  }
+
+  async getFunnel(id: string): Promise<Funnel | undefined> {
+    return undefined;
+  }
+
+  async getFunnelByEntryProduct(productId: string): Promise<Funnel | undefined> {
+    return undefined;
+  }
+
+  async updateFunnel(id: string, funnel: Partial<InsertFunnel>): Promise<Funnel | undefined> {
+    throw new Error("Funnels not supported in MemStorage");
+  }
+
+  async deleteFunnel(id: string): Promise<boolean> {
+    throw new Error("Funnels not supported in MemStorage");
+  }
+
+  async getAllFunnels(): Promise<Funnel[]> {
+    return [];
+  }
+
+  async createFunnelStep(step: InsertFunnelStep): Promise<FunnelStep> {
+    throw new Error("Funnel steps not supported in MemStorage");
+  }
+
+  async getFunnelSteps(funnelId: string): Promise<FunnelStep[]> {
+    return [];
+  }
+
+  async updateFunnelStep(id: string, step: Partial<InsertFunnelStep>): Promise<FunnelStep | undefined> {
+    throw new Error("Funnel steps not supported in MemStorage");
+  }
+
+  async deleteFunnelStep(id: string): Promise<boolean> {
+    throw new Error("Funnel steps not supported in MemStorage");
+  }
+
+  async createOrderBump(bump: InsertOrderBump): Promise<OrderBump> {
+    throw new Error("Order bumps not supported in MemStorage");
+  }
+
+  async getOrderBumpByProduct(productId: string): Promise<OrderBump | undefined> {
+    return undefined;
+  }
+
+  async updateOrderBump(id: string, bump: Partial<InsertOrderBump>): Promise<OrderBump | undefined> {
+    throw new Error("Order bumps not supported in MemStorage");
+  }
+
+  async deleteOrderBump(id: string): Promise<boolean> {
+    throw new Error("Order bumps not supported in MemStorage");
+  }
+
+  async createFunnelSession(session: InsertFunnelSession): Promise<FunnelSession> {
+    throw new Error("Funnel sessions not supported in MemStorage");
+  }
+
+  async getFunnelSession(id: string): Promise<FunnelSession | undefined> {
+    return undefined;
+  }
+
+  async updateFunnelSession(id: string, session: Partial<InsertFunnelSession>): Promise<FunnelSession | undefined> {
+    throw new Error("Funnel sessions not supported in MemStorage");
+  }
+
+  async getUserFunnelSessions(userId: string): Promise<FunnelSession[]> {
+    return [];
+  }
 }
 
 export class DatabaseStorage implements IStorage {
@@ -324,6 +428,117 @@ export class DatabaseStorage implements IStorage {
 
   async getPurchaseDownloads(purchaseId: string): Promise<Download[]> {
     return await this.db.select().from(downloads).where(eq(downloads.purchaseId, purchaseId));
+  }
+
+  async createFunnel(funnel: InsertFunnel): Promise<Funnel> {
+    const result = await this.db.insert(funnels).values(funnel).returning();
+    return result[0];
+  }
+
+  async getFunnel(id: string): Promise<Funnel | undefined> {
+    const result = await this.db.select().from(funnels).where(eq(funnels.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getFunnelByEntryProduct(productId: string): Promise<Funnel | undefined> {
+    const result = await this.db
+      .select()
+      .from(funnels)
+      .where(eq(funnels.entryProductId, productId))
+      .limit(1);
+    return result[0];
+  }
+
+  async updateFunnel(id: string, funnel: Partial<InsertFunnel>): Promise<Funnel | undefined> {
+    const result = await this.db
+      .update(funnels)
+      .set({ ...funnel, updatedAt: new Date() })
+      .where(eq(funnels.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteFunnel(id: string): Promise<boolean> {
+    const result = await this.db.delete(funnels).where(eq(funnels.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async getAllFunnels(): Promise<Funnel[]> {
+    return await this.db.select().from(funnels);
+  }
+
+  async createFunnelStep(step: InsertFunnelStep): Promise<FunnelStep> {
+    const result = await this.db.insert(funnelSteps).values(step).returning();
+    return result[0];
+  }
+
+  async getFunnelSteps(funnelId: string): Promise<FunnelStep[]> {
+    return await this.db.select().from(funnelSteps).where(eq(funnelSteps.funnelId, funnelId));
+  }
+
+  async updateFunnelStep(id: string, step: Partial<InsertFunnelStep>): Promise<FunnelStep | undefined> {
+    const result = await this.db
+      .update(funnelSteps)
+      .set(step)
+      .where(eq(funnelSteps.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteFunnelStep(id: string): Promise<boolean> {
+    const result = await this.db.delete(funnelSteps).where(eq(funnelSteps.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async createOrderBump(bump: InsertOrderBump): Promise<OrderBump> {
+    const result = await this.db.insert(orderBumps).values(bump).returning();
+    return result[0];
+  }
+
+  async getOrderBumpByProduct(productId: string): Promise<OrderBump | undefined> {
+    const result = await this.db
+      .select()
+      .from(orderBumps)
+      .where(eq(orderBumps.productId, productId))
+      .limit(1);
+    return result[0];
+  }
+
+  async updateOrderBump(id: string, bump: Partial<InsertOrderBump>): Promise<OrderBump | undefined> {
+    const result = await this.db
+      .update(orderBumps)
+      .set(bump)
+      .where(eq(orderBumps.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async deleteOrderBump(id: string): Promise<boolean> {
+    const result = await this.db.delete(orderBumps).where(eq(orderBumps.id, id)).returning();
+    return result.length > 0;
+  }
+
+  async createFunnelSession(session: InsertFunnelSession): Promise<FunnelSession> {
+    const result = await this.db.insert(funnelSessions).values(session).returning();
+    return result[0];
+  }
+
+  async getFunnelSession(id: string): Promise<FunnelSession | undefined> {
+    const result = await this.db.select().from(funnelSessions).where(eq(funnelSessions.id, id)).limit(1);
+    return result[0];
+  }
+
+  async updateFunnelSession(id: string, session: Partial<InsertFunnelSession>): Promise<FunnelSession | undefined> {
+    const result = await this.db
+      .update(funnelSessions)
+      .set(session)
+      .where(eq(funnelSessions.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async getUserFunnelSessions(userId: string): Promise<FunnelSession[]> {
+    return await this.db.select().from(funnelSessions).where(eq(funnelSessions.userId, userId));
   }
 }
 

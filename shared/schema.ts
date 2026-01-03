@@ -46,6 +46,87 @@ export const users = pgTable("users", {
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
+// ClickFunnels-style funnel tables
+export const funnels = pgTable("funnels", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  entryProductId: varchar("entry_product_id").references(() => products.id),
+  isActive: integer("is_active").notNull().default(1),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertFunnelSchema = createInsertSchema(funnels).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type InsertFunnel = z.infer<typeof insertFunnelSchema>;
+export type Funnel = typeof funnels.$inferSelect;
+
+export const funnelSteps = pgTable("funnel_steps", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  funnelId: varchar("funnel_id").notNull().references(() => funnels.id),
+  stepType: text("step_type").notNull(), // 'upsell', 'downsell', 'oto', 'order_bump'
+  offerProductId: varchar("offer_product_id").notNull().references(() => products.id),
+  priority: integer("priority").notNull().default(0),
+  priceOverride: integer("price_override"),
+  headline: text("headline"),
+  subheadline: text("subheadline"),
+  ctaText: text("cta_text"),
+  declineText: text("decline_text"),
+  timerSeconds: integer("timer_seconds"),
+  isActive: integer("is_active").notNull().default(1),
+});
+
+export const insertFunnelStepSchema = createInsertSchema(funnelSteps).omit({
+  id: true,
+});
+
+export type InsertFunnelStep = z.infer<typeof insertFunnelStepSchema>;
+export type FunnelStep = typeof funnelSteps.$inferSelect;
+
+export const orderBumps = pgTable("order_bumps", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: varchar("product_id").notNull().references(() => products.id),
+  bumpProductId: varchar("bump_product_id").notNull().references(() => products.id),
+  bumpPrice: integer("bump_price").notNull(),
+  headline: text("headline"),
+  description: text("description"),
+  isActive: integer("is_active").notNull().default(1),
+});
+
+export const insertOrderBumpSchema = createInsertSchema(orderBumps).omit({
+  id: true,
+});
+
+export type InsertOrderBump = z.infer<typeof insertOrderBumpSchema>;
+export type OrderBump = typeof orderBumps.$inferSelect;
+
+export const funnelSessions = pgTable("funnel_sessions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  funnelId: varchar("funnel_id").notNull().references(() => funnels.id),
+  entryPurchaseId: varchar("entry_purchase_id"), // FK managed at app level to avoid circular dependency
+  currentStepIndex: integer("current_step_index").notNull().default(0),
+  status: text("status").notNull().default("active"), // 'active', 'completed', 'abandoned'
+  acceptedSteps: text("accepted_steps").array(),
+  declinedSteps: text("declined_steps").array(),
+  totalRevenue: integer("total_revenue").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+export const insertFunnelSessionSchema = createInsertSchema(funnelSessions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertFunnelSession = z.infer<typeof insertFunnelSessionSchema>;
+export type FunnelSession = typeof funnelSessions.$inferSelect;
+
 export const purchases = pgTable("purchases", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
@@ -53,6 +134,10 @@ export const purchases = pgTable("purchases", {
   amount: integer("amount").notNull(),
   stripePaymentId: text("stripe_payment_id"),
   purchasedAt: integer("purchased_at").notNull().default(sql`extract(epoch from now())`),
+  funnelSessionId: varchar("funnel_session_id").references(() => funnelSessions.id),
+  funnelStepId: varchar("funnel_step_id").references(() => funnelSteps.id),
+  isOrderBump: integer("is_order_bump").notNull().default(0),
+  parentPurchaseId: varchar("parent_purchase_id"), // Self-reference FK managed at app level
 });
 
 export const insertPurchaseSchema = createInsertSchema(purchases).omit({
