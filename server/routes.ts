@@ -1094,6 +1094,132 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ========== DOWNLOAD PORTAL ENDPOINTS (Elite Tier) ==========
+
+  app.get("/api/downloads/portal", async (req, res) => {
+    try {
+      const { token } = req.query;
+      
+      if (!token || typeof token !== 'string') {
+        return res.status(400).json({ error: "Access token required" });
+      }
+
+      const accessToken = await storage.getAccessTokenByToken(token);
+      
+      if (!accessToken) {
+        return res.status(404).json({ error: "Invalid access token", valid: false });
+      }
+
+      if (accessToken.revokedAt) {
+        return res.status(403).json({ error: "Access token has been revoked", valid: false });
+      }
+
+      if (accessToken.expiresAt && new Date(accessToken.expiresAt) < new Date()) {
+        return res.status(403).json({ error: "Access token has expired", valid: false });
+      }
+
+      const purchase = await storage.getPurchase(accessToken.purchaseId);
+      if (!purchase) {
+        return res.status(404).json({ error: "Purchase not found", valid: false });
+      }
+
+      const product = await storage.getProduct(purchase.productId);
+      if (!product) {
+        return res.status(404).json({ error: "Product not found", valid: false });
+      }
+
+      // Log first access if not already logged
+      let accessLogged = false;
+      if (!accessToken.firstAccessAt) {
+        await storage.updateAccessTokenFirstAccess(accessToken.id);
+        await storage.createDownloadEvent({
+          purchaseId: purchase.id,
+          tokenId: accessToken.id,
+          eventType: 'ACCESS',
+          ip: req.ip || null,
+          userAgent: req.headers['user-agent'] || null,
+        });
+        accessLogged = true;
+      }
+
+      // Generate file list (placeholder files for now)
+      const files = [
+        { key: 'main-document', name: product.title, format: 'PDF', size: '2.4 MB' },
+        { key: 'quick-reference', name: `${product.title} - Quick Reference`, format: 'PDF', size: '450 KB' },
+        { key: 'checklist', name: `${product.title} - Checklist`, format: 'PDF', size: '320 KB' },
+      ];
+
+      res.json({
+        valid: true,
+        licenseType: accessToken.licenseType,
+        productTitle: product.title,
+        purchaseDate: new Date(purchase.purchasedAt * 1000).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        }),
+        files,
+        accessLogged,
+      });
+    } catch (error: any) {
+      console.error("Error fetching download portal:", error);
+      res.status(500).json({ error: "Failed to load download portal: " + error.message });
+    }
+  });
+
+  app.post("/api/downloads/log", async (req, res) => {
+    try {
+      const { token, fileKey, eventType } = req.body;
+      
+      if (!token || !fileKey) {
+        return res.status(400).json({ error: "Token and fileKey required" });
+      }
+
+      const accessToken = await storage.getAccessTokenByToken(token);
+      if (!accessToken || accessToken.revokedAt) {
+        return res.status(403).json({ error: "Invalid or revoked token" });
+      }
+
+      await storage.createDownloadEvent({
+        purchaseId: accessToken.purchaseId,
+        tokenId: accessToken.id,
+        eventType: eventType || 'DOWNLOAD',
+        fileKey,
+        ip: req.ip || null,
+        userAgent: req.headers['user-agent'] || null,
+      });
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error logging download:", error);
+      res.status(500).json({ error: "Failed to log download: " + error.message });
+    }
+  });
+
+  app.get("/api/downloads/file", async (req, res) => {
+    try {
+      const { token, fileKey } = req.query;
+      
+      if (!token || !fileKey || typeof token !== 'string' || typeof fileKey !== 'string') {
+        return res.status(400).json({ error: "Token and fileKey required" });
+      }
+
+      const accessToken = await storage.getAccessTokenByToken(token);
+      if (!accessToken || accessToken.revokedAt) {
+        return res.status(403).json({ error: "Invalid or revoked token" });
+      }
+
+      // For now, return a placeholder response
+      // In production, this would serve actual files from storage
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${fileKey}.pdf"`);
+      res.send('Placeholder PDF content - replace with actual file in production');
+    } catch (error: any) {
+      console.error("Error downloading file:", error);
+      res.status(500).json({ error: "Failed to download file: " + error.message });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;

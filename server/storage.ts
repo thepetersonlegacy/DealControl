@@ -9,7 +9,10 @@ import {
   type FunnelSession, type InsertFunnelSession,
   type Subscriber, type InsertSubscriber,
   type EmailLog, type InsertEmailLog,
-  products, users, purchases, downloads, funnels, funnelSteps, orderBumps, funnelSessions, subscribers, emailLogs 
+  type AccessToken, type InsertAccessToken,
+  type DownloadEvent, type InsertDownloadEvent,
+  products, users, purchases, downloads, funnels, funnelSteps, orderBumps, funnelSessions, subscribers, emailLogs,
+  accessTokens, downloadEvents
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-serverless";
@@ -67,6 +70,13 @@ export interface IStorage {
   getAllSubscribers(): Promise<Subscriber[]>;
   createEmailLog(data: InsertEmailLog): Promise<EmailLog>;
   getEmailLogs(userId?: string): Promise<EmailLog[]>;
+
+  // Access tokens and download events (Elite Tier)
+  createAccessToken(data: InsertAccessToken): Promise<AccessToken>;
+  getAccessTokenByToken(token: string): Promise<AccessToken | undefined>;
+  updateAccessTokenFirstAccess(id: string): Promise<AccessToken | undefined>;
+  createDownloadEvent(data: InsertDownloadEvent): Promise<DownloadEvent>;
+  getDownloadEventsByPurchase(purchaseId: string): Promise<DownloadEvent[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -758,6 +768,35 @@ export class DatabaseStorage implements IStorage {
       return await this.db.select().from(emailLogs).where(eq(emailLogs.userId, userId));
     }
     return await this.db.select().from(emailLogs);
+  }
+
+  // Access tokens and download events (Elite Tier)
+  async createAccessToken(data: InsertAccessToken): Promise<AccessToken> {
+    const result = await this.db.insert(accessTokens).values(data).returning();
+    return result[0];
+  }
+
+  async getAccessTokenByToken(token: string): Promise<AccessToken | undefined> {
+    const result = await this.db.select().from(accessTokens).where(eq(accessTokens.token, token)).limit(1);
+    return result[0];
+  }
+
+  async updateAccessTokenFirstAccess(id: string): Promise<AccessToken | undefined> {
+    const result = await this.db
+      .update(accessTokens)
+      .set({ firstAccessAt: new Date() })
+      .where(eq(accessTokens.id, id))
+      .returning();
+    return result[0];
+  }
+
+  async createDownloadEvent(data: InsertDownloadEvent): Promise<DownloadEvent> {
+    const result = await this.db.insert(downloadEvents).values(data).returning();
+    return result[0];
+  }
+
+  async getDownloadEventsByPurchase(purchaseId: string): Promise<DownloadEvent[]> {
+    return await this.db.select().from(downloadEvents).where(eq(downloadEvents.purchaseId, purchaseId));
   }
 }
 

@@ -13,6 +13,11 @@ import FunnelOffer from "@/pages/FunnelOffer";
 import Admin from "@/pages/Admin";
 import Dashboard from "@/pages/Dashboard";
 import Terms from "@/pages/Terms";
+import Start from "@/pages/Start";
+import KitTransactionRisk from "@/pages/KitTransactionRisk";
+import Office from "@/pages/Office";
+import LegalRefunds from "@/pages/LegalRefunds";
+import Downloads from "@/pages/Downloads";
 
 function Router() {
   return (
@@ -26,6 +31,11 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/terms" component={Terms} />
+      <Route path="/start" component={Start} />
+      <Route path="/kit/transaction-risk" component={KitTransactionRisk} />
+      <Route path="/office" component={Office} />
+      <Route path="/legal/refunds" component={LegalRefunds} />
+      <Route path="/downloads" component={Downloads} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -214,3 +214,65 @@ export const insertEmailLogSchema = createInsertSchema(emailLogs).omit({
 
 export type InsertEmailLog = z.infer<typeof insertEmailLogSchema>;
 export type EmailLog = typeof emailLogs.$inferSelect;
+
+// Access tokens for download portal (Elite Tier)
+export const accessTokens = pgTable("access_tokens", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  token: varchar("token", { length: 64 }).notNull().unique(),
+  purchaseId: varchar("purchase_id").notNull().references(() => purchases.id),
+  userId: varchar("user_id").references(() => users.id),
+  licenseType: text("license_type").notNull().default("solo"), // 'solo', 'pro', 'office'
+  createdAt: timestamp("created_at").defaultNow(),
+  firstAccessAt: timestamp("first_access_at"),
+  revokedAt: timestamp("revoked_at"),
+  expiresAt: timestamp("expires_at"), // For Office annual licenses
+});
+
+export const insertAccessTokenSchema = createInsertSchema(accessTokens).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertAccessToken = z.infer<typeof insertAccessTokenSchema>;
+export type AccessToken = typeof accessTokens.$inferSelect;
+
+// Download events for access logging (Elite Tier chargeback protection)
+export const downloadEvents = pgTable("download_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  purchaseId: varchar("purchase_id").notNull().references(() => purchases.id),
+  tokenId: varchar("token_id").references(() => accessTokens.id),
+  eventType: text("event_type").notNull(), // 'ACCESS', 'DOWNLOAD'
+  fileKey: text("file_key"),
+  ip: varchar("ip", { length: 45 }),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertDownloadEventSchema = createInsertSchema(downloadEvents).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertDownloadEvent = z.infer<typeof insertDownloadEventSchema>;
+export type DownloadEvent = typeof downloadEvents.$inferSelect;
+
+// UTM tracking for attribution (Elite Tier)
+export const utmTracking = pgTable("utm_tracking", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  tokenId: varchar("token_id").references(() => accessTokens.id),
+  purchaseId: varchar("purchase_id").references(() => purchases.id),
+  source: varchar("source", { length: 100 }),
+  medium: varchar("medium", { length: 100 }),
+  campaign: varchar("campaign", { length: 100 }),
+  content: varchar("content", { length: 255 }),
+  term: varchar("term", { length: 255 }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertUtmTrackingSchema = createInsertSchema(utmTracking).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertUtmTracking = z.infer<typeof insertUtmTrackingSchema>;
+export type UtmTracking = typeof utmTracking.$inferSelect;
