@@ -448,6 +448,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const price = currentStep.priceOverride ?? product.price;
         
+        // Handle zero-price offers (free bonuses)
+        if (price <= 0) {
+          // Create purchase without payment
+          await storage.createPurchase({
+            userId,
+            productId: product.id,
+            amount: 0,
+            stripePaymentId: null,
+            parentPurchaseId: session.entryPurchaseId || undefined,
+          });
+          
+          // Move to next step
+          const acceptedSteps = [...(session.acceptedSteps || []), stepId];
+          const newStepIndex = session.currentStepIndex + 1;
+          const newTotalRevenue = session.totalRevenue + price;
+          
+          await storage.updateFunnelSession(sessionId, {
+            acceptedSteps,
+            currentStepIndex: newStepIndex,
+            totalRevenue: newTotalRevenue,
+          });
+          
+          if (newStepIndex >= activeSteps.length) {
+            await storage.updateFunnelSession(sessionId, { status: "completed", completedAt: new Date() });
+            return res.json({ completed: true });
+          }
+          
+          const nextStep = activeSteps[newStepIndex];
+          const nextProduct = await storage.getProduct(nextStep.offerProductId);
+          const isLastStep = newStepIndex >= activeSteps.length - 1;
+          
+          return res.json({ nextStep: { ...nextStep, product: nextProduct }, isLastStep, completed: false });
+        }
+        
+        // Paid offers require payment
         const paymentIntent = await stripe.paymentIntents.create({
           amount: price,
           currency: "usd",
@@ -476,8 +511,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         const nextStep = activeSteps[newStepIndex];
         const nextProduct = await storage.getProduct(nextStep.offerProductId);
+        const isLastStep = newStepIndex >= activeSteps.length - 1;
         
-        res.json({ nextStep: { ...nextStep, product: nextProduct }, completed: false });
+        res.json({ nextStep: { ...nextStep, product: nextProduct }, isLastStep, completed: false });
       }
     } catch (error: any) {
       console.error("Error responding to funnel step:", error);

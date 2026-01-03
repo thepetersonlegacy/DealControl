@@ -9,6 +9,7 @@ import Library from "@/pages/Library";
 import ProductDetail from "@/pages/ProductDetail";
 import Checkout from "@/pages/Checkout";
 import PurchaseSuccess from "@/pages/PurchaseSuccess";
+import FunnelOffer from "@/pages/FunnelOffer";
 
 function Router() {
   return (
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/purchase-success" component={PurchaseSuccess} />
+      <Route path="/funnel/:sessionId" component={FunnelOffer} />
       <Route component={NotFound} />
     </Switch>
   );

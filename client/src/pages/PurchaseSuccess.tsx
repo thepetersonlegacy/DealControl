@@ -1,11 +1,13 @@
+import { useEffect, useState, useRef } from 'react';
 import { useLocation, Link } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
-import type { Product, Purchase } from "@shared/schema";
+import { useQuery, useMutation } from '@tanstack/react-query';
+import type { Product, Purchase, FunnelSession } from "@shared/schema";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, Calendar, CreditCard, Package } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 
 interface PurchaseResponse {
   purchase: Purchase;
@@ -14,10 +16,17 @@ interface PurchaseResponse {
   orderBumpProduct: Product | null;
 }
 
+interface FunnelStartResponse {
+  funnelSession: FunnelSession | null;
+  hasNextStep: boolean;
+}
+
 export default function PurchaseSuccess() {
-  const [location] = useLocation();
+  const [, navigate] = useLocation();
   const searchParams = new URLSearchParams(window.location.search);
   const purchaseId = searchParams.get('purchaseId');
+  const [funnelChecked, setFunnelChecked] = useState(false);
+  const funnelStartedRef = useRef(false);
 
   const { data, isLoading, error } = useQuery<PurchaseResponse>({
     queryKey: ["/api/purchases", purchaseId],
@@ -35,6 +44,34 @@ export default function PurchaseSuccess() {
     },
     enabled: !!purchaseId,
   });
+
+  const startFunnelMutation = useMutation({
+    mutationFn: async ({ purchaseId, productId }: { purchaseId: string; productId: string }) => {
+      const response = await apiRequest('POST', '/api/funnel/start', { purchaseId, productId });
+      return response.json() as Promise<FunnelStartResponse>;
+    },
+    onSuccess: (result) => {
+      setFunnelChecked(true);
+      if (result.funnelSession && result.hasNextStep) {
+        setTimeout(() => {
+          navigate(`/funnel/${result.funnelSession!.id}`);
+        }, 2000);
+      }
+    },
+    onError: () => {
+      setFunnelChecked(true);
+    },
+  });
+
+  useEffect(() => {
+    if (data && !funnelStartedRef.current) {
+      funnelStartedRef.current = true;
+      startFunnelMutation.mutate({
+        purchaseId: data.purchase.id,
+        productId: data.product.id,
+      });
+    }
+  }, [data]);
 
   if (isLoading) {
     return (
