@@ -1,0 +1,176 @@
+Got it — Option B: add the funnel routes directly into your existing website codebase (so your main domain carries the funnel and you don’t need a subdomain).
+
+Since you didn’t paste the repo/stack, I’m going to make explicit assumptions and still give you an implementation-ready plan + a Replit build prompt you can paste right now.
+
+ASSUMPTIONS
+	•	Your existing site is Next.js (App Router) + TypeScript (or can be upgraded to it inside the same repo).
+	•	You can add new routes like /kit/..., /checkout, /thank-you, /downloads, /office, /legal/* without breaking current pages.
+	•	You will use Stripe Checkout + Webhooks.
+	•	You want email optional, silent funnel default.
+
+If your site is Webflow/WordPress/static HTML, Option B isn’t feasible “inside” that site without converting it or embedding an app. (If that’s the case, Option A is the clean fallback.)
+
+⸻
+
+Option B Architecture (inside your existing site)
+
+New funnel routes to add
+	•	/start (silent landing / entry page)
+	•	/kit/transaction-risk (core sales page)
+	•	/checkout (license select + checkbox + Stripe redirect)
+	•	/thank-you (post-purchase next steps)
+	•	/downloads (gated portal + access logging)
+	•	/office (Office explainer + annual buy)
+	•	/legal/terms
+	•	/legal/refunds
+
+Key protection requirements (must implement)
+	•	Required checkbox before Stripe redirect:
+“All sales are final once files are accessed or downloaded…”
+	•	Access/download event logging (this is your chargeback shield)
+	•	Per-version licensing (Solo/Pro are one-time; Office annual)
+
+⸻
+
+What Replit should do in your existing repo
+	1.	Create new pages in app/ for those routes
+	2.	Add a small “Funnel” layout that matches your site header/footer (so it feels native)
+	3.	Add Stripe Checkout session creation route: POST /api/checkout/create
+	4.	Add Stripe webhook: POST /api/stripe/webhook
+	5.	Add DB tables (Prisma) for:
+	•	Orders
+	•	AccessTokens
+	•	DownloadEvents
+	•	UTM attribution (optional)
+	6.	Build /downloads portal that:
+	•	Requires an access token
+	•	Logs first access
+	•	Logs each download
+	•	Shows file list (placeholders ok)
+
+⸻
+
+Copy/Paste Prompt for Replit (Option B)
+
+Paste this into Replit Agent / Replit Optimize:
+
+BUILD SPEC: Option B — Add DealControl Funnel Routes INSIDE existing website repo.
+VERITAS-1Λ: No invented claims, no fake testimonials, no legal promises. Use placeholders where proof is required.
+
+GOAL
+Add a funnel stack to the existing website codebase (same domain) for lead capture + conversion.
+Do not rebuild the site; add new routes and minimal shared components.
+
+ASSUMPTIONS
+- Existing codebase is Next.js (App Router) + TypeScript.
+- Tailwind is available or can be added without breaking styles.
+- Stripe Checkout will be used.
+- DB via Prisma (SQLite for local, Postgres in production).
+
+MUST ALIGN TO DEALCONTROL SYSTEM
+Public positioning:
+- “One-time purchase. No subscription.”
+
+License reality:
+- Solo & Pro: one-time purchase, per-version perpetual access
+- Office: annual internal-use license (includes updates during term)
+
+Refund policy:
+- Digital products; all sales final once files are accessed/downloaded
+- Replacement-only for corrupted/inaccessible files
+
+Tone:
+- Professional, calm, institutional. No hype. No guru language.
+
+ROUTES TO ADD (Next.js App Router)
+1) /start
+2) /kit/transaction-risk
+3) /checkout?license=solo|pro|office
+4) /thank-you
+5) /downloads (gated)
+6) /office
+7) /legal/terms
+8) /legal/refunds
+
+COPY REQUIREMENTS (MUST INCLUDE)
+Verbatim disclaimer block:
+“This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.”
+
+Refund language (short, consistent):
+“All sales are final once files are accessed or downloaded. Replacement-only for technical access issues.”
+
+Checkout checkbox (required before Stripe redirect):
+“I understand this is a digital product. All sales are final once files are accessed or downloaded. I agree to the license terms and refund policy.”
+
+STRIPE REQUIREMENTS
+- Prices:
+  - Solo bundle: $129 one-time
+  - Pro bundle: $219 one-time
+  - Office bundle: $699/year (recurring)
+- Use Stripe Checkout Sessions.
+- Create endpoint: POST /api/checkout/create
+  - Input: licenseType, productSlug, successUrl, cancelUrl
+  - Output: checkoutUrl
+- Webhook endpoint: POST /api/stripe/webhook
+  - On successful checkout: create Order record and AccessToken
+  - For Office recurring events: keep status updated (active/canceled)
+
+DATABASE MODELS (Prisma)
+- Order: id, stripeSessionId, stripeCustomerId, email (nullable), licenseType, productSlug, amount, currency, status, createdAt
+- AccessToken: id, token, orderId, createdAt, revokedAt (nullable), firstAccessAt (nullable)
+- DownloadEvent: id, orderId, tokenId, fileKey, eventType (ACCESS|DOWNLOAD), ip (nullable), userAgent (nullable), createdAt
+- UTM: id, tokenId or orderId, source, medium, campaign, content, term, createdAt
+
+DOWNLOAD PORTAL REQUIREMENTS (/downloads)
+- Requires token via query param or stored session:
+  /downloads?token=...
+- On first valid load, set firstAccessAt if null and log DownloadEvent type=ACCESS
+- Each download link triggers an API route that:
+  - logs DownloadEvent type=DOWNLOAD with fileKey
+  - returns file (placeholder files acceptable)
+- Show internal-use reminders + license boundaries
+
+UI
+- Create a minimal “FunnelLayout” that reuses existing header/footer if available.
+- Keep design clean, premium, minimal; no aggressive sales elements.
+
+DELIVERABLES
+- New routes implemented in app/
+- Stripe integration (create session + webhook)
+- Prisma schema + migrations
+- Download portal with access/download logging
+- README:
+  - env vars
+  - stripe webhook setup
+  - local dev steps
+  - deployment notes
+
+DO NOT
+- Do not fabricate testimonials or claims
+- Do not add guarantees beyond access/replacement guarantee
+- Do not add hype copy
+
+
+⸻
+
+Implementation Notes (so you don’t get burned)
+
+1) How to route traffic
+	•	All ads/content point to: /start or directly to /kit/transaction-risk
+	•	/start should have one CTA: “View Kit” → /kit/transaction-risk
+
+2) How you prevent refund abuse
+	•	Checkbox + visible refund policy before Stripe redirect
+	•	/downloads logs:
+	•	firstAccessAt
+	•	every download event
+	•	Terms + Refund pages linked in footer + checkout
+
+3) Office license handling (annual)
+	•	Office buyers get:
+	•	access token (active while subscription is active)
+	•	if canceled/non-renewed: token can remain but access to “updates” is disabled (you can enforce by file set/versioning)
+
+⸻
+
+If you paste your existing site URL or tell me what it’s built with (Next.js vs Webflow vs WordPress), I’ll tailor the Option B prompt so Replit doesn’t waste cycles guessing the stack.
