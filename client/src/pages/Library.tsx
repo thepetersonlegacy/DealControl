@@ -42,7 +42,7 @@ export default function Library() {
               Master Library
             </h1>
             <p className="text-xl text-muted-foreground" data-testid="text-library-subtitle">
-              Browse our complete collection of 1000+ digital products
+              Browse our complete collection
             </p>
           </div>
 
