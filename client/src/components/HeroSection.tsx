@@ -22,14 +22,10 @@ export function HeroSection() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button asChild size="lg" className="text-lg px-8 py-6" data-testid="button-hero-cta">
-            <Link href="/library">
-              <a>Browse Asset Library</a>
-            </Link>
+            <Link href="/library">Browse Asset Library</Link>
           </Button>
           <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 backdrop-blur-md bg-background/50" data-testid="button-hero-secondary">
-            <Link href="/library?filter=bundles">
-              <a>View Bundles</a>
-            </Link>
+            <Link href="/library?filter=bundles">View Bundles</Link>
           </Button>
         </div>
 
