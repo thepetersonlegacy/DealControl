@@ -830,6 +830,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all order bumps (public for admin dashboard)
+  app.get("/api/order-bumps", isAuthenticated, async (req: any, res) => {
+    try {
+      const orderBumps = await storage.getAllOrderBumps();
+      res.json(orderBumps);
+    } catch (error: any) {
+      console.error("Error fetching order bumps:", error);
+      res.status(500).json({ error: "Failed to fetch order bumps: " + error.message });
+    }
+  });
+
   app.post("/api/order-bumps", isAuthenticated, async (req: any, res) => {
     try {
       const parsed = insertOrderBumpSchema.safeParse(req.body);

@@ -487,67 +487,269 @@ async function seed() {
     return;
   }
 
-  // Seed sample funnel data
-  const firstProduct = existingProducts.find(p => p.title.includes("SEO")) || existingProducts[0];
-  const secondProduct = existingProducts.find(p => p.title.includes("Email Marketing")) || existingProducts[1];
-  const thirdProduct = existingProducts.find(p => p.title.includes("Leadership")) || existingProducts[2];
-  const fourthProduct = existingProducts.find(p => p.title.includes("AI YouTube") || p.title.includes("YouTube")) || existingProducts[3];
+  // Helper function to find products by title
+  const findProduct = (titlePart: string) => existingProducts.find(p => p.title.includes(titlePart));
 
-  // Create a sample funnel tied to the first product
-  const funnel = await storage.createFunnel({
+  // Get products for funnels
+  const seoProduct = findProduct("SEO") || existingProducts[0];
+  const emailProduct = findProduct("Email Marketing") || existingProducts[1];
+  const leadershipProduct = findProduct("Leadership") || existingProducts[2];
+  const youtubeProduct = findProduct("AI YouTube") || existingProducts[3];
+  
+  // Texas Real Estate products
+  const txRiskSolo = findProduct("Transaction Risk Control Kit - Solo");
+  const txRiskPro = findProduct("Transaction Risk Control Kit - Pro");
+  const landlordSolo = findProduct("Landlord Liability Shield - Solo");
+  const landlordPro = findProduct("Landlord Liability Shield - Pro");
+  const estateSolo = findProduct("Estate Sale Control Pack - Solo");
+  const estatePro = findProduct("Estate Sale Control Pack - Pro");
+  
+  // Individual TX products for order bumps
+  const earnestMoneySOP = findProduct("Earnest Money Dispute Prevention SOP");
+  const financingFallout = findProduct("Financing Fallout Response Playbook");
+  const firstTimeLandlord = findProduct("First-Time Landlord Mistake Prevention SOP");
+  const tenantScreening = findProduct("Tenant Screening Compliance Checklist");
+  const txExecutor = findProduct("Texas Executor Property Sale Checklist");
+  const heirInterference = findProduct("Heir Interference Prevention SOP");
+  const appraisalGap = findProduct("Appraisal Gap Strategy Guide");
+  const inspectionScript = findProduct("Inspection Objection Negotiation Script");
+  const buyerCreditSOP = findProduct("Buyer Credit Readiness Pre-Screen SOP");
+  const leaseViolation = findProduct("Lease Violation Documentation Checklist");
+
+  // Create SEO Mastery Funnel (original)
+  const seoFunnel = await storage.createFunnel({
     name: "SEO Mastery Upsell Funnel",
     description: "Post-purchase funnel for SEO Mastery Guide with upsells and downsells",
-    entryProductId: firstProduct.id,
+    entryProductId: seoProduct.id,
     isActive: 1,
   });
+  console.log(`Created funnel: ${seoFunnel.name}`);
 
-  console.log(`Created funnel: ${funnel.name}`);
-
-  // Create funnel steps: 1 upsell and 1 downsell
-  const upsellStep = await storage.createFunnelStep({
-    funnelId: funnel.id,
+  await storage.createFunnelStep({
+    funnelId: seoFunnel.id,
     stepType: "upsell",
-    offerProductId: fourthProduct.id, // AI YouTube Growth Strategy - premium upsell
+    offerProductId: youtubeProduct.id,
     priority: 1,
-    priceOverride: 4900, // Special discounted price (normally $79)
+    priceOverride: 4900,
     headline: "Wait! Supercharge Your Growth with AI-Powered YouTube Strategies",
     subheadline: "Combine SEO mastery with YouTube to dominate search AND video. Get 38% off today only!",
     ctaText: "Yes! Add AI YouTube Strategy for Just $49",
     declineText: "No thanks, I'll stick with SEO only",
-    timerSeconds: 900, // 15 minute timer
+    timerSeconds: 900,
     isActive: 1,
   });
 
-  console.log(`Created upsell step: ${upsellStep.headline}`);
-
-  const downsellStep = await storage.createFunnelStep({
-    funnelId: funnel.id,
+  await storage.createFunnelStep({
+    funnelId: seoFunnel.id,
     stepType: "downsell",
-    offerProductId: secondProduct.id, // Email Marketing Mastery - lower priced downsell
+    offerProductId: emailProduct.id,
     priority: 2,
-    priceOverride: 1900, // Special discounted price (normally $39)
+    priceOverride: 1900,
     headline: "How About Email Marketing Instead?",
     subheadline: "Get our Email Marketing Mastery guide at over 50% off. Perfect for driving traffic from your SEO efforts!",
     ctaText: "Yes! I Want Email Marketing for $19",
     declineText: "No thanks, I'm all set",
-    timerSeconds: 600, // 10 minute timer
+    timerSeconds: 600,
     isActive: 1,
   });
 
-  console.log(`Created downsell step: ${downsellStep.headline}`);
+  // Create Transaction Risk Control Funnel
+  if (txRiskSolo && txRiskPro && earnestMoneySOP) {
+    const txRiskFunnel = await storage.createFunnel({
+      name: "Transaction Risk Control Funnel",
+      description: "Post-purchase funnel for Transaction Risk Control Kit Solo buyers. Upsells to Pro tier.",
+      entryProductId: txRiskSolo.id,
+      isActive: 1,
+    });
+    console.log(`Created funnel: ${txRiskFunnel.name}`);
 
-  // Create an order bump for the first product
-  const orderBump = await storage.createOrderBump({
-    productId: firstProduct.id,
-    bumpProductId: thirdProduct.id, // Leadership Communication Skills
-    bumpPrice: 1900, // Special bump price (normally $45)
+    await storage.createFunnelStep({
+      funnelId: txRiskFunnel.id,
+      stepType: "upsell",
+      offerProductId: txRiskPro.id,
+      priority: 1,
+      priceOverride: 12900,
+      headline: "Upgrade to Pro: Get the Complete Transaction Protection System",
+      subheadline: "The Solo kit handles basics. The Pro kit handles EVERYTHING. Add 4 more critical documents. Save $50 when you upgrade now.",
+      ctaText: "Yes! Upgrade to Pro for Just $129",
+      declineText: "No thanks, Solo is enough for me",
+      timerSeconds: 900,
+      isActive: 1,
+    });
+
+    await storage.createFunnelStep({
+      funnelId: txRiskFunnel.id,
+      stepType: "downsell",
+      offerProductId: earnestMoneySOP.id,
+      priority: 2,
+      priceOverride: 2900,
+      headline: "At Least Grab This Critical Document",
+      subheadline: "The Earnest Money Dispute Prevention SOP alone has saved agents thousands in lost deposits. Get it now at 40% off.",
+      ctaText: "Add the Earnest Money SOP for $29",
+      declineText: "No thanks, I'll pass",
+      timerSeconds: 600,
+      isActive: 1,
+    });
+  }
+
+  // Create Landlord Liability Shield Funnel
+  if (landlordSolo && landlordPro && firstTimeLandlord) {
+    const landlordFunnel = await storage.createFunnel({
+      name: "Landlord Liability Shield Funnel",
+      description: "Post-purchase funnel for Landlord Liability Shield Solo buyers. Upsells to Pro tier.",
+      entryProductId: landlordSolo.id,
+      isActive: 1,
+    });
+    console.log(`Created funnel: ${landlordFunnel.name}`);
+
+    await storage.createFunnelStep({
+      funnelId: landlordFunnel.id,
+      stepType: "upsell",
+      offerProductId: landlordPro.id,
+      priority: 1,
+      priceOverride: 11900,
+      headline: "Upgrade to Pro: Complete Landlord Protection System",
+      subheadline: "Handle every landlord situation with confidence. Pro includes Lease Violation Documentation, Vacant Property Protection, and more. Save $40 today only.",
+      ctaText: "Yes! Upgrade to Pro for Just $119",
+      declineText: "No thanks, Solo is enough",
+      timerSeconds: 900,
+      isActive: 1,
+    });
+
+    await storage.createFunnelStep({
+      funnelId: landlordFunnel.id,
+      stepType: "downsell",
+      offerProductId: firstTimeLandlord.id,
+      priority: 2,
+      priceOverride: 1900,
+      headline: "Don't Miss the Landlord Mistake Prevention Guide",
+      subheadline: "This single document prevents the 15 most expensive landlord mistakes. Get it at half price while this offer lasts.",
+      ctaText: "Add Landlord Mistake Prevention for $19",
+      declineText: "No thanks, I'll figure it out",
+      timerSeconds: 600,
+      isActive: 1,
+    });
+  }
+
+  // Create Estate Sale Control Funnel
+  if (estateSolo && estatePro && txExecutor) {
+    const estateFunnel = await storage.createFunnel({
+      name: "Estate Sale Control Funnel",
+      description: "Post-purchase funnel for Estate Sale Control Pack Solo buyers. Upsells to Pro tier.",
+      entryProductId: estateSolo.id,
+      isActive: 1,
+    });
+    console.log(`Created funnel: ${estateFunnel.name}`);
+
+    await storage.createFunnelStep({
+      funnelId: estateFunnel.id,
+      stepType: "upsell",
+      offerProductId: estatePro.id,
+      priority: 1,
+      priceOverride: 16900,
+      headline: "Upgrade to Pro: Handle Every Estate Sale Scenario",
+      subheadline: "Estate sales get complicated fast. The Pro pack includes Heir Interference Prevention, Probate Lockdown Checklist, and Executor Communication Scripts. Save $50 on this upgrade.",
+      ctaText: "Yes! Upgrade to Pro for Just $169",
+      declineText: "No thanks, Solo will work",
+      timerSeconds: 900,
+      isActive: 1,
+    });
+
+    await storage.createFunnelStep({
+      funnelId: estateFunnel.id,
+      stepType: "downsell",
+      offerProductId: txExecutor.id,
+      priority: 2,
+      priceOverride: 3900,
+      headline: "At Least Get the Texas Executor Checklist",
+      subheadline: "This is THE essential document for any Texas estate property sale. Executors love this checklist. Get it at 33% off.",
+      ctaText: "Add Texas Executor Checklist for $39",
+      declineText: "No thanks, I'll skip it",
+      timerSeconds: 600,
+      isActive: 1,
+    });
+  }
+
+  // Create Order Bumps
+  // SEO order bump
+  await storage.createOrderBump({
+    productId: seoProduct.id,
+    bumpProductId: leadershipProduct.id,
+    bumpPrice: 1900,
     headline: "Add Leadership Communication Skills!",
     description: "Master the art of communicating your SEO insights to stakeholders and clients. Just $19 when you add it now!",
     isActive: 1,
   });
+  console.log(`Created order bump for ${seoProduct.title}`);
 
-  console.log(`Created order bump for ${firstProduct.title}`);
-  console.log("Funnel data seeding complete!");
+  // Texas Real Estate Order Bumps
+  if (txExecutor && heirInterference) {
+    await storage.createOrderBump({
+      productId: txExecutor.id,
+      bumpProductId: heirInterference.id,
+      bumpPrice: 2900,
+      headline: "Add: Heir Interference Prevention SOP",
+      description: "Estate sales often involve family conflict. This SOP provides procedures for handling heir objections. Add it now for just $29.",
+      isActive: 1,
+    });
+  }
+
+  if (earnestMoneySOP && financingFallout) {
+    await storage.createOrderBump({
+      productId: earnestMoneySOP.id,
+      bumpProductId: financingFallout.id,
+      bumpPrice: 3900,
+      headline: "Add: Financing Fallout Response Playbook",
+      description: "Protect your deals when financing falls through. Emergency procedures and backup strategies. Just $39 when you add now.",
+      isActive: 1,
+    });
+  }
+
+  if (firstTimeLandlord && tenantScreening) {
+    await storage.createOrderBump({
+      productId: firstTimeLandlord.id,
+      bumpProductId: tenantScreening.id,
+      bumpPrice: 1900,
+      headline: "Add: Tenant Screening Compliance Checklist",
+      description: "Screen tenants legally and effectively under Texas law. Avoid discrimination claims and find quality tenants. Only $19.",
+      isActive: 1,
+    });
+  }
+
+  if (appraisalGap && inspectionScript) {
+    await storage.createOrderBump({
+      productId: appraisalGap.id,
+      bumpProductId: inspectionScript.id,
+      bumpPrice: 2900,
+      headline: "Add: Inspection Objection Negotiation Script",
+      description: "Handle inspection objections with confidence. Word-for-word scripts for major repairs, credits, and deal-saving negotiations. Just $29.",
+      isActive: 1,
+    });
+  }
+
+  if (txRiskSolo && buyerCreditSOP) {
+    await storage.createOrderBump({
+      productId: txRiskSolo.id,
+      bumpProductId: buyerCreditSOP.id,
+      bumpPrice: 1900,
+      headline: "Add: Buyer Credit Pre-Screen SOP",
+      description: "Screen buyer financing before wasting time on unqualified buyers. Credit verification procedures that save weeks of effort. Just $19.",
+      isActive: 1,
+    });
+  }
+
+  if (landlordSolo && leaseViolation) {
+    await storage.createOrderBump({
+      productId: landlordSolo.id,
+      bumpProductId: leaseViolation.id,
+      bumpPrice: 1900,
+      headline: "Add: Lease Violation Documentation",
+      description: "Document violations properly for enforcement or eviction. Procedures that hold up in Texas courts. Only $19 when you add now.",
+      isActive: 1,
+    });
+  }
+
+  console.log("Funnel and order bump seeding complete!");
 
   process.exit(0);
 }
