@@ -96,7 +96,7 @@ export function Footer() {
             Brokerage and office license assets are intended for internal use only.
           </p>
           <p className="text-center text-muted-foreground" data-testid="text-footer-copyright">
-            © 2025 DealControl. All rights reserved.
+            © 2026 DealControl All rights reserved
           </p>
         </div>
       </div>
