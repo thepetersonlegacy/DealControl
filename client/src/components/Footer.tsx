@@ -18,7 +18,9 @@ export function Footer() {
 
           <div>
             <h4 className="font-semibold text-foreground mb-4" data-testid="text-footer-products-title">
-              Assets
+              <Link href="/library">
+                <a className="hover:text-primary transition-colors">Assets</a>
+              </Link>
             </h4>
             <ul className="space-y-2">
               <li>

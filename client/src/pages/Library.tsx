@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { Product } from "@shared/schema";
 import { Navigation } from "@/components/Navigation";
@@ -12,11 +12,26 @@ import { Loader2, Search } from "lucide-react";
 
 export default function Library() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('filter');
+  });
 
   const { data: products, isLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const filter = params.get('filter');
+    if (filter === 'bundles') {
+      setSelectedCategory('Bundles');
+    } else if (filter === 'sops') {
+      setSelectedCategory('SOPs');
+    } else {
+      setSelectedCategory(null);
+    }
+  }, [window.location.search]);
 
   const categories = Array.from(
     new Set(products?.map((p) => p.category) || [])
