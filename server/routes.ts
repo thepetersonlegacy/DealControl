@@ -123,7 +123,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/create-payment-intent", isAuthenticated, async (req: any, res) => {
     try {
-      const { productId } = req.body;
+      const { productId, tier, priceOverride } = req.body;
       
       if (!productId) {
         return res.status(400).json({ error: "Product ID is required" });
@@ -135,18 +135,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Product not found" });
       }
       
+      const amount = priceOverride && typeof priceOverride === 'number' ? priceOverride : product.price;
+      
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: product.price,
+        amount,
         currency: "usd",
         metadata: {
           productId: product.id,
           userId: req.user.claims.sub,
+          tier: tier || 'solo',
         },
       });
       
       res.json({ 
         clientSecret: paymentIntent.client_secret,
-        product 
+        product,
+        totalAmount: amount,
       });
     } catch (error: any) {
       console.error("Error creating payment intent:", error);

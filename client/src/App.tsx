@@ -12,6 +12,7 @@ import PurchaseSuccess from "@/pages/PurchaseSuccess";
 import FunnelOffer from "@/pages/FunnelOffer";
 import Admin from "@/pages/Admin";
 import Dashboard from "@/pages/Dashboard";
+import Terms from "@/pages/Terms";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/funnel/:sessionId" component={FunnelOffer} />
       <Route path="/admin" component={Admin} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/terms" component={Terms} />
       <Route component={NotFound} />
     </Switch>
   );

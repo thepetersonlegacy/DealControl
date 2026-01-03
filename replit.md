@@ -1,8 +1,21 @@
-# Digital Product Marketplace Platform
+# DealControl - Texas Real Estate Digital Products Platform
 
 ## Overview
 
-This is a digital product marketplace platform built as a modern web application. The platform showcases and sells digital products (ebooks, video courses, templates, etc.) with Private Label Rights (PLR). Users can browse a library of 1000+ done-for-you digital products, view product details, and explore offerings by category. The application emphasizes trust, credibility, and a frictionless browsing experience with a clean, product-first presentation.
+DealControl is a digital product marketplace platform for Texas real estate professionals. The platform offers 39 professional digital assets (30 individual products + 9 bundle tiers) including SOPs, checklists, scripts, and playbooks designed to prevent costly real estate transaction mistakes. All products follow VERITAS-1 Λ Elite Tier standards with 8-section professional content structure.
+
+**Brand**: "DealControl - Tools for When Deals Matter"
+
+**Product Categories**:
+- Transaction Control (earnest money, appraisals, financing)
+- Estate/Probate (executor checklists, heir management)
+- Landlord/Rental (tenant screening, lease compliance)
+- Agent/Office Operations (client intake, communication templates)
+
+**Licensing Tiers**:
+- Solo License: $129 (individual use)
+- Pro License: $219 (high-volume agents/teams)
+- Office License: $699/year (brokerage-wide internal use)
 
 ## User Preferences
 
@@ -28,14 +41,15 @@ Preferred communication style: Simple, everyday language.
 - Responsive breakpoints and mobile-first design approach
 
 **Key Pages:**
-- Home: Hero section, product carousels, feature highlights, testimonials, lead capture, and CTAs
-- Library: Product browsing with search and category filtering
-- Product Detail: Individual product information with features and pricing
-- Checkout: Stripe payment integration with order bump display
+- Home: Hero section, What This Is, Who This Is For, What You'll Find Inside, Product Showcase, Bundle Tiers, What This Is Not, Why DealControl Exists
+- Library: Asset Library with search and category filtering
+- Product Detail: VERITAS-1 Λ Elite Tier product page with 3-tier licensing, accordion content sections, professional checkout copy
+- Checkout: Stripe payment integration with tier selection and order bump display
 - PurchaseSuccess: Post-purchase confirmation with funnel redirect
 - FunnelOffer: Upsell/downsell pages with countdown timers and benefit stacks
 - Dashboard: User purchase history and download management
 - Admin: Funnel management, order bumps, and analytics dashboard
+- Terms: Terms of Use & License Agreement with Solo/Pro/Office descriptions
 - 404: Custom not-found page
 
 **Component Architecture:**
@@ -90,6 +104,19 @@ Preferred communication style: Simple, everyday language.
   - `imageUrl`: Text, required
   - `price`: Integer (cents), required
   - `isFeatured`: Integer (0/1), defaults to 0
+  - `assetType`: Text (sop, checklist, script, playbook, guide, template)
+  - `tier`: Text (individual, bundle)
+  - `priceSolo`: Integer (cents), default 12900
+  - `pricePro`: Integer (cents), default 21900
+  - `priceOffice`: Integer (cents), default 69900
+  - VERITAS-1 Λ Content Fields:
+    - `purposeScope`: Text (Purpose & Scope section)
+    - `useConditions`: Text (Use Conditions section)
+    - `risksAddressed`: Text (Risks Addressed section)
+    - `coreContent`: Text (Core Content section)
+    - `failurePoints`: Text (Failure Points section)
+    - `recordkeepingGuidance`: Text (Recordkeeping Guidance section)
+    - `judgmentBoundary`: Text (Judgment Boundary section)
 
 - **Users Table** (Replit Auth):
   - `id`: Varchar primary key (from Replit Auth)

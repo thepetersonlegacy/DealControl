@@ -126,6 +126,14 @@ export default function Checkout() {
 
   const searchParams = new URLSearchParams(window.location.search);
   const productId = searchParams.get('productId');
+  const selectedTier = searchParams.get('tier') || 'solo';
+  const overridePrice = searchParams.get('price') ? parseInt(searchParams.get('price')!) : null;
+
+  const tierLabels: Record<string, string> = {
+    solo: 'Solo License',
+    pro: 'Pro License', 
+    office: 'Office License (Annual)',
+  };
 
   const { data: orderBumpData, isLoading: isLoadingOrderBump } = useQuery<OrderBumpWithProduct | null>({
     queryKey: ['/api/order-bump', productId],
@@ -152,8 +160,8 @@ export default function Checkout() {
           : "/api/create-payment-intent";
         
         const body = includeOrderBump 
-          ? { productId, includeOrderBump: true }
-          : { productId };
+          ? { productId, includeOrderBump: true, tier: selectedTier, priceOverride: overridePrice }
+          : { productId, tier: selectedTier, priceOverride: overridePrice };
 
         const res = await apiRequest("POST", endpoint, body);
         const data = await res.json();
@@ -242,9 +250,14 @@ export default function Checkout() {
                     {product.description}
                   </p>
                   <div className="flex items-center justify-between flex-wrap gap-2">
-                    <span className="text-sm text-muted-foreground">Format: {product.format}</span>
+                    <div className="flex flex-col gap-1">
+                      <span className="text-sm text-muted-foreground">Format: {product.format}</span>
+                      <span className="text-sm font-medium text-primary" data-testid="text-license-tier">
+                        {tierLabels[selectedTier] || 'Solo License'}
+                      </span>
+                    </div>
                     <span className="text-2xl font-bold text-foreground" data-testid="text-product-price">
-                      ${(product.price / 100).toFixed(2)}
+                      ${((overridePrice || product.price) / 100).toFixed(2)}
                     </span>
                   </div>
                 </div>

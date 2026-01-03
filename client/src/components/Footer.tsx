@@ -61,9 +61,11 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-footer-terms">
-                  Terms of Service
-                </a>
+                <Link href="/terms">
+                  <a className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-footer-terms">
+                    Terms of Use
+                  </a>
+                </Link>
               </li>
             </ul>
           </div>
