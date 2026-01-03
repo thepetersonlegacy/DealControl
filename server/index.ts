@@ -1,6 +1,12 @@
+import ws from "ws";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+
+// Polyfill WebSocket for Neon serverless PostgreSQL
+if (!globalThis.WebSocket) {
+  (globalThis as any).WebSocket = ws;
+}
 
 const app = express();
 

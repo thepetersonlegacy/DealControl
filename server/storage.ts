@@ -25,6 +25,7 @@ export interface IStorage {
   createProduct(product: InsertProduct): Promise<Product>;
   
   createPurchase(purchase: InsertPurchase): Promise<Purchase>;
+  getPurchase(id: string): Promise<Purchase | undefined>;
   getUserPurchases(userId: string): Promise<Purchase[]>;
   
   createDownload(download: InsertDownload): Promise<Download>;
@@ -76,6 +77,7 @@ export class MemStorage implements IStorage {
       firstName: userData.firstName || null,
       lastName: userData.lastName || null,
       profileImageUrl: userData.profileImageUrl || null,
+      isAdmin: userData.isAdmin ?? 0,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -277,6 +279,10 @@ export class MemStorage implements IStorage {
     throw new Error("Purchases not supported in MemStorage");
   }
 
+  async getPurchase(id: string): Promise<Purchase | undefined> {
+    return undefined;
+  }
+
   async getUserPurchases(userId: string): Promise<Purchase[]> {
     return [];
   }
@@ -414,6 +420,11 @@ export class DatabaseStorage implements IStorage {
 
   async createPurchase(purchase: InsertPurchase): Promise<Purchase> {
     const result = await this.db.insert(purchases).values(purchase).returning();
+    return result[0];
+  }
+
+  async getPurchase(id: string): Promise<Purchase | undefined> {
+    const result = await this.db.select().from(purchases).where(eq(purchases.id, id)).limit(1);
     return result[0];
   }
 

@@ -1,6 +1,6 @@
 import ws from "ws";
 import { DatabaseStorage } from "./storage.js";
-import type { InsertProduct } from "@shared/schema";
+import type { InsertProduct, InsertFunnel, InsertFunnelStep, InsertOrderBump } from "@shared/schema";
 
 // Polyfill WebSocket for Neon serverless
 if (!globalThis.WebSocket) {
@@ -159,17 +159,88 @@ const productsData: InsertProduct[] = [
 async function seed() {
   console.log("Starting database seed...");
   
-  const existing = await storage.getAllProducts();
-  if (existing.length > 0) {
-    console.log(`Database already has ${existing.length} products. Skipping seed.`);
+  let existingProducts = await storage.getAllProducts();
+  
+  if (existingProducts.length === 0) {
+    for (const product of productsData) {
+      await storage.createProduct(product);
+    }
+    console.log(`Successfully seeded ${productsData.length} products!`);
+    existingProducts = await storage.getAllProducts();
+  } else {
+    console.log(`Database already has ${existingProducts.length} products.`);
+  }
+
+  // Check if funnels already exist
+  const existingFunnels = await storage.getAllFunnels();
+  if (existingFunnels.length > 0) {
+    console.log(`Database already has ${existingFunnels.length} funnels. Skipping funnel seed.`);
+    process.exit(0);
     return;
   }
 
-  for (const product of productsData) {
-    await storage.createProduct(product);
-  }
+  // Seed sample funnel data
+  const firstProduct = existingProducts.find(p => p.title.includes("SEO")) || existingProducts[0];
+  const secondProduct = existingProducts.find(p => p.title.includes("Email Marketing")) || existingProducts[1];
+  const thirdProduct = existingProducts.find(p => p.title.includes("Leadership")) || existingProducts[2];
+  const fourthProduct = existingProducts.find(p => p.title.includes("AI YouTube") || p.title.includes("YouTube")) || existingProducts[3];
 
-  console.log(`Successfully seeded ${productsData.length} products!`);
+  // Create a sample funnel tied to the first product
+  const funnel = await storage.createFunnel({
+    name: "SEO Mastery Upsell Funnel",
+    description: "Post-purchase funnel for SEO Mastery Guide with upsells and downsells",
+    entryProductId: firstProduct.id,
+    isActive: 1,
+  });
+
+  console.log(`Created funnel: ${funnel.name}`);
+
+  // Create funnel steps: 1 upsell and 1 downsell
+  const upsellStep = await storage.createFunnelStep({
+    funnelId: funnel.id,
+    stepType: "upsell",
+    offerProductId: fourthProduct.id, // AI YouTube Growth Strategy - premium upsell
+    priority: 1,
+    priceOverride: 4900, // Special discounted price (normally $79)
+    headline: "Wait! Supercharge Your Growth with AI-Powered YouTube Strategies",
+    subheadline: "Combine SEO mastery with YouTube to dominate search AND video. Get 38% off today only!",
+    ctaText: "Yes! Add AI YouTube Strategy for Just $49",
+    declineText: "No thanks, I'll stick with SEO only",
+    timerSeconds: 900, // 15 minute timer
+    isActive: 1,
+  });
+
+  console.log(`Created upsell step: ${upsellStep.headline}`);
+
+  const downsellStep = await storage.createFunnelStep({
+    funnelId: funnel.id,
+    stepType: "downsell",
+    offerProductId: secondProduct.id, // Email Marketing Mastery - lower priced downsell
+    priority: 2,
+    priceOverride: 1900, // Special discounted price (normally $39)
+    headline: "How About Email Marketing Instead?",
+    subheadline: "Get our Email Marketing Mastery guide at over 50% off. Perfect for driving traffic from your SEO efforts!",
+    ctaText: "Yes! I Want Email Marketing for $19",
+    declineText: "No thanks, I'm all set",
+    timerSeconds: 600, // 10 minute timer
+    isActive: 1,
+  });
+
+  console.log(`Created downsell step: ${downsellStep.headline}`);
+
+  // Create an order bump for the first product
+  const orderBump = await storage.createOrderBump({
+    productId: firstProduct.id,
+    bumpProductId: thirdProduct.id, // Leadership Communication Skills
+    bumpPrice: 1900, // Special bump price (normally $45)
+    headline: "Add Leadership Communication Skills!",
+    description: "Master the art of communicating your SEO insights to stakeholders and clients. Just $19 when you add it now!",
+    isActive: 1,
+  });
+
+  console.log(`Created order bump for ${firstProduct.title}`);
+  console.log("Funnel data seeding complete!");
+
   process.exit(0);
 }
 
