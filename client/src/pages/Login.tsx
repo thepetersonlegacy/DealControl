@@ -119,7 +119,7 @@ export default function Login() {
                   type="submit" 
                   className="w-full" 
                   disabled={loginMutation.isPending}
-                  data-testid="button-login"
+                  data-testid="button-submit-login"
                 >
                   {loginMutation.isPending ? (
                     <>

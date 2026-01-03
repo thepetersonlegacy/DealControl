@@ -63,14 +63,9 @@ export function Navigation() {
                 </div>
               </div>
             ) : (
-              <Link href="/login">
-                <Button
-                  variant="default"
-                  data-testid="button-login"
-                >
-                  Log In
-                </Button>
-              </Link>
+              <Button asChild variant="default" data-testid="button-login">
+                <Link href="/login">Log In</Link>
+              </Button>
             )}
           </div>
 
@@ -110,15 +105,9 @@ export function Navigation() {
                 </Button>
               </>
             ) : (
-              <Link href="/login">
-                <Button
-                  variant="default"
-                  className="w-full"
-                  data-testid="button-mobile-login"
-                >
-                  Log In
-                </Button>
-              </Link>
+              <Button asChild variant="default" className="w-full" data-testid="button-mobile-login">
+                <Link href="/login">Log In</Link>
+              </Button>
             )}
           </div>
         </div>
