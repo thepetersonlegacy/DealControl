@@ -22,6 +22,9 @@ interface OrderBumpWithProduct extends OrderBumpType {
   bumpProduct: Product;
 }
 
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+
 interface CheckoutFormProps {
   product: Product;
   paymentIntentId: string;
@@ -36,6 +39,7 @@ const CheckoutForm = ({ product, paymentIntentId, totalAmount, orderBumpSelected
   const elements = useElements();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +48,17 @@ const CheckoutForm = ({ product, paymentIntentId, totalAmount, orderBumpSelected
       return;
     }
 
+    if (!agreed) {
+      toast({
+        title: "Required",
+        description: "Please agree to the license terms and refund policy to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsProcessing(true);
+    // ... rest of code
 
     try {
       const { error, paymentIntent } = await stripe.confirmPayment({
@@ -92,6 +106,28 @@ const CheckoutForm = ({ product, paymentIntentId, totalAmount, orderBumpSelected
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <PaymentElement />
+      
+      <div className="bg-accent/10 p-4 rounded-md space-y-3 border border-accent/20">
+        <h4 className="font-semibold text-sm text-foreground">Refund Policy</h4>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          All sales are final. This is a digital product. Once files are accessed or downloaded, refunds are not available.
+          If you experience a technical issue accessing your files, we will provide a replacement.
+        </p>
+        <div className="flex items-start space-x-2 pt-2">
+          <Checkbox 
+            id="terms-agree" 
+            checked={agreed} 
+            onCheckedChange={(checked) => setAgreed(checked as boolean)}
+            className="mt-1"
+            data-testid="checkbox-terms-agree"
+          />
+          <Label htmlFor="terms-agree" className="text-xs leading-normal font-normal text-muted-foreground cursor-pointer">
+            I understand this is a digital product. All sales are final once files are accessed or downloaded. 
+            I agree to the <a href="/terms" target="_blank" className="text-primary hover:underline">license terms and refund policy</a>.
+          </Label>
+        </div>
+      </div>
+
       <Button
         type="submit"
         className="w-full"

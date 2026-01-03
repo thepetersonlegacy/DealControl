@@ -120,13 +120,67 @@ export default function Terms() {
 
             <Card>
               <CardHeader>
-                <CardTitle>Refund Policy</CardTitle>
+                <CardTitle>Refund Policy (Digital Products)</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-muted-foreground">
+                <p className="font-semibold text-foreground italic">
+                  Due to the nature of digital products, all sales are final.
+                </p>
+                <p>
+                  Once materials are accessed or downloaded, refunds are not provided.
+                </p>
+                <p>
+                  If a file is corrupted, incomplete, or inaccessible due to a technical issue, DealControl will provide a replacement file or alternate access. Refunds are not issued for successfully delivered digital materials.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>License Activation</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-muted-foreground">
                 <p>
-                  Due to the digital nature of our products, all sales are final. Once a product is purchased 
-                  and delivered, no refunds will be issued. If you experience technical issues accessing your 
-                  purchase, please contact support for assistance.
+                  Access to and use of DealControl materials begins immediately upon download or access.
+                </p>
+                <p>
+                  Once materials have been accessed or downloaded, the license is considered delivered, activated, and non-refundable.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Chargebacks and Payment Disputes</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-muted-foreground">
+                <p>
+                  By completing a purchase, you agree not to initiate a chargeback or payment dispute for materials that have been accessed or downloaded.
+                </p>
+                <p>
+                  Unauthorized chargebacks may result in termination of access and license rights.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Digital Delivery Confirmation</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-muted-foreground">
+                <p>
+                  Delivery of digital materials is deemed complete when download access is provided, regardless of whether the purchaser chooses to download or open the files.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>No Trial Use</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-muted-foreground">
+                <p>
+                  DealControl materials are not provided on a trial basis. Purchasers are responsible for reviewing product descriptions and license scope prior to purchase.
                 </p>
               </CardContent>
             </Card>

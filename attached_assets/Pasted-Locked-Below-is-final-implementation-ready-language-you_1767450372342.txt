@@ -1,0 +1,215 @@
+Locked.
+Below is final, implementation-ready language you can drop directly into your business without modification. This is written to protect revenue, win disputes, and keep buyer trust.
+
+No hedging. No scare tactics. Clean and professional.
+
+⸻
+
+1️⃣ INSERT INTO TERMS (FINAL — EXACT LANGUAGE)
+
+Add the following sections verbatim to your Terms of Use / License Agreement.
+
+⸻
+
+Refund Policy (Digital Products)
+
+Due to the nature of digital products, all sales are final.
+
+Once materials are accessed or downloaded, refunds are not provided.
+
+If a file is corrupted, incomplete, or inaccessible due to a technical issue, DealControl will provide a replacement file or alternate access. Refunds are not issued for successfully delivered digital materials.
+
+⸻
+
+License Activation
+
+Access to and use of DealControl materials begins immediately upon download or access.
+
+Once materials have been accessed or downloaded, the license is considered delivered, activated, and non-refundable.
+
+⸻
+
+Chargebacks and Payment Disputes
+
+By completing a purchase, you agree not to initiate a chargeback or payment dispute for materials that have been accessed or downloaded.
+
+Unauthorized chargebacks may result in termination of access and license rights.
+
+⸻
+
+Digital Delivery Confirmation
+
+Delivery of digital materials is deemed complete when download access is provided, regardless of whether the purchaser chooses to download or open the files.
+
+⸻
+
+No Trial Use
+
+DealControl materials are not provided on a trial basis. Purchasers are responsible for reviewing product descriptions and license scope prior to purchase.
+
+⸻
+
+2️⃣ STRIPE-READY POLICY BLOCKS
+
+(Copy/paste into Stripe Checkout, Payment Links, or Customer Portal)
+
+⸻
+
+Refund Policy (Stripe Display)
+
+All sales are final.
+
+This is a digital product. Once files are accessed or downloaded, refunds are not available.
+
+If you experience a technical issue accessing your files, we will provide a replacement.
+
+⸻
+
+License Acknowledgment (Required Checkbox)
+
+☐ I understand this is a digital product. All sales are final once files are accessed or downloaded. I agree to the license terms and refund policy.
+
+⸻
+
+Delivery Disclosure
+
+Files are delivered digitally and available immediately after purchase.
+
+⸻
+
+Dispute Disclosure (Optional but Recommended)
+
+Unauthorized chargebacks for delivered digital goods may result in termination of license access.
+
+⸻
+
+3️⃣ REFUND REQUEST RESPONSE SCRIPT
+
+(Polite. Firm. Final.)
+
+Use this as-is. Do not personalize emotionally.
+
+⸻
+
+Subject: Your DealControl Purchase
+
+Hi [Name],
+
+Thank you for reaching out.
+
+Your purchase included immediate access to downloadable digital materials. As noted on the product page and at checkout, all sales are final once materials are accessed or downloaded.
+
+Our records indicate the files were successfully delivered and accessed.
+
+If you are experiencing a technical issue with a file (corruption or access problems), we’re happy to provide a replacement. Please let us know if that’s the case.
+
+Otherwise, we’re unable to issue a refund for delivered digital materials.
+
+Thank you for your understanding,
+DealControl Support
+
+⸻
+
+If They Push Again (Final Close)
+
+Hi [Name],
+
+We’ve reviewed your request again.
+
+Because the materials were delivered and accessed, the purchase is non-refundable under our terms. We’re unable to make an exception.
+
+This will be our final response on this matter.
+
+Regards,
+DealControl Support
+
+⸻
+
+4️⃣ DOWNLOAD FLOW THAT MINIMIZES ABUSE
+
+(Simple. No DRM. No friction.)
+
+⸻
+
+Recommended Flow (Best Balance)
+
+Step 1 — Checkout
+	•	License acknowledgment checkbox (required)
+	•	Refund policy visible
+	•	Clear “digital delivery” notice
+
+⸻
+
+Step 2 — Thank You Page (Not Email Only)
+
+Display immediately:
+
+Your files are ready
+	•	Download buttons shown clearly
+	•	Reminder text:
+These materials are licensed for internal use only. All sales are final once accessed.
+
+⸻
+
+Step 3 — Controlled Downloads
+	•	Do not deliver everything as a single ZIP for Office / All-Access
+	•	Use:
+	•	Individual PDFs, or
+	•	Secure portal with access logging (Gumroad / Lemon Squeezy / Stripe + member page)
+
+⸻
+
+Step 4 — Access Logging (Silent Protection)
+
+Ensure your platform logs:
+	•	Timestamp of access
+	•	Files accessed
+	•	IP or session
+
+You don’t mention this publicly — it’s for disputes only.
+
+⸻
+
+Optional (High-Value Only)
+
+Add footer watermark to PDFs:
+
+Licensed to: [Purchaser Name / Organization]
+Internal Use Only
+
+This quietly discourages abuse.
+
+⸻
+
+5️⃣ WHAT THIS STACK PROTECTS YOU FROM
+
+✔ “I downloaded everything and changed my mind”
+✔ “I didn’t know it was non-refundable”
+✔ “I never opened the files”
+✔ Friendly fraud / buyer’s remorse
+✔ Chargeback losses
+
+And it does so without scaring legitimate buyers.
+
+⸻
+
+✅ FINAL STATUS
+	•	Refund policy: LOCKED
+	•	License activation: LOCKED
+	•	Stripe checkout blocks: READY
+	•	Refund response scripts: READY
+	•	Abuse-resistant delivery flow: READY
+
+You are now protected before the first sale.
+
+⸻
+
+If you want next
+
+I can:
+	•	Embed this directly into Stripe / Gumroad settings step-by-step
+	•	Create a one-page “Why no refunds?” explainer for support
+	•	Draft a chargeback evidence packet template
+	•	Review your platform choice and recommend lowest-risk setup
+
+Say the next move.

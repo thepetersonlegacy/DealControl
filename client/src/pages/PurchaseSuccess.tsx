@@ -126,6 +126,32 @@ export default function PurchaseSuccess() {
             </p>
           </div>
 
+          <Card className="p-6 mb-6 bg-primary/5 border-primary/20">
+            <div className="flex items-start gap-4">
+              <Package className="w-6 h-6 text-primary mt-1" />
+              <div>
+                <h3 className="font-semibold text-foreground mb-1 text-lg">Your files are ready</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  These materials are licensed for internal use only. All sales are final once accessed.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Button asChild data-testid="button-download-main">
+                    <a href={`/api/download/${purchase.id}`} download>
+                      Download {product.title}
+                    </a>
+                  </Button>
+                  {orderBumpPurchase && orderBumpProduct && (
+                    <Button asChild variant="outline" data-testid="button-download-bump">
+                      <a href={`/api/download/${orderBumpPurchase.id}`} download>
+                        Download {orderBumpProduct.title}
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </Card>
+
           <Card className="p-6 mb-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Order Details</h2>
             
