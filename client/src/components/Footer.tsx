@@ -18,27 +18,27 @@ export function Footer() {
 
           <div>
             <h4 className="font-semibold text-foreground mb-4" data-testid="text-footer-products-title">
-              Products
+              Assets
             </h4>
             <ul className="space-y-2">
               <li>
                 <Link href="/library">
                   <a className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-footer-library">
-                    Master Library
+                    Asset Library
                   </a>
                 </Link>
               </li>
               <li>
-                <Link href="/library">
-                  <a className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-footer-ebooks">
-                    Ebooks
+                <Link href="/library?filter=bundles">
+                  <a className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-footer-bundles">
+                    Risk Control Bundles
                   </a>
                 </Link>
               </li>
               <li>
-                <Link href="/library">
-                  <a className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-footer-courses">
-                    Video Courses
+                <Link href="/library?filter=sops">
+                  <a className="text-muted-foreground hover:text-primary transition-colors" data-testid="link-footer-sops">
+                    SOPs & Checklists
                   </a>
                 </Link>
               </li>
@@ -89,8 +89,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t pt-8 text-center text-muted-foreground">
-          <p data-testid="text-footer-copyright">
+        <div className="border-t pt-8 space-y-4">
+          <p className="text-sm text-muted-foreground text-center max-w-3xl mx-auto" data-testid="text-footer-disclaimer">
+            All materials are provided for educational and operational support purposes only. 
+            They do not constitute legal advice. Users are responsible for compliance with local, state, and federal laws. 
+            Brokerage and office license assets are intended for internal use only.
+          </p>
+          <p className="text-center text-muted-foreground" data-testid="text-footer-copyright">
             © 2025 DealControl. All rights reserved.
           </p>
         </div>

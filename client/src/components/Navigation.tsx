@@ -22,7 +22,7 @@ export function Navigation() {
               Home
             </a>
             <a href="/library" className="text-foreground hover:text-primary transition-colors font-medium" data-testid="link-nav-library">
-              Master Library
+              Asset Library
             </a>
             
             {isLoading ? (
@@ -78,7 +78,7 @@ export function Navigation() {
               Home
             </a>
             <a href="/library" className="block px-3 py-2 text-foreground hover:text-primary font-medium hover-elevate rounded-md" data-testid="link-mobile-library">
-              Master Library
+              Asset Library
             </a>
             
             {isAuthenticated ? (
