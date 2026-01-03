@@ -128,7 +128,7 @@ export default function LegalRefunds() {
               <p className="text-sm text-muted-foreground mb-4">
                 For the complete license agreement, see our{" "}
                 <Link href="/terms">
-                  <a className="text-primary hover:underline">Terms of Use</a>
+                  <a className="text-primary hover:underline" data-testid="link-terms">Terms of Use</a>
                 </Link>
                 .
               </p>

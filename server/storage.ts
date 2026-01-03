@@ -505,6 +505,27 @@ export class MemStorage implements IStorage {
     }
     return this.emailLogsList;
   }
+
+  // Access tokens and download events (Elite Tier) - not supported in MemStorage
+  async createAccessToken(data: InsertAccessToken): Promise<AccessToken> {
+    throw new Error("Access tokens not supported in MemStorage");
+  }
+
+  async getAccessTokenByToken(token: string): Promise<AccessToken | undefined> {
+    return undefined;
+  }
+
+  async updateAccessTokenFirstAccess(id: string): Promise<AccessToken | undefined> {
+    throw new Error("Access tokens not supported in MemStorage");
+  }
+
+  async createDownloadEvent(data: InsertDownloadEvent): Promise<DownloadEvent> {
+    throw new Error("Download events not supported in MemStorage");
+  }
+
+  async getDownloadEventsByPurchase(purchaseId: string): Promise<DownloadEvent[]> {
+    return [];
+  }
 }
 
 export class DatabaseStorage implements IStorage {

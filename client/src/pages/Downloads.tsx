@@ -74,7 +74,7 @@ export default function Downloads() {
         <main className="flex-1 pt-24 pb-16 flex items-center justify-center">
           <Card className="p-8 max-w-md text-center">
             <Lock className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-foreground mb-2">Access Required</h2>
+            <h2 className="text-xl font-bold text-foreground mb-2" data-testid="text-access-required">Access Required</h2>
             <p className="text-muted-foreground">
               Please use the download link provided in your purchase confirmation email.
             </p>
@@ -104,7 +104,7 @@ export default function Downloads() {
         <main className="flex-1 pt-24 pb-16 flex items-center justify-center">
           <Card className="p-8 max-w-md text-center">
             <AlertCircle className="w-12 h-12 text-destructive mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-foreground mb-2">Invalid Access Token</h2>
+            <h2 className="text-xl font-bold text-foreground mb-2" data-testid="text-invalid-token">Invalid Access Token</h2>
             <p className="text-muted-foreground">
               This access link is invalid or has expired. Please contact support if you believe this is an error.
             </p>

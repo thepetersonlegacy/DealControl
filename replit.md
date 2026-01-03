@@ -50,6 +50,11 @@ Preferred communication style: Simple, everyday language.
 - Dashboard: User purchase history and download management
 - Admin: Funnel management, order bumps, and analytics dashboard
 - Terms: Terms of Use & License Agreement with Solo/Pro/Office descriptions
+- Start: Transaction Risk Control Kit entry page with feature highlights
+- KitTransactionRisk: Detailed kit page with license options and featured products
+- Office: Office License landing page with brokerage benefits and scope details
+- LegalRefunds: Refund policy page explaining digital product no-refund policy
+- Downloads: Token-based download portal for accessing purchased materials
 - 404: Custom not-found page
 
 **Component Architecture:**

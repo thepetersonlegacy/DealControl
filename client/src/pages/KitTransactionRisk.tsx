@@ -123,8 +123,8 @@ export default function KitTransactionRisk() {
               <div className="grid md:grid-cols-3 gap-6">
                 {transactionProducts.map((product) => (
                   <Link key={product.id} href={`/product/${product.id}`}>
-                    <a>
-                      <Card className="overflow-hidden hover-elevate transition-all">
+                    <a data-testid={`link-product-${product.id}`}>
+                      <Card className="overflow-hidden hover-elevate transition-all" data-testid={`card-product-${product.id}`}>
                         <div className="aspect-[4/3] relative">
                           <img
                             src={product.imageUrl}
@@ -134,8 +134,8 @@ export default function KitTransactionRisk() {
                         </div>
                         <div className="p-4">
                           <Badge variant="secondary" className="mb-2">{product.assetType}</Badge>
-                          <h3 className="font-semibold text-foreground line-clamp-2 mb-2">{product.title}</h3>
-                          <p className="text-sm text-primary font-medium">From ${((product.priceSolo || 12900) / 100).toFixed(0)}</p>
+                          <h3 className="font-semibold text-foreground line-clamp-2 mb-2" data-testid={`text-product-title-${product.id}`}>{product.title}</h3>
+                          <p className="text-sm text-primary font-medium" data-testid={`text-product-price-${product.id}`}>From ${((product.priceSolo || 12900) / 100).toFixed(0)}</p>
                         </div>
                       </Card>
                     </a>

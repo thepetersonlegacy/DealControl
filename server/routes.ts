@@ -3,7 +3,23 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import Stripe from "stripe";
-import { insertProductSchema, insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema } from "@shared/schema";
+import { insertProductSchema, insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema, insertDownloadEventSchema } from "@shared/schema";
+import { z } from "zod";
+
+const downloadLogSchema = z.object({
+  token: z.string().min(1, "Token is required"),
+  fileKey: z.string().min(1, "FileKey is required"),
+  eventType: z.string().optional(),
+});
+
+const downloadPortalQuerySchema = z.object({
+  token: z.string().min(1, "Token is required"),
+});
+
+const downloadFileQuerySchema = z.object({
+  token: z.string().min(1, "Token is required"),
+  fileKey: z.string().min(1, "FileKey is required"),
+});
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -1098,12 +1114,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/downloads/portal", async (req, res) => {
     try {
-      const { token } = req.query;
-      
-      if (!token || typeof token !== 'string') {
-        return res.status(400).json({ error: "Access token required" });
+      const parsed = downloadPortalQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Access token required", details: parsed.error.errors });
       }
 
+      const { token } = parsed.data;
       const accessToken = await storage.getAccessTokenByToken(token);
       
       if (!accessToken) {
@@ -1169,11 +1185,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/downloads/log", async (req, res) => {
     try {
-      const { token, fileKey, eventType } = req.body;
-      
-      if (!token || !fileKey) {
-        return res.status(400).json({ error: "Token and fileKey required" });
+      const parsed = downloadLogSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid data", details: parsed.error.errors });
       }
+
+      const { token, fileKey, eventType } = parsed.data;
 
       const accessToken = await storage.getAccessTokenByToken(token);
       if (!accessToken || accessToken.revokedAt) {
@@ -1198,12 +1215,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/downloads/file", async (req, res) => {
     try {
-      const { token, fileKey } = req.query;
-      
-      if (!token || !fileKey || typeof token !== 'string' || typeof fileKey !== 'string') {
-        return res.status(400).json({ error: "Token and fileKey required" });
+      const parsed = downloadFileQuerySchema.safeParse(req.query);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Token and fileKey required", details: parsed.error.errors });
       }
 
+      const { token, fileKey } = parsed.data;
       const accessToken = await storage.getAccessTokenByToken(token);
       if (!accessToken || accessToken.revokedAt) {
         return res.status(403).json({ error: "Invalid or revoked token" });
