@@ -10,6 +10,7 @@ import ProductDetail from "@/pages/ProductDetail";
 import Checkout from "@/pages/Checkout";
 import PurchaseSuccess from "@/pages/PurchaseSuccess";
 import FunnelOffer from "@/pages/FunnelOffer";
+import Admin from "@/pages/Admin";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/purchase-success" component={PurchaseSuccess} />
       <Route path="/funnel/:sessionId" component={FunnelOffer} />
+      <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
   );

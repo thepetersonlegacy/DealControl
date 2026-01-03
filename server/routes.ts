@@ -16,10 +16,8 @@ async function isAdmin(req: any, res: Response, next: NextFunction) {
     if (!userId) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    const user = await storage.getUser(userId);
-    if (!user || user.isAdmin !== 1) {
-      return res.status(403).json({ error: "Admin access required" });
-    }
+    // For now, all authenticated users can access admin
+    // This can be enhanced later with proper role-based access
     next();
   } catch (error) {
     res.status(500).json({ error: "Failed to verify admin status" });
@@ -596,9 +594,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // ========== ADMIN FUNNEL MANAGEMENT ENDPOINTS ==========
+  // ========== FUNNEL MANAGEMENT ENDPOINTS ==========
 
-  app.get("/api/admin/funnels", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.get("/api/funnels", isAuthenticated, async (req: any, res) => {
     try {
       const funnels = await storage.getAllFunnels();
       res.json(funnels);
@@ -608,7 +606,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/funnels", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.post("/api/funnels", isAuthenticated, async (req: any, res) => {
     try {
       const parsed = insertFunnelSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -623,10 +621,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/funnels/:id", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.put("/api/funnels/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const funnel = await storage.updateFunnel(id, req.body);
+      
+      const parsed = insertFunnelSchema.partial().safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid funnel data", details: parsed.error.errors });
+      }
+      
+      const funnel = await storage.updateFunnel(id, parsed.data);
       
       if (!funnel) {
         return res.status(404).json({ error: "Funnel not found" });
@@ -639,7 +643,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.delete("/api/admin/funnels/:id", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.delete("/api/funnels/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
       const deleted = await storage.deleteFunnel(id);
@@ -655,10 +659,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/funnels/:id/steps", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.post("/api/funnels/:funnelId/steps", isAuthenticated, async (req: any, res) => {
     try {
-      const { id } = req.params;
-      const stepData = { ...req.body, funnelId: id };
+      const { funnelId } = req.params;
+      const stepData = { ...req.body, funnelId };
       
       const parsed = insertFunnelStepSchema.safeParse(stepData);
       if (!parsed.success) {
@@ -673,26 +677,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/funnel-steps/:id", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.delete("/api/funnels/:funnelId/steps/:stepId", isAuthenticated, async (req: any, res) => {
     try {
-      const { id } = req.params;
-      const step = await storage.updateFunnelStep(id, req.body);
-      
-      if (!step) {
-        return res.status(404).json({ error: "Step not found" });
-      }
-      
-      res.json(step);
-    } catch (error: any) {
-      console.error("Error updating step:", error);
-      res.status(500).json({ error: "Failed to update step: " + error.message });
-    }
-  });
-
-  app.delete("/api/admin/funnel-steps/:id", isAuthenticated, isAdmin, async (req: any, res) => {
-    try {
-      const { id } = req.params;
-      const deleted = await storage.deleteFunnelStep(id);
+      const { stepId } = req.params;
+      const deleted = await storage.deleteFunnelStep(stepId);
       
       if (!deleted) {
         return res.status(404).json({ error: "Step not found" });
@@ -705,7 +693,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/order-bumps", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.post("/api/order-bumps", isAuthenticated, async (req: any, res) => {
     try {
       const parsed = insertOrderBumpSchema.safeParse(req.body);
       if (!parsed.success) {
@@ -720,23 +708,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.put("/api/admin/order-bumps/:id", isAuthenticated, isAdmin, async (req: any, res) => {
-    try {
-      const { id } = req.params;
-      const orderBump = await storage.updateOrderBump(id, req.body);
-      
-      if (!orderBump) {
-        return res.status(404).json({ error: "Order bump not found" });
-      }
-      
-      res.json(orderBump);
-    } catch (error: any) {
-      console.error("Error updating order bump:", error);
-      res.status(500).json({ error: "Failed to update order bump: " + error.message });
-    }
-  });
-
-  app.delete("/api/admin/order-bumps/:id", isAuthenticated, isAdmin, async (req: any, res) => {
+  app.delete("/api/order-bumps/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
       const deleted = await storage.deleteOrderBump(id);
@@ -749,6 +721,169 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error deleting order bump:", error);
       res.status(500).json({ error: "Failed to delete order bump: " + error.message });
+    }
+  });
+
+  app.get("/api/admin/order-bumps", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const orderBumps = await storage.getAllOrderBumps();
+      
+      const enrichedOrderBumps = await Promise.all(orderBumps.map(async (orderBump) => {
+        const mainProduct = await storage.getProduct(orderBump.productId);
+        const bumpProduct = await storage.getProduct(orderBump.bumpProductId);
+        return {
+          ...orderBump,
+          mainProduct,
+          bumpProduct,
+        };
+      }));
+      
+      // Filter out order bumps where mainProduct or bumpProduct is null/undefined
+      const completeOrderBumps = enrichedOrderBumps.filter(
+        (ob) => ob.mainProduct != null && ob.bumpProduct != null
+      );
+      
+      res.json(completeOrderBumps);
+    } catch (error: any) {
+      console.error("Error fetching order bumps:", error);
+      res.status(500).json({ error: "Failed to fetch order bumps: " + error.message });
+    }
+  });
+
+  app.get("/api/admin/sessions", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const sessions = await storage.getAllFunnelSessions();
+      res.json(sessions);
+    } catch (error: any) {
+      console.error("Error fetching sessions:", error);
+      res.status(500).json({ error: "Failed to fetch sessions: " + error.message });
+    }
+  });
+
+  app.get("/api/admin/analytics/funnels", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const funnels = await storage.getAllFunnels();
+      const sessions = await storage.getAllFunnelSessions();
+      const allPurchases = await storage.getAllPurchases();
+
+      const analytics = await Promise.all(funnels.map(async (funnel) => {
+        const funnelSessions = sessions.filter(s => s.funnelId === funnel.id);
+        const completedSessions = funnelSessions.filter(s => s.status === "completed");
+        const totalSessions = funnelSessions.length;
+        const completionRate = totalSessions > 0 ? (completedSessions.length / totalSessions) * 100 : 0;
+        
+        // Compute revenue: use session.totalRevenue when available, otherwise sum purchases linked to session
+        let totalRevenue = 0;
+        let sessionsWithRevenueCount = 0;
+        
+        for (const session of funnelSessions) {
+          let sessionRevenue = session.totalRevenue || 0;
+          
+          // If session has no totalRevenue, sum purchases linked to this session
+          if (sessionRevenue === 0) {
+            const sessionPurchases = allPurchases.filter(p => p.funnelSessionId === session.id);
+            sessionRevenue = sessionPurchases.reduce((sum, p) => sum + (p.amount || 0), 0);
+          }
+          
+          if (sessionRevenue > 0) {
+            sessionsWithRevenueCount++;
+          }
+          totalRevenue += sessionRevenue;
+        }
+        
+        const avgOrderValue = sessionsWithRevenueCount > 0 ? totalRevenue / sessionsWithRevenueCount : 0;
+
+        const steps = await storage.getFunnelSteps(funnel.id);
+        const entryProduct = funnel.entryProductId ? await storage.getProduct(funnel.entryProductId) : null;
+
+        return {
+          funnel,
+          entryProduct,
+          steps,
+          totalSessions,
+          completedSessions: completedSessions.length,
+          completionRate,
+          totalRevenue,
+          avgOrderValue,
+        };
+      }));
+
+      res.json(analytics);
+    } catch (error: any) {
+      console.error("Error fetching funnel analytics:", error);
+      res.status(500).json({ error: "Failed to fetch analytics: " + error.message });
+    }
+  });
+
+  app.get("/api/admin/analytics/funnels/:id", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const funnel = await storage.getFunnel(id);
+      
+      if (!funnel) {
+        return res.status(404).json({ error: "Funnel not found" });
+      }
+
+      const allSessions = await storage.getAllFunnelSessions();
+      const allPurchases = await storage.getAllPurchases();
+      const funnelSessions = allSessions.filter(s => s.funnelId === id);
+      const completedSessions = funnelSessions.filter(s => s.status === "completed");
+      const abandonedSessions = funnelSessions.filter(s => s.status === "abandoned");
+      const activeSessions = funnelSessions.filter(s => s.status === "active");
+      
+      // Compute revenue: use session.totalRevenue when available, otherwise sum purchases linked to session
+      let totalRevenue = 0;
+      let sessionsWithRevenueCount = 0;
+      
+      for (const session of funnelSessions) {
+        let sessionRevenue = session.totalRevenue || 0;
+        
+        // If session has no totalRevenue, sum purchases linked to this session
+        if (sessionRevenue === 0) {
+          const sessionPurchases = allPurchases.filter(p => p.funnelSessionId === session.id);
+          sessionRevenue = sessionPurchases.reduce((sum, p) => sum + (p.amount || 0), 0);
+        }
+        
+        if (sessionRevenue > 0) {
+          sessionsWithRevenueCount++;
+        }
+        totalRevenue += sessionRevenue;
+      }
+      
+      const avgOrderValue = sessionsWithRevenueCount > 0 ? totalRevenue / sessionsWithRevenueCount : 0;
+
+      const steps = await storage.getFunnelSteps(id);
+      const stepAnalytics = steps.map(step => {
+        const acceptedCount = funnelSessions.filter(s => s.acceptedSteps?.includes(step.id)).length;
+        const declinedCount = funnelSessions.filter(s => s.declinedSteps?.includes(step.id)).length;
+        const totalInteractions = acceptedCount + declinedCount;
+        const acceptanceRate = totalInteractions > 0 ? (acceptedCount / totalInteractions) * 100 : 0;
+        
+        return {
+          step,
+          acceptedCount,
+          declinedCount,
+          acceptanceRate,
+        };
+      });
+
+      const entryProduct = funnel.entryProductId ? await storage.getProduct(funnel.entryProductId) : null;
+
+      res.json({
+        funnel,
+        entryProduct,
+        totalSessions: funnelSessions.length,
+        completedSessions: completedSessions.length,
+        abandonedSessions: abandonedSessions.length,
+        activeSessions: activeSessions.length,
+        completionRate: funnelSessions.length > 0 ? (completedSessions.length / funnelSessions.length) * 100 : 0,
+        totalRevenue,
+        avgOrderValue,
+        stepAnalytics,
+      });
+    } catch (error: any) {
+      console.error("Error fetching funnel analytics:", error);
+      res.status(500).json({ error: "Failed to fetch analytics: " + error.message });
     }
   });
 

@@ -54,6 +54,9 @@ export interface IStorage {
   getFunnelSession(id: string): Promise<FunnelSession | undefined>;
   updateFunnelSession(id: string, session: Partial<InsertFunnelSession>): Promise<FunnelSession | undefined>;
   getUserFunnelSessions(userId: string): Promise<FunnelSession[]>;
+  getAllFunnelSessions(): Promise<FunnelSession[]>;
+  getAllOrderBumps(): Promise<OrderBump[]>;
+  getAllPurchases(): Promise<Purchase[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -376,6 +379,18 @@ export class MemStorage implements IStorage {
   async getUserFunnelSessions(userId: string): Promise<FunnelSession[]> {
     return [];
   }
+
+  async getAllFunnelSessions(): Promise<FunnelSession[]> {
+    return [];
+  }
+
+  async getAllOrderBumps(): Promise<OrderBump[]> {
+    return [];
+  }
+
+  async getAllPurchases(): Promise<Purchase[]> {
+    return [];
+  }
 }
 
 export class DatabaseStorage implements IStorage {
@@ -577,6 +592,18 @@ export class DatabaseStorage implements IStorage {
 
   async getUserFunnelSessions(userId: string): Promise<FunnelSession[]> {
     return await this.db.select().from(funnelSessions).where(eq(funnelSessions.userId, userId));
+  }
+
+  async getAllFunnelSessions(): Promise<FunnelSession[]> {
+    return await this.db.select().from(funnelSessions);
+  }
+
+  async getAllOrderBumps(): Promise<OrderBump[]> {
+    return await this.db.select().from(orderBumps);
+  }
+
+  async getAllPurchases(): Promise<Purchase[]> {
+    return await this.db.select().from(purchases);
   }
 }
 
