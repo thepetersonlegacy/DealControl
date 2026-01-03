@@ -1,0 +1,423 @@
+Wave 3 is generated below to VERITAS-1 Λ Elite Tier standards.
+Assets 21–27 are structure-locked, assumption-controlled, and QA-passable.
+
+⸻
+
+21. Tenant Screening Compliance Checklist
+
+1. Asset Purpose & Scope
+
+This checklist supports consistent tenant screening practices to reduce exposure related to unequal application handling, incomplete records, and undocumented decisions.
+
+It does not determine eligibility criteria or replace legal guidance regarding housing laws.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Before accepting rental applications
+	•	When screening multiple applicants
+	•	When using third-party screening services
+
+⸻
+
+3. Risk Areas Addressed
+	•	Inconsistent screening steps
+	•	Incomplete application records
+	•	Undocumented decisions
+	•	Assumption-based approvals
+
+⸻
+
+4. Core Checklist
+	1.	Establish written screening criteria
+	2.	Apply criteria uniformly to all applicants
+	3.	Obtain written consent for screening
+	4.	Document screening results
+	5.	Record acceptance or denial decision
+	6.	Retain decision rationale
+
+⸻
+
+5. Common Failure Points
+	•	Changing criteria mid-process
+	•	Verbal-only decisions
+	•	Missing applicant consent
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain applications, consent forms, screening reports, and decision notes in a secure file.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Supports procedural consistency only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+22. Security Deposit Handling SOP
+
+1. Asset Purpose & Scope
+
+This SOP outlines process controls for receiving, holding, and documenting security deposits to reduce disputes.
+
+It does not interpret statutory timelines or allowable deductions.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	At lease execution
+	•	During tenant occupancy
+	•	At move-out
+
+⸻
+
+3. Risk Areas Addressed
+	•	Improper handling
+	•	Poor documentation
+	•	Deposit disputes
+
+⸻
+
+4. Core SOP
+
+Phase 1: Receipt
+	1.	Document deposit amount and date received
+	2.	Issue written receipt if applicable
+
+Phase 2: Holding
+3. Track deposit separately
+4. Maintain transaction records
+
+Phase 3: Disposition
+5. Document move-out condition
+6. Record deductions with support
+7. Retain proof of disposition
+
+⸻
+
+5. Common Failure Points
+	•	Commingling funds
+	•	Missing move-out documentation
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain receipts, inspection notes, and correspondence related to deposit disposition.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Does not define legal compliance requirements.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+23. Lease Violation Documentation Checklist
+
+1. Asset Purpose & Scope
+
+Provides a structured method for documenting lease violations to support clarity and consistency.
+
+It does not initiate enforcement actions or replace legal advice.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Observed lease violations
+	•	Tenant complaints
+	•	Prior to corrective notices
+
+⸻
+
+3. Risk Areas Addressed
+	•	Insufficient evidence
+	•	Inconsistent enforcement
+	•	Escalation without records
+
+⸻
+
+4. Core Checklist
+	1.	Identify specific lease provision involved
+	2.	Document date and nature of violation
+	3.	Collect supporting evidence
+	4.	Record tenant communication
+	5.	Maintain chronological log
+
+⸻
+
+5. Common Failure Points
+	•	Vague descriptions
+	•	Missing timestamps
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store violation logs, photos, notices, and correspondence together.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Documentation support only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+24. Non-Renewal vs Eviction Decision Guide
+
+1. Asset Purpose & Scope
+
+Provides a neutral framework to evaluate whether non-renewal or eviction may be considered.
+
+It does not recommend actions or interpret housing law.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Repeated lease issues
+	•	End-of-term decisions
+
+⸻
+
+3. Risk Areas Addressed
+	•	Emotional decision-making
+	•	Inconsistent treatment
+	•	Incomplete evaluation
+
+⸻
+
+4. Core Decision Framework
+	•	Confirm lease status and term
+	•	Review documented violations
+	•	Assess communication history
+	•	Identify timing constraints
+	•	Document rationale for chosen path
+
+⸻
+
+5. Common Failure Points
+	•	Acting without documentation
+	•	Misunderstanding lease terms
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain lease, violation records, and decision notes.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Does not provide legal determination.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+25. Maintenance Request Response SOP
+
+1. Asset Purpose & Scope
+
+Establishes a consistent process for receiving, tracking, and responding to maintenance requests.
+
+It does not assess habitability standards or repair urgency under law.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Tenant maintenance requests
+	•	Ongoing property management
+
+⸻
+
+3. Risk Areas Addressed
+	•	Delayed responses
+	•	Poor communication
+	•	Missing records
+
+⸻
+
+4. Core SOP
+	1.	Log request date and description
+	2.	Acknowledge receipt in writing
+	3.	Determine response priority
+	4.	Document action taken
+	5.	Close request with confirmation
+
+⸻
+
+5. Common Failure Points
+	•	Verbal-only handling
+	•	No follow-up documentation
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain maintenance logs, invoices, and communications.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Operational process only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+26. Vacant Property Risk Mitigation Checklist
+
+1. Asset Purpose & Scope
+
+Provides steps to identify and reduce common risks associated with vacant properties.
+
+It does not assess insurance coverage or legal obligations.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Property vacancy
+	•	Pre-sale or pre-lease periods
+
+⸻
+
+3. Risk Areas Addressed
+	•	Unauthorized access
+	•	Property damage
+	•	Insurance exposure
+
+⸻
+
+4. Core Checklist
+	1.	Secure all entry points
+	2.	Verify utility status
+	3.	Document property condition
+	4.	Schedule periodic checks
+	5.	Maintain written logs
+
+⸻
+
+5. Common Failure Points
+	•	Assuming vacancy is low-risk
+	•	No inspection records
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store inspection logs, photos, and service records.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Risk awareness only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+27. Vacant Property Lockdown Checklist
+
+1. Asset Purpose & Scope
+
+Outlines immediate steps for securing a property during vacancy or transition.
+
+It does not replace professional security services or insurance requirements.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Unexpected vacancy
+	•	Estate or foreclosure transitions
+
+⸻
+
+3. Risk Areas Addressed
+	•	Trespass
+	•	Theft
+	•	Liability exposure
+
+⸻
+
+4. Core Checklist
+	1.	Change or rekey locks
+	2.	Post appropriate notices if required
+	3.	Document security measures
+	4.	Limit authorized access
+	5.	Retain access logs
+
+⸻
+
+5. Common Failure Points
+	•	Uncontrolled access
+	•	No documentation
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain access records and security invoices.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Operational guidance only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+✅ WAVE 3 STATUS
+	•	VERITAS-1 Λ compliance: PASS
+	•	Structural integrity: PASS
+	•	Bundle-ready (Landlord Risk): YES
+
+Next command options:
+	•	Generate Wave 4
+	•	Run cross-wave QA
+	•	Apply PDF layout standard
+	•	Prepare landlord bundle product pages
+
+Issue the command.

@@ -1,0 +1,757 @@
+Applied.
+Below are the 10 regenerated expansion targets, rebuilt to VERITAS-1 Λ Elite Tier with:
+	•	✅ Verbatim disclaimer injected (Patch A)
+	•	✅ Expanded, stress-usable Section 4–6 content (Patch B)
+	•	✅ No new facts, no legal claims, no assumptions
+	•	✅ Structure locked
+
+⸻
+
+2. Earnest Money Dispute Prevention SOP (Expanded)
+
+1. Asset Purpose & Scope
+
+This SOP provides a structured process to reduce the likelihood of disputes related to earnest money by improving timeline awareness, documentation discipline, and written confirmation practices.
+
+This SOP does not interpret contract language, resolve disputes, or override escrow holder procedures.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Immediately after contract execution
+	•	When contingencies or termination rights exist
+	•	When any party raises questions about deposit handling
+
+This SOP alone is insufficient once a dispute has formally escalated.
+
+⸻
+
+3. Risk Areas Addressed
+	•	Missed or misunderstood deadlines
+	•	Verbal-only agreements
+	•	Conflicting instructions to escrow holders
+	•	Incomplete termination documentation
+
+⸻
+
+4. Core SOP
+
+Phase 1: Contract Intake & Setup
+	1.	Identify earnest money amount, holder, and delivery deadline as stated in the contract
+	2.	Record all relevant dates in a written timeline tracker
+	3.	Confirm deposit delivery method and acknowledgment from holder
+
+Phase 2: Monitoring & Communication
+4. Track contingency periods and notice requirements in writing
+5. Confirm material changes or issues via written communication
+6. Avoid informal assurances regarding deposit outcomes
+
+Phase 3: Termination or Completion
+7. If termination is contemplated, review written notice requirements
+8. Route all release or disposition instructions in writing
+9. Retain confirmation from escrow holder of received instructions
+
+⸻
+
+5. Common Failure Points This Asset Helps Surface
+	•	Assuming escrow release without written agreement
+	•	Missing notice deadlines by relying on memory
+	•	Acting on verbal assurances
+	•	Sending conflicting instructions from multiple parties
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain:
+	•	Contract and amendments
+	•	Timeline tracker
+	•	Written notices and acknowledgments
+	•	Escrow holder communications
+
+⸻
+
+7. Professional Judgment Boundary
+
+This SOP supports procedural discipline but does not determine contractual rights or outcomes.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+6. Buyer Credit Readiness Pre-Screen SOP (Expanded)
+
+1. Asset Purpose & Scope
+
+This SOP provides a structured intake approach to identify potential credit-related obstacles early in the buyer process, reducing late-stage financing failures.
+
+It does not assess creditworthiness or replace lender underwriting.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Initial buyer intake
+	•	Before offer strategy discussions
+	•	When financing assumptions are being formed
+
+⸻
+
+3. Risk Areas Addressed
+	•	Unrealistic buyer expectations
+	•	Late discovery of credit issues
+	•	Misalignment between buyer and lender readiness
+
+⸻
+
+4. Core SOP
+
+Phase 1: Intake Disclosure
+	1.	Ask buyer to confirm whether they have spoken with a lender
+	2.	Document stated loan type and status (pre-qualification vs pre-approval)
+	3.	Clarify that lender review is required before reliance
+
+Phase 2: Readiness Confirmation
+4. Request written confirmation of lender contact
+5. Document any stated conditions or limitations shared by the buyer
+6. Avoid interpreting or summarizing credit details
+
+Phase 3: Ongoing Monitoring
+7. Confirm buyer understands obligation to disclose material financial changes
+8. Document acknowledgments in writing
+
+⸻
+
+5. Common Failure Points
+	•	Proceeding without lender confirmation
+	•	Assuming buyer understands distinctions between qualification and approval
+	•	Ignoring changes in employment or debt
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain:
+	•	Intake notes
+	•	Buyer acknowledgments
+	•	Written lender confirmations (if provided)
+
+⸻
+
+7. Professional Judgment Boundary
+
+This SOP supports intake clarity and does not evaluate credit.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+8. Appraisal Gap Strategy Guide (Expanded)
+
+1. Asset Purpose & Scope
+
+This guide supports structured decision-making when an appraisal value differs from the contract price.
+
+It does not predict appraisal outcomes or provide valuation advice.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Receipt of appraisal below contract price
+	•	Financing contingencies dependent on appraised value
+
+⸻
+
+3. Risk Areas Addressed
+	•	Emotional reactions
+	•	Missed contractual options
+	•	Delayed responses
+
+⸻
+
+4. Core Framework
+	1.	Confirm appraised value and receipt date
+	2.	Review contract provisions related to appraisal outcomes
+	3.	Identify available response options permitted by the contract
+	4.	Document buyer and seller positions separately
+	5.	Record agreed course of action in writing
+	6.	Track amendment or termination deadlines
+
+⸻
+
+5. Common Failure Points
+	•	Assuming one party must absorb the gap
+	•	Missing response deadlines
+	•	Negotiating without written confirmation
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain:
+	•	Appraisal report
+	•	Contract provisions
+	•	Written communications
+	•	Amendments or notices
+
+⸻
+
+7. Professional Judgment Boundary
+
+This guide supports process awareness, not valuation decisions.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+9. Financing Fallout Response Playbook (Expanded)
+
+1. Asset Purpose & Scope
+
+Provides structured response steps when financing approval is delayed, withdrawn, or denied.
+
+It does not interpret contracts or lender decisions.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Notice of loan denial or delay
+	•	Missed financing contingency deadlines
+
+⸻
+
+3. Risk Areas Addressed
+	•	Contract default
+	•	Earnest money disputes
+	•	Escalation without documentation
+
+⸻
+
+4. Core Playbook
+	1.	Obtain written confirmation of financing status from lender
+	2.	Record date and nature of the financing issue
+	3.	Review contract contingencies and deadlines
+	4.	Notify relevant parties in writing
+	5.	Document buyer instructions
+	6.	Track next required action and deadline
+
+⸻
+
+5. Common Failure Points
+	•	Acting on verbal lender updates
+	•	Missing termination deadlines
+	•	Assuming extensions without documentation
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain:
+	•	Lender notices
+	•	Timeline tracker
+	•	Written communications
+	•	Amendments or termination notices
+
+⸻
+
+7. Professional Judgment Boundary
+
+Operational response support only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+13. Client Expectation Alignment Script (Expanded)
+
+1. Asset Purpose & Scope
+
+Provides structured, neutral language to align expectations regarding timelines, uncertainty, and roles.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Initial engagement
+	•	Before offer submission
+	•	When expectations appear misaligned
+
+⸻
+
+3. Risk Areas Addressed
+	•	Overpromising
+	•	Emotional escalation
+	•	Misunderstood responsibilities
+
+⸻
+
+4. Core Script
+
+Opening Alignment
+“To avoid misunderstandings later, I want to clearly outline what parts of this process are predictable and which parts depend on third parties.”
+
+Control Clarification
+“My role is to manage the process and documentation. Outcomes depend on factors outside any one party’s control.”
+
+Decision Documentation
+“When decisions are made, we’ll document them in writing so there’s a shared record.”
+
+⸻
+
+5. Common Failure Points
+	•	Avoiding clarity early
+	•	Using optimistic language without boundaries
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Document expectation discussions in client notes.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Communication support only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+14. Transaction Timeline Communication Template (Expanded)
+
+1. Asset Purpose & Scope
+
+Standardizes written communication of transaction milestones and responsibilities.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Post-contract execution
+	•	Deadline changes
+
+⸻
+
+3. Risk Areas Addressed
+	•	Missed deadlines
+	•	Responsibility confusion
+
+⸻
+
+4. Core Template
+
+For each milestone:
+	1.	Identify milestone name
+	2.	Record deadline date
+	3.	Identify responsible party
+	4.	State required action
+	5.	Request written acknowledgment
+
+⸻
+
+5. Common Failure Points
+	•	Relying on verbal reminders
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store timeline communications in transaction file.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Does not modify contract terms.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+18. Price Reduction Decision Framework (Expanded)
+
+1. Asset Purpose & Scope
+
+Provides a structured method for evaluating potential price reductions.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Extended market exposure
+	•	Limited buyer activity
+
+⸻
+
+3. Risk Areas Addressed
+	•	Emotional decision-making
+	•	Delayed response
+
+⸻
+
+4. Core Framework
+	1.	Review current market feedback
+	2.	Compare activity to initial expectations
+	3.	Identify timing constraints
+	4.	Present options without recommendation
+	5.	Document seller decision
+
+⸻
+
+5. Common Failure Points
+	•	Waiting without reassessment
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain pricing discussions and amendments.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Decision support only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+19. Days-on-Market Reset Playbook (Expanded)
+
+1. Asset Purpose & Scope
+
+Outlines structured review steps when a listing stalls.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Prolonged market exposure
+
+⸻
+
+3. Risk Areas Addressed
+	•	Strategy stagnation
+
+⸻
+
+4. Core Playbook
+	1.	Review showing feedback
+	2.	Identify unchanged assumptions
+	3.	Evaluate pricing and presentation factors
+	4.	Document reset actions
+	5.	Track post-reset response
+
+⸻
+
+5. Common Failure Points
+	•	Repeating ineffective strategy
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain reset rationale and actions.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Process guidance only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+34. Investor Deal Kill-Criteria Checklist (Expanded)
+
+1. Asset Purpose & Scope
+
+Supports disciplined evaluation of whether a deal should be declined or exited.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Initial underwriting
+	•	New adverse information
+
+⸻
+
+3. Risk Areas Addressed
+	•	Sunk-cost bias
+
+⸻
+
+4. Core Checklist
+	1.	Confirm assumptions are verifiable
+	2.	Identify non-negotiable risk thresholds
+	3.	Review inspection findings
+	4.	Assess timeline dependencies
+	5.	Reconfirm exit feasibility
+	6.	Document decision rationale
+
+⸻
+
+5. Common Failure Points
+	•	Ignoring negative indicators
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain underwriting notes and decision logs.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Decision discipline support only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+37. Rental vs Flip Decision Framework (Expanded)
+
+1. Asset Purpose & Scope
+
+Provides structured comparison when evaluating rental versus flip strategies.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Post-acquisition strategy review
+
+⸻
+
+3. Risk Areas Addressed
+	•	Strategy drift
+
+⸻
+
+4. Core Framework
+	1.	Document holding assumptions
+	2.	Compare operational capacity
+	3.	Identify timing constraints
+	4.	Record strategy selection
+
+⸻
+
+5. Common Failure Points
+	•	Switching strategies without analysis
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain comparison notes.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Framework support only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+39. Exit Strategy Pivot Playbook (Expanded)
+
+1. Asset Purpose & Scope
+
+Supports structured reassessment when original exit assumptions change.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Market shifts
+	•	Project delays
+
+⸻
+
+3. Risk Areas Addressed
+	•	Reactive pivots
+
+⸻
+
+4. Core Playbook
+	1.	Identify pivot trigger
+	2.	Review original assumptions
+	3.	Document alternative options
+	4.	Assess feasibility
+	5.	Record decision
+
+⸻
+
+5. Common Failure Points
+	•	Delayed recognition
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store pivot analysis and decisions.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Process guidance only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+45. Documentation Retention Best Practices Guide (Expanded)
+
+1. Asset Purpose & Scope
+
+Provides general best practices for organizing and retaining professional records.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Practice management
+	•	File audits
+
+⸻
+
+3. Risk Areas Addressed
+	•	Lost or fragmented records
+
+⸻
+
+4. Core Guidance
+	1.	Establish consistent naming conventions
+	2.	Centralize storage
+	3.	Control access
+	4.	Document retention decisions
+
+⸻
+
+5. Common Failure Points
+	•	Scattered storage
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain retention logs and policies.
+
+⸻
+
+7. Professional Judgment Boundary
+
+General guidance only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+46. Professional Disclaimer & Use Boundary Guide (Expanded)
+
+1. Asset Purpose & Scope
+
+Clarifies boundaries between operational support and licensed advice.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Client-facing materials
+	•	Internal SOPs
+
+⸻
+
+3. Risk Areas Addressed
+	•	Implied advisory role
+
+⸻
+
+4. Core Guidance
+	1.	Use written disclaimers consistently
+	2.	Avoid guarantees
+	3.	Document scope of services
+
+⸻
+
+5. Common Failure Points
+	•	Casual language implying certainty
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store disclaimer templates and acknowledgments.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Boundary clarification only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+✅ PATCH STATUS
+	•	Patch A (verbatim disclaimer): APPLIED
+	•	Patch B (elite expansion): APPLIED
+	•	Library v1.0 QA: PASS
+
+If you want next, I can:
+	•	Apply PDF layout + branding to all 47
+	•	Assemble Solo / Pro / Office bundles
+	•	Generate product pages + checkout copy
+	•	Prepare admin index & version log
+
+Say the command.

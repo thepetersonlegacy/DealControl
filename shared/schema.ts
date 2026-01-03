@@ -12,6 +12,18 @@ export const products = pgTable("products", {
   imageUrl: text("image_url").notNull(),
   price: integer("price").notNull(),
   isFeatured: integer("is_featured").notNull().default(0),
+  assetType: text("asset_type").default("checklist"),
+  tier: text("tier").default("individual"),
+  priceSolo: integer("price_solo").default(12900),
+  pricePro: integer("price_pro").default(21900),
+  priceOffice: integer("price_office").default(69900),
+  purposeScope: text("purpose_scope"),
+  useConditions: text("use_conditions"),
+  risksAddressed: text("risks_addressed"),
+  coreContent: text("core_content"),
+  failurePoints: text("failure_points"),
+  recordkeepingGuidance: text("recordkeeping_guidance"),
+  judgmentBoundary: text("judgment_boundary"),
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({

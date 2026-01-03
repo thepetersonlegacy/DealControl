@@ -1,0 +1,466 @@
+Wave 4 is generated below to VERITAS-1 Λ Elite Tier standards.
+Assets 28–33 are structure-locked, assumption-controlled, and QA-passable.
+
+⸻
+
+28. Probate Timeline Expectation Guide
+
+1. Asset Purpose & Scope
+
+This guide supports clear communication about probate-related transaction timing by outlining practical factors that commonly influence timelines in estate-related property sales.
+
+It does not provide legal timelines, court-specific processing times, or guarantees. Probate procedures and timing vary by case and court.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	When an estate property sale is being planned
+	•	When stakeholders are asking “how long will this take?”
+	•	When coordination between attorney, executor, and agent is required
+
+This asset alone is insufficient when contested matters or court direction is required.
+
+⸻
+
+3. Risk Areas Addressed
+	•	Unrealistic timing expectations
+	•	Miscommunication between parties
+	•	Premature marketing or scheduling
+	•	Incomplete documentation delaying progress
+
+⸻
+
+4. Core Operational Content (Guide Framework)
+
+A. What Typically Drives Timeline Length
+	1.	Documentation availability (authority documents, orders, letters)
+	2.	Executor responsiveness and availability
+	3.	Heir coordination and communication clarity
+	4.	Attorney workflow and review requirements
+	5.	Court review or approvals (when applicable)
+	6.	Property readiness (access, condition, occupancy)
+	7.	Buyer due diligence and financing timelines
+
+B. Process Control Steps
+	1.	Establish a single point of contact for the estate
+	2.	Create a shared document checklist and status tracker
+	3.	Confirm whether court approval is required before marketing or closing
+	4.	Document responsibilities and deadlines in writing
+	5.	Avoid scheduling commitments that assume court timing certainty
+
+C. Client-Facing Expectation Language (Neutral)
+	•	“Because probate timing can vary by case and court, our focus will be on controlling what we can: documentation readiness, communication discipline, and clean scheduling once prerequisites are confirmed.”
+
+⸻
+
+5. Common Failure Points This Asset Helps Surface
+	•	Treating probate as a standard sale timeline
+	•	Marketing before authority is confirmed
+	•	Missing required documentation until late stages
+	•	Allowing multiple heirs to direct the process independently
+	•	Scheduling closing dates without confirmed prerequisites
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain a centralized estate transaction file containing:
+	•	Authority documents (as provided by executor/attorney)
+	•	Written instructions from authorized representative
+	•	Communication log with heirs and professionals
+	•	Listing, contract, and closing documentation
+
+⸻
+
+7. Professional Judgment Boundary
+
+This guide supports expectation management and process discipline. Legal guidance and court interpretation must be handled by qualified professionals.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+29. Probate Property Lockdown Checklist
+
+1. Asset Purpose & Scope
+
+This checklist provides operational steps for securing and documenting the condition of an estate property during probate to reduce interference, damage, or access disputes.
+
+It does not determine legal access rights or authorize entry.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Property is vacant or intermittently occupied
+	•	Executor is responsible for preserving estate assets
+	•	Concerns exist regarding unauthorized entry or interference
+
+⸻
+
+3. Risk Areas Addressed
+	•	Unauthorized access
+	•	Property condition deterioration
+	•	Missing documentation for later disputes
+	•	Role confusion regarding access authority
+
+⸻
+
+4. Core Checklist
+	1.	Confirm who has authority to approve access
+	2.	Document current occupancy status
+	3.	Conduct initial condition documentation (photos, notes)
+	4.	Secure entry points as appropriate
+	5.	Establish an access log process
+	6.	Schedule periodic condition checks
+	7.	Document any incidents and actions taken
+	8.	Coordinate with relevant professionals as needed (attorney, insurer, service providers)
+
+⸻
+
+5. Common Failure Points This Asset Helps Surface
+	•	Changing locks without confirming authority
+	•	Allowing informal access without records
+	•	Failing to document baseline condition
+	•	Assuming the property is secure without periodic checks
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain:
+	•	Photo log with dates
+	•	Access log entries
+	•	Service invoices and receipts
+	•	Written approvals from authorized representative
+
+⸻
+
+7. Professional Judgment Boundary
+
+This checklist supports operational control. Legal questions about access and authority must be addressed by qualified professionals.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+30. Executor–Agent Communication Script Pack
+
+1. Asset Purpose & Scope
+
+This script pack provides neutral, professional language to structure communications between a real estate professional and an executor or personal representative.
+
+It does not establish agency relationships, legal authority, or disclosure requirements.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Beginning an estate property listing discussion
+	•	Coordinating document collection
+	•	Managing heir communications and boundaries
+	•	Addressing timeline and process expectations
+
+⸻
+
+3. Risk Areas Addressed
+	•	Miscommunication
+	•	Authority confusion
+	•	Uncontrolled stakeholder input
+	•	Documentation gaps
+
+⸻
+
+4. Core Script Pack
+
+Script A: Confirming Authority (Neutral Request)
+“Before we proceed with any listing or sale steps, I need to confirm who is authorized to provide instructions and sign required documents. When available, please provide the documentation that confirms your authority.”
+
+Script B: Document Checklist Request
+“To keep the process clean and avoid delays, I’m going to use a document checklist. As items become available, we’ll confirm receipt and store them in the transaction file.”
+
+Script C: Heir Communications Boundary
+“To avoid conflicting instructions, I will take direction from the authorized representative. If other parties have input, I’m happy to document it and route it through the authorized decision-maker.”
+
+Script D: Timeline Expectation Language
+“Some parts of estate sales depend on third parties and can vary. Our focus will be controlling what we can: documentation readiness, property access, and written communication.”
+
+Script E: Incident / Interference Reporting
+“If an incident occurs (access, damage, interference), I recommend documenting it with dates, photos if available, and a short factual summary, then routing it through your attorney or the appropriate professional.”
+
+⸻
+
+5. Common Failure Points This Asset Helps Surface
+	•	Taking instructions from unauthorized parties
+	•	Allowing multiple decision channels
+	•	Proceeding without written direction
+	•	Using informal or emotional language in disputes
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Keep copies of:
+	•	All written communications with executor
+	•	Document checklists and receipt confirmations
+	•	Any heir communications routed through the executor
+
+⸻
+
+7. Professional Judgment Boundary
+
+Scripts support communication discipline but do not determine legal sufficiency or compliance.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+31. Estate Sale Documentation Organizer
+
+1. Asset Purpose & Scope
+
+This organizer provides a structured way to collect, label, and retain estate sale documentation to reduce missing items, duplicated efforts, and closing delays.
+
+It does not determine which documents are legally required for a given jurisdiction or case.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Estate property listing and sale
+	•	Multi-party coordination (executor, attorney, agent, title/closing)
+
+⸻
+
+3. Risk Areas Addressed
+	•	Missing documents
+	•	Unclear version control
+	•	Lost approvals
+	•	Disorganized communication trails
+
+⸻
+
+4. Core Organizer (Folder + Index Structure)
+
+A. Authority & Case Documents
+	1.	Authority documentation (as provided)
+	2.	Court orders affecting sale (as provided)
+	3.	Attorney instructions (written)
+
+B. Property Information
+4. Ownership and property identifiers (as available)
+5. Condition documentation (photos, notes)
+6. Access log and service records
+
+C. Transaction Documents
+7. Listing documents
+8. Offers and counteroffers
+9. Contract and amendments
+10. Closing disclosures and settlement documentation
+
+D. Communication Log
+11. Executor communications
+12. Heir communications routed through executor
+13. Vendor and professional communications
+
+E. Final Archive
+14. Signed closing documents
+15. Net proceeds instructions (written)
+16. Post-closing confirmations
+
+Index Rule:
+	•	Each document stored with: Date / Source / Version label
+	•	Single “current version” marked clearly
+
+⸻
+
+5. Common Failure Points This Asset Helps Surface
+	•	Multiple document versions circulating
+	•	Missing written approvals
+	•	No centralized record of communications
+	•	Losing baseline condition documentation
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Use a consistent naming format and store documents in a secure location with controlled access.
+
+⸻
+
+7. Professional Judgment Boundary
+
+This organizer supports operational discipline. Case-specific legal requirements must be confirmed independently.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+32. Out-of-State Executor Coordination SOP
+
+1. Asset Purpose & Scope
+
+This SOP supports coordination when the executor or authorized representative is located outside the property’s state, increasing the risk of delays and miscommunication.
+
+It does not determine signing requirements, notarization needs, or legal validity of documents.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Executor resides outside the property jurisdiction
+	•	Remote signing and document routing required
+	•	Property access and vendor coordination needed
+
+⸻
+
+3. Risk Areas Addressed
+	•	Delayed responses
+	•	Incomplete documents
+	•	Unclear authority communication
+	•	Missed deadlines due to distance
+
+⸻
+
+4. Core SOP
+
+Phase 1: Setup
+	1.	Confirm authorized representative and contact details
+	2.	Establish preferred communication method and cadence
+	3.	Create a shared document checklist with status tracking
+
+Phase 2: Document Handling
+4. Require written instructions for key decisions
+5. Track document versions and signatures
+6. Confirm receipt of signed documents before scheduling dependent steps
+
+Phase 3: Property Access & Vendors
+7. Establish an authorized local access method (lockbox, property manager, designated individual)
+8. Document vendor instructions and completion confirmations
+9. Maintain an access and service log
+
+Phase 4: Closing Coordination
+10. Confirm signing method and timing requirements early
+11. Avoid setting closing dates without confirmed prerequisites
+12. Document final proceeds instructions in writing
+
+⸻
+
+5. Common Failure Points This Asset Helps Surface
+	•	Scheduling closing before signed documents are secured
+	•	Unclear local access authorization
+	•	Relying on verbal instructions
+	•	Losing track of document versions
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain a centralized file for:
+	•	Written instructions
+	•	Signed documents (final versions)
+	•	Communication log
+	•	Access/vendor records
+
+⸻
+
+7. Professional Judgment Boundary
+
+Supports operational coordination only. Legal, notarization, and procedural requirements vary and must be verified.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+33. Power of Attorney Transaction Checklist
+
+1. Asset Purpose & Scope
+
+This checklist supports transaction coordination when a party is acting through a Power of Attorney (POA). It focuses on documentation readiness and communication clarity.
+
+It does not validate the POA, determine acceptability, or replace attorney/title review.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	A signer is using a POA for transaction documents
+	•	The principal is unavailable or delegating signing authority
+	•	Title/closing coordination requires early documentation review
+
+⸻
+
+3. Risk Areas Addressed
+	•	Late discovery of POA limitations
+	•	Signing delays
+	•	Authority disputes
+	•	Document rejection due to insufficient review
+
+⸻
+
+4. Core Checklist
+	1.	Identify who is principal and who is agent-in-fact
+	2.	Request a copy of the POA early
+	3.	Confirm the POA is routed to the appropriate reviewing professionals (as applicable)
+	4.	Document any stated limitations communicated in writing
+	5.	Confirm signing logistics and identity verification requirements with the closing party
+	6.	Avoid scheduling dependent milestones until POA acceptability is confirmed
+	7.	Retain final accepted POA version in transaction file
+
+⸻
+
+5. Common Failure Points This Asset Helps Surface
+	•	Waiting until closing week to present the POA
+	•	Assuming POA automatically covers the transaction
+	•	Proceeding without written confirmation of acceptance
+	•	Missing identity verification logistics
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain:
+	•	Copy of POA as provided
+	•	Written confirmation of acceptance (if available)
+	•	Communication log related to POA handling
+	•	Final signed transaction documents
+
+⸻
+
+7. Professional Judgment Boundary
+
+This checklist supports coordination only. POA validity and acceptance requirements must be confirmed by appropriate professionals.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+✅ WAVE 4 STATUS
+	•	VERITAS-1 Λ compliance: PASS
+	•	Structural integrity: PASS
+	•	Estate bundle ready: YES
+
+Next command options:
+	•	Generate Wave 5 (Assets 34–47)
+	•	Apply PDF layout + version naming
+	•	Create bundle product pages (Solo/Pro/Office)
+	•	Run QA spot audit (Wave 1–4)

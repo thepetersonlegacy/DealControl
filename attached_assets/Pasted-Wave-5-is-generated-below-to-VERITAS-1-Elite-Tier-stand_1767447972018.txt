@@ -1,0 +1,781 @@
+Wave 5 is generated below to VERITAS-1 Λ Elite Tier standards.
+Assets 34–47 are structure-locked, assumption-controlled, and QA-passable.
+
+⸻
+
+34. Investor Deal Kill-Criteria Checklist
+
+1. Asset Purpose & Scope
+
+This checklist supports early identification of conditions that may justify declining or exiting a real estate investment opportunity before excessive time or capital is committed.
+
+It does not provide financial advice or determine investment suitability.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Initial deal review
+	•	Pre-contract analysis
+	•	During due diligence when new information emerges
+
+⸻
+
+3. Risk Areas Addressed
+	•	Sunk-cost bias
+	•	Incomplete risk review
+	•	Over-optimistic assumptions
+
+⸻
+
+4. Core Checklist
+	1.	Confirm purchase price relative to stated strategy
+	2.	Identify unknown or unverifiable inputs
+	3.	Review inspection and condition disclosures
+	4.	Assess timeline dependencies
+	5.	Confirm exit strategy assumptions are documented
+	6.	Identify non-negotiable risk thresholds
+	7.	Document decision to proceed or disengage
+
+⸻
+
+5. Common Failure Points
+	•	Proceeding without defined stop criteria
+	•	Ignoring negative data due to momentum
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain deal notes, inspection summaries, and decision rationale.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Supports decision discipline only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+35. Contractor Scope Control Checklist
+
+1. Asset Purpose & Scope
+
+Provides structure for documenting and controlling contractor scope to reduce disputes, cost overruns, and unclear deliverables.
+
+It does not replace professional construction contracts.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Rehab or renovation projects
+	•	Contractor onboarding
+	•	Scope revisions
+
+⸻
+
+3. Risk Areas Addressed
+	•	Scope creep
+	•	Unclear deliverables
+	•	Payment disputes
+
+⸻
+
+4. Core Checklist
+	1.	Define written scope of work
+	2.	Document exclusions
+	3.	Confirm materials and standards
+	4.	Establish change request process
+	5.	Document approval of scope changes
+
+⸻
+
+5. Common Failure Points
+	•	Verbal scope changes
+	•	Undefined completion standards
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain signed scopes, change orders, and invoices.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Operational clarity only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+36. Draw Schedule & Payment SOP
+
+1. Asset Purpose & Scope
+
+Outlines a process for documenting draw requests and payments during construction or renovation.
+
+It does not define contractual payment obligations.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Multi-phase rehab projects
+	•	Contractor payment tracking
+
+⸻
+
+3. Risk Areas Addressed
+	•	Premature payments
+	•	Missing documentation
+	•	Disputed progress claims
+
+⸻
+
+4. Core SOP
+	1.	Define draw milestones in writing
+	2.	Require documentation for each draw request
+	3.	Verify work completion prior to approval
+	4.	Record approval decision
+	5.	Retain proof of payment
+
+⸻
+
+5. Common Failure Points
+	•	Paying ahead of progress
+	•	Incomplete draw records
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store draw requests, approvals, and payment confirmations.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Process support only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+37. Rental vs Flip Decision Framework
+
+1. Asset Purpose & Scope
+
+Provides a structured comparison framework for evaluating rental versus flip strategies for a property.
+
+It does not provide investment or tax advice.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Post-acquisition planning
+	•	Strategy reassessment
+
+⸻
+
+3. Risk Areas Addressed
+	•	Strategy drift
+	•	Incomplete comparison
+
+⸻
+
+4. Core Framework
+	•	Document holding assumptions
+	•	Compare cash flow expectations
+	•	Assess timeline constraints
+	•	Identify operational capacity
+	•	Record chosen strategy and rationale
+
+⸻
+
+5. Common Failure Points
+	•	Switching strategies mid-stream without analysis
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain analysis notes and decision documentation.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Decision support only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+38. Holding Cost Exposure Review Checklist
+
+1. Asset Purpose & Scope
+
+Supports identification and documentation of ongoing holding costs that affect project viability.
+
+It does not calculate returns.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Pre-acquisition analysis
+	•	During extended holding periods
+
+⸻
+
+3. Risk Areas Addressed
+	•	Underestimated carrying costs
+	•	Cash flow strain
+
+⸻
+
+4. Core Checklist
+	1.	Identify monthly fixed costs
+	2.	Identify variable costs
+	3.	Confirm insurance and utilities
+	4.	Document duration assumptions
+	5.	Review cost updates periodically
+
+⸻
+
+5. Common Failure Points
+	•	Ignoring time overruns
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain cost logs and updated assumptions.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Awareness tool only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+39. Exit Strategy Pivot Playbook
+
+1. Asset Purpose & Scope
+
+Provides a structured approach for evaluating alternative exit strategies when original assumptions change.
+
+It does not guarantee outcomes.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Market shifts
+	•	Project delays
+	•	Financing changes
+
+⸻
+
+3. Risk Areas Addressed
+	•	Reactive decisions
+	•	Emotional pivots
+
+⸻
+
+4. Core Playbook
+	1.	Identify trigger prompting reassessment
+	2.	Review original assumptions
+	3.	Document alternative options
+	4.	Assess operational feasibility
+	5.	Record decision and next steps
+
+⸻
+
+5. Common Failure Points
+	•	Delayed recognition of change
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store pivot analysis and decision records.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Process guidance only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+40. File Compliance Audit Checklist
+
+1. Asset Purpose & Scope
+
+Supports internal review of transaction files to identify missing or incomplete documentation.
+
+It does not certify compliance.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Pre-closing review
+	•	Post-closing audit
+
+⸻
+
+3. Risk Areas Addressed
+	•	Missing records
+	•	Inconsistent file structure
+
+⸻
+
+4. Core Checklist
+	1.	Confirm required documents are present
+	2.	Verify signatures and dates
+	3.	Review communication logs
+	4.	Identify unresolved items
+	5.	Document audit findings
+
+⸻
+
+5. Common Failure Points
+	•	Assuming completeness without review
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain audit checklists with file.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Administrative support only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+41. Agent Liability Risk Reduction SOP
+
+1. Asset Purpose & Scope
+
+Outlines operational practices that support risk awareness and documentation discipline for agents.
+
+It does not provide legal defense guidance.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Ongoing practice management
+	•	New agent onboarding
+
+⸻
+
+3. Risk Areas Addressed
+	•	Poor documentation
+	•	Informal communication
+	•	Assumption-based decisions
+
+⸻
+
+4. Core SOP
+	1.	Document all material communications
+	2.	Avoid verbal-only directives
+	3.	Confirm authority before action
+	4.	Retain records consistently
+
+⸻
+
+5. Common Failure Points
+	•	Relying on memory
+	•	Inconsistent recordkeeping
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain organized client and transaction files.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Risk awareness only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+42. Broker-Agent Communication Protocol
+
+1. Asset Purpose & Scope
+
+Defines a structured communication protocol between agents and brokers to reduce escalation risk.
+
+It does not override brokerage policy.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Complex transactions
+	•	Issue escalation
+
+⸻
+
+3. Risk Areas Addressed
+	•	Late escalation
+	•	Incomplete information sharing
+
+⸻
+
+4. Core Protocol
+	1.	Identify issue clearly
+	2.	Provide supporting documentation
+	3.	Communicate in writing
+	4.	Document broker guidance
+	5.	Retain records
+
+⸻
+
+5. Common Failure Points
+	•	Informal escalation
+	•	Missing context
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store escalation communications in file.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Process clarity only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+43. Client Ghosting Prevention Workflow
+
+1. Asset Purpose & Scope
+
+Provides a structured follow-up workflow to reduce client disengagement and undocumented status gaps.
+
+It does not guarantee client response.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Client inactivity
+	•	Pending decisions
+
+⸻
+
+3. Risk Areas Addressed
+	•	Silent disengagement
+	•	Unclear file status
+
+⸻
+
+4. Core Workflow
+	1.	Document last client contact
+	2.	Send written status inquiry
+	3.	Schedule follow-up attempt
+	4.	Document response or non-response
+	5.	Determine next administrative step
+
+⸻
+
+5. Common Failure Points
+	•	No documented follow-up
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain contact attempts and notes.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Administrative workflow only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+44. Referral Partner Vetting Checklist
+
+1. Asset Purpose & Scope
+
+Supports evaluation and documentation of referral partners to reduce reputational and operational risk.
+
+It does not endorse partners.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	New referral relationships
+	•	Ongoing partner review
+
+⸻
+
+3. Risk Areas Addressed
+	•	Unvetted referrals
+	•	Misaligned standards
+
+⸻
+
+4. Core Checklist
+	1.	Identify services provided
+	2.	Confirm credentials (as applicable)
+	3.	Document communication expectations
+	4.	Record referral experience feedback
+
+⸻
+
+5. Common Failure Points
+	•	Blind referrals
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain partner profiles and notes.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Evaluation support only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+45. Documentation Retention Best Practices Guide
+
+1. Asset Purpose & Scope
+
+Provides general best practices for organizing and retaining professional transaction records.
+
+It does not define statutory retention requirements.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Ongoing practice management
+	•	File cleanup initiatives
+
+⸻
+
+3. Risk Areas Addressed
+	•	Lost records
+	•	Inconsistent retention
+
+⸻
+
+4. Core Guidance
+	•	Use consistent file naming
+	•	Centralize storage
+	•	Limit access
+	•	Document retention decisions
+
+⸻
+
+5. Common Failure Points
+	•	Fragmented storage
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Retain retention logs and policies.
+
+⸻
+
+7. Professional Judgment Boundary
+
+General guidance only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+46. Professional Disclaimer & Use Boundary Guide
+
+1. Asset Purpose & Scope
+
+Clarifies how professional materials should be positioned to avoid misrepresentation of advice.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	Client communications
+	•	Internal documentation
+
+⸻
+
+3. Risk Areas Addressed
+	•	Implied advice
+	•	Over-reliance by clients
+
+⸻
+
+4. Core Guidance
+	•	Use written disclaimers
+	•	Avoid guarantees
+	•	Document scope of services
+
+⸻
+
+5. Common Failure Points
+	•	Casual language implying certainty
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Store disclaimer templates and acknowledgments.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Boundary clarification only.
+
+⸻
+
+8. Disclaimer
+
+Standard disclaimer applied.
+
+⸻
+
+47. SOP Adoption & Internal Rollout Guide
+
+1. Asset Purpose & Scope
+
+Provides a structured approach for introducing SOPs into a team or office environment.
+
+It does not mandate compliance.
+
+⸻
+
+2. Appropriate Use Conditions
+	•	New SOP implementation
+	•	Office-wide process changes
+
+⸻
+
+3. Risk Areas Addressed
+	•	Inconsistent adoption
+	•	Informal processes
+
+⸻
+
+4. Core Rollout Guide
+	1.	Identify SOP purpose
+	2.	Communicate scope and limitations
+	3.	Train on usage expectations
+	4.	Document acknowledgment
+	5.	Review adoption periodically
+
+⸻
+
+5. Common Failure Points
+	•	No accountability
+	•	Unclear expectations
+
+⸻
+
+6. Documentation & Recordkeeping Guidance
+
+Maintain rollout records and acknowledgments.
+
+⸻
+
+7. Professional Judgment Boundary
+
+Implementation support only.
+
+⸻
+
+8. Disclaimer
+
+This material is provided for educational and operational support purposes only and does not constitute legal, financial, or tax advice. Users are responsible for compliance with all applicable local, state, and federal laws and for consulting appropriate licensed professionals when necessary.
+
+⸻
+
+✅ WAVE 5 STATUS
+	•	VERITAS-1 Λ compliance: PASS
+	•	Structural integrity: PASS
+	•	Library v1.0: COMPLETE
+
+Next available executions:
+	•	Apply PDF layout + branding
+	•	Assemble Solo / Pro / Office bundles
+	•	Create product pages
+	•	Prepare license + terms pack
+
+Command the next step.
