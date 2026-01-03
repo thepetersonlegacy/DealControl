@@ -121,7 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/confirm-purchase", isAuthenticated, async (req: any, res) => {
     try {
-      const { productId, paymentIntentId } = req.body;
+      const { productId, paymentIntentId, includeOrderBump, orderBumpId } = req.body;
       
       if (!productId || !paymentIntentId) {
         return res.status(400).json({ error: "Product ID and Payment Intent ID are required" });
@@ -141,6 +141,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userId = req.user.claims.sub;
       
+      // Check if purchase already exists (idempotency)
+      const existingPurchases = await storage.getUserPurchases(userId);
+      const existingPurchase = existingPurchases.find(p => p.stripePaymentId === paymentIntentId && !p.parentPurchaseId);
+      
+      if (existingPurchase) {
+        const existingProduct = await storage.getProduct(existingPurchase.productId);
+        const purchaseWithChildren = await storage.getPurchaseWithChildren(existingPurchase.id);
+        let orderBumpPurchase = null;
+        let orderBumpProduct = null;
+        if (purchaseWithChildren && purchaseWithChildren.children.length > 0) {
+          orderBumpPurchase = purchaseWithChildren.children[0];
+          orderBumpProduct = await storage.getProduct(orderBumpPurchase.productId);
+        }
+        return res.json({
+          purchase: existingPurchase,
+          product: existingProduct,
+          orderBumpPurchase,
+          orderBumpProduct,
+        });
+      }
+      
+      // Create main product purchase
       const purchase = await storage.createPurchase({
         userId,
         productId,
@@ -148,7 +170,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         stripePaymentId: paymentIntentId,
       });
       
-      res.json(purchase);
+      // Create order bump purchase as child if included
+      let orderBumpPurchase = null;
+      let orderBumpProduct = null;
+      if (includeOrderBump && orderBumpId) {
+        const orderBump = await storage.getOrderBump(orderBumpId);
+        if (orderBump && orderBump.isActive === 1) {
+          orderBumpPurchase = await storage.createPurchase({
+            userId,
+            productId: orderBump.bumpProductId,
+            amount: orderBump.bumpPrice,
+            stripePaymentId: paymentIntentId,
+            parentPurchaseId: purchase.id,
+          });
+          orderBumpProduct = await storage.getProduct(orderBump.bumpProductId);
+        }
+      }
+      
+      res.json({
+        purchase,
+        product,
+        orderBumpPurchase,
+        orderBumpProduct,
+      });
     } catch (error: any) {
       console.error("Error confirming purchase:", error);
       res.status(500).json({ error: "Failed to confirm purchase: " + error.message });
@@ -160,18 +204,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { id } = req.params;
       const userId = req.user.claims.sub;
       
-      const purchases = await storage.getUserPurchases(userId);
-      const purchase = purchases.find(p => p.id === id);
+      const purchaseWithChildren = await storage.getPurchaseWithChildren(id);
       
-      if (!purchase) {
+      if (!purchaseWithChildren) {
         return res.status(404).json({ error: "Purchase not found" });
+      }
+      
+      const { purchase, children } = purchaseWithChildren;
+      
+      if (purchase.userId !== userId) {
+        return res.status(403).json({ error: "Access denied" });
       }
       
       const product = await storage.getProduct(purchase.productId);
       
+      let orderBumpPurchase = null;
+      let orderBumpProduct = null;
+      if (children.length > 0) {
+        orderBumpPurchase = children[0];
+        orderBumpProduct = await storage.getProduct(orderBumpPurchase.productId);
+      }
+      
       res.json({
-        ...purchase,
+        purchase,
         product,
+        orderBumpPurchase,
+        orderBumpProduct,
       });
     } catch (error: any) {
       console.error("Error fetching purchase:", error);
@@ -228,9 +286,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (includeOrderBump) {
         orderBump = await storage.getOrderBumpByProduct(productId);
-        if (orderBump && orderBump.isActive === 1) {
-          bumpProduct = await storage.getProduct(orderBump.bumpProductId);
-          totalAmount += orderBump.bumpPrice;
+        if (orderBump) {
+          if (orderBump.productId !== productId) {
+            return res.status(400).json({ error: "Order bump does not belong to this product" });
+          }
+          if (orderBump.isActive === 1) {
+            bumpProduct = await storage.getProduct(orderBump.bumpProductId);
+            totalAmount += orderBump.bumpPrice;
+          }
         }
       }
       

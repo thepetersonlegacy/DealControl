@@ -27,6 +27,7 @@ export interface IStorage {
   createPurchase(purchase: InsertPurchase): Promise<Purchase>;
   getPurchase(id: string): Promise<Purchase | undefined>;
   getUserPurchases(userId: string): Promise<Purchase[]>;
+  getPurchaseWithChildren(id: string): Promise<{ purchase: Purchase; children: Purchase[] } | undefined>;
   
   createDownload(download: InsertDownload): Promise<Download>;
   getPurchaseDownloads(purchaseId: string): Promise<Download[]>;
@@ -44,6 +45,7 @@ export interface IStorage {
   deleteFunnelStep(id: string): Promise<boolean>;
 
   createOrderBump(bump: InsertOrderBump): Promise<OrderBump>;
+  getOrderBump(id: string): Promise<OrderBump | undefined>;
   getOrderBumpByProduct(productId: string): Promise<OrderBump | undefined>;
   updateOrderBump(id: string, bump: Partial<InsertOrderBump>): Promise<OrderBump | undefined>;
   deleteOrderBump(id: string): Promise<boolean>;
@@ -287,6 +289,10 @@ export class MemStorage implements IStorage {
     return [];
   }
 
+  async getPurchaseWithChildren(id: string): Promise<{ purchase: Purchase; children: Purchase[] } | undefined> {
+    return undefined;
+  }
+
   async createDownload(download: InsertDownload): Promise<Download> {
     throw new Error("Downloads not supported in MemStorage");
   }
@@ -337,6 +343,10 @@ export class MemStorage implements IStorage {
 
   async createOrderBump(bump: InsertOrderBump): Promise<OrderBump> {
     throw new Error("Order bumps not supported in MemStorage");
+  }
+
+  async getOrderBump(id: string): Promise<OrderBump | undefined> {
+    return undefined;
   }
 
   async getOrderBumpByProduct(productId: string): Promise<OrderBump | undefined> {
@@ -432,6 +442,18 @@ export class DatabaseStorage implements IStorage {
     return await this.db.select().from(purchases).where(eq(purchases.userId, userId));
   }
 
+  async getPurchaseWithChildren(id: string): Promise<{ purchase: Purchase; children: Purchase[] } | undefined> {
+    const purchase = await this.getPurchase(id);
+    if (!purchase) {
+      return undefined;
+    }
+    const children = await this.db
+      .select()
+      .from(purchases)
+      .where(eq(purchases.parentPurchaseId, id));
+    return { purchase, children };
+  }
+
   async createDownload(download: InsertDownload): Promise<Download> {
     const result = await this.db.insert(downloads).values(download).returning();
     return result[0];
@@ -503,6 +525,11 @@ export class DatabaseStorage implements IStorage {
 
   async createOrderBump(bump: InsertOrderBump): Promise<OrderBump> {
     const result = await this.db.insert(orderBumps).values(bump).returning();
+    return result[0];
+  }
+
+  async getOrderBump(id: string): Promise<OrderBump | undefined> {
+    const result = await this.db.select().from(orderBumps).where(eq(orderBumps.id, id)).limit(1);
     return result[0];
   }
 

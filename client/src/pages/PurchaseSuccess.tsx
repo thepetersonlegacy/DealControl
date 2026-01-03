@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
 import type { Product, Purchase } from "@shared/schema";
@@ -6,10 +5,13 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle, Calendar, CreditCard } from "lucide-react";
+import { Loader2, CheckCircle, Calendar, CreditCard, Package } from "lucide-react";
 
-interface PurchaseWithProduct extends Purchase {
+interface PurchaseResponse {
+  purchase: Purchase;
   product: Product;
+  orderBumpPurchase: Purchase | null;
+  orderBumpProduct: Product | null;
 }
 
 export default function PurchaseSuccess() {
@@ -17,7 +19,7 @@ export default function PurchaseSuccess() {
   const searchParams = new URLSearchParams(window.location.search);
   const purchaseId = searchParams.get('purchaseId');
 
-  const { data: purchase, isLoading, error } = useQuery<PurchaseWithProduct>({
+  const { data, isLoading, error } = useQuery<PurchaseResponse>({
     queryKey: ["/api/purchases", purchaseId],
     queryFn: async () => {
       if (!purchaseId) {
@@ -45,7 +47,7 @@ export default function PurchaseSuccess() {
     );
   }
 
-  if (error || !purchase) {
+  if (error || !data) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navigation />
@@ -65,7 +67,9 @@ export default function PurchaseSuccess() {
     );
   }
 
+  const { purchase, product, orderBumpPurchase, orderBumpProduct } = data;
   const purchaseDate = new Date(purchase.purchasedAt * 1000);
+  const totalAmount = purchase.amount + (orderBumpPurchase?.amount || 0);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -91,29 +95,58 @@ export default function PurchaseSuccess() {
             <div className="space-y-4">
               <div className="flex gap-4">
                 <img
-                  src={purchase.product.imageUrl}
-                  alt={purchase.product.title}
+                  src={product.imageUrl}
+                  alt={product.title}
                   className="w-24 h-24 object-cover rounded-md"
                   data-testid="img-product"
                 />
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-foreground mb-1" data-testid="text-product-title">
-                    {purchase.product.title}
+                    {product.title}
                   </h3>
                   <p className="text-sm text-muted-foreground mb-2" data-testid="text-product-format">
-                    {purchase.product.format}
+                    {product.format}
+                  </p>
+                  <p className="text-sm font-medium text-foreground" data-testid="text-product-price">
+                    ${(purchase.amount / 100).toFixed(2)}
                   </p>
                 </div>
               </div>
+
+              {orderBumpPurchase && orderBumpProduct && (
+                <div className="flex gap-4 pt-4 border-t">
+                  <img
+                    src={orderBumpProduct.imageUrl}
+                    alt={orderBumpProduct.title}
+                    className="w-24 h-24 object-cover rounded-md"
+                    data-testid="img-order-bump-product"
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Package className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-medium text-primary uppercase">Bonus Item</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-1" data-testid="text-order-bump-title">
+                      {orderBumpProduct.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-2" data-testid="text-order-bump-format">
+                      {orderBumpProduct.format}
+                    </p>
+                    <p className="text-sm font-medium text-foreground" data-testid="text-order-bump-price">
+                      ${(orderBumpPurchase.amount / 100).toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div className="border-t pt-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <CreditCard className="w-4 h-4" />
-                    <span className="text-sm">Amount Paid</span>
+                    <span className="text-sm">Total Amount Paid</span>
                   </div>
                   <span className="text-lg font-semibold text-foreground" data-testid="text-amount-paid">
-                    ${(purchase.amount / 100).toFixed(2)}
+                    ${(totalAmount / 100).toFixed(2)}
                   </span>
                 </div>
 
@@ -143,6 +176,22 @@ export default function PurchaseSuccess() {
             </div>
           </Card>
 
+          {orderBumpProduct && (
+            <Card className="p-6 mb-6 bg-primary/5 border-primary/20">
+              <h3 className="font-semibold text-foreground mb-2">You now have access to:</h3>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <span data-testid="text-access-main-product">{product.title}</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-600" />
+                  <span data-testid="text-access-bump-product">{orderBumpProduct.title}</span>
+                </li>
+              </ul>
+            </Card>
+          )}
+
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild className="flex-1" data-testid="button-view-purchases">
               <Link href="/library">
@@ -160,7 +209,7 @@ export default function PurchaseSuccess() {
             <h3 className="font-semibold text-foreground mb-2">What's Next?</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li>• You'll receive a confirmation email with your purchase details</li>
-              <li>• Access your purchased product anytime from your library</li>
+              <li>• Access your purchased product{orderBumpProduct ? 's' : ''} anytime from your library</li>
               <li>• Download the product files and start using them immediately</li>
             </ul>
           </Card>
