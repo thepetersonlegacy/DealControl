@@ -7,7 +7,9 @@ import {
   type FunnelStep, type InsertFunnelStep,
   type OrderBump, type InsertOrderBump,
   type FunnelSession, type InsertFunnelSession,
-  products, users, purchases, downloads, funnels, funnelSteps, orderBumps, funnelSessions 
+  type Subscriber, type InsertSubscriber,
+  type EmailLog, type InsertEmailLog,
+  products, users, purchases, downloads, funnels, funnelSteps, orderBumps, funnelSessions, subscribers, emailLogs 
 } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { drizzle } from "drizzle-orm/neon-serverless";
@@ -59,6 +61,12 @@ export interface IStorage {
   getAllFunnelSessions(): Promise<FunnelSession[]>;
   getAllOrderBumps(): Promise<OrderBump[]>;
   getAllPurchases(): Promise<Purchase[]>;
+
+  createSubscriber(data: InsertSubscriber): Promise<Subscriber>;
+  getSubscriberByEmail(email: string): Promise<Subscriber | undefined>;
+  getAllSubscribers(): Promise<Subscriber[]>;
+  createEmailLog(data: InsertEmailLog): Promise<EmailLog>;
+  getEmailLogs(userId?: string): Promise<EmailLog[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -66,6 +74,8 @@ export class MemStorage implements IStorage {
   private products: Map<string, Product>;
   private purchases: Map<string, Purchase>;
   private downloads: Map<string, Download>;
+  private subscribers: Subscriber[] = [];
+  private emailLogsList: EmailLog[] = [];
 
   constructor() {
     this.users = new Map();
@@ -442,6 +452,49 @@ export class MemStorage implements IStorage {
   async getAllPurchases(): Promise<Purchase[]> {
     return [];
   }
+
+  async createSubscriber(data: InsertSubscriber): Promise<Subscriber> {
+    const id = randomUUID();
+    const subscriber: Subscriber = {
+      id,
+      email: data.email,
+      firstName: data.firstName || null,
+      subscribedAt: new Date(),
+      isActive: data.isActive ?? 1,
+      source: data.source || null,
+    };
+    this.subscribers.push(subscriber);
+    return subscriber;
+  }
+
+  async getSubscriberByEmail(email: string): Promise<Subscriber | undefined> {
+    return this.subscribers.find(s => s.email === email);
+  }
+
+  async getAllSubscribers(): Promise<Subscriber[]> {
+    return this.subscribers;
+  }
+
+  async createEmailLog(data: InsertEmailLog): Promise<EmailLog> {
+    const id = randomUUID();
+    const emailLog: EmailLog = {
+      id,
+      subscriberId: data.subscriberId || null,
+      userId: data.userId || null,
+      emailType: data.emailType,
+      sentAt: new Date(),
+      status: data.status ?? "pending",
+    };
+    this.emailLogsList.push(emailLog);
+    return emailLog;
+  }
+
+  async getEmailLogs(userId?: string): Promise<EmailLog[]> {
+    if (userId) {
+      return this.emailLogsList.filter(log => log.userId === userId);
+    }
+    return this.emailLogsList;
+  }
 }
 
 export class DatabaseStorage implements IStorage {
@@ -679,6 +732,32 @@ export class DatabaseStorage implements IStorage {
 
   async getAllPurchases(): Promise<Purchase[]> {
     return await this.db.select().from(purchases);
+  }
+
+  async createSubscriber(data: InsertSubscriber): Promise<Subscriber> {
+    const result = await this.db.insert(subscribers).values(data).returning();
+    return result[0];
+  }
+
+  async getSubscriberByEmail(email: string): Promise<Subscriber | undefined> {
+    const result = await this.db.select().from(subscribers).where(eq(subscribers.email, email)).limit(1);
+    return result[0];
+  }
+
+  async getAllSubscribers(): Promise<Subscriber[]> {
+    return await this.db.select().from(subscribers);
+  }
+
+  async createEmailLog(data: InsertEmailLog): Promise<EmailLog> {
+    const result = await this.db.insert(emailLogs).values(data).returning();
+    return result[0];
+  }
+
+  async getEmailLogs(userId?: string): Promise<EmailLog[]> {
+    if (userId) {
+      return await this.db.select().from(emailLogs).where(eq(emailLogs.userId, userId));
+    }
+    return await this.db.select().from(emailLogs);
   }
 }
 

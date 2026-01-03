@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import Stripe from "stripe";
-import { insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema } from "@shared/schema";
+import { insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema } from "@shared/schema";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -984,6 +984,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error("Error fetching funnel analytics:", error);
       res.status(500).json({ error: "Failed to fetch analytics: " + error.message });
+    }
+  });
+
+  // ========== EMAIL MARKETING ENDPOINTS ==========
+
+  app.post("/api/subscribe", async (req, res) => {
+    try {
+      const parsed = insertSubscriberSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid data", details: parsed.error.errors });
+      }
+
+      const { email, firstName, source } = parsed.data;
+
+      const existingSubscriber = await storage.getSubscriberByEmail(email);
+      if (existingSubscriber) {
+        return res.status(409).json({ error: "Email already subscribed" });
+      }
+
+      const subscriber = await storage.createSubscriber({
+        email,
+        firstName: firstName || null,
+        source: source || "homepage",
+        isActive: 1,
+      });
+
+      res.status(201).json({ message: "Successfully subscribed", subscriber });
+    } catch (error: any) {
+      console.error("Error creating subscriber:", error);
+      res.status(500).json({ error: "Failed to subscribe: " + error.message });
+    }
+  });
+
+  app.get("/api/admin/subscribers", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const subscribers = await storage.getAllSubscribers();
+      res.json(subscribers);
+    } catch (error: any) {
+      console.error("Error fetching subscribers:", error);
+      res.status(500).json({ error: "Failed to fetch subscribers: " + error.message });
+    }
+  });
+
+  app.post("/api/email/log", isAuthenticated, async (req: any, res) => {
+    try {
+      const parsed = insertEmailLogSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid data", details: parsed.error.errors });
+      }
+
+      const emailLog = await storage.createEmailLog(parsed.data);
+      res.status(201).json(emailLog);
+    } catch (error: any) {
+      console.error("Error creating email log:", error);
+      res.status(500).json({ error: "Failed to log email: " + error.message });
     }
   });
 

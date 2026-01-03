@@ -8,6 +8,7 @@ import { FeatureHighlights } from "@/components/FeatureHighlights";
 import { UseCases } from "@/components/UseCases";
 import { Testimonials } from "@/components/Testimonials";
 import { CTASection } from "@/components/CTASection";
+import { LeadCapture } from "@/components/LeadCapture";
 import { Footer } from "@/components/Footer";
 import { Loader2 } from "lucide-react";
 
@@ -56,6 +57,7 @@ export default function Home() {
       <FeatureHighlights />
       <UseCases />
       <Testimonials />
+      <LeadCapture source="homepage" />
       <CTASection />
       <Footer />
     </div>

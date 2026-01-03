@@ -162,3 +162,43 @@ export const insertDownloadSchema = createInsertSchema(downloads).omit({
 
 export type InsertDownload = z.infer<typeof insertDownloadSchema>;
 export type Download = typeof downloads.$inferSelect;
+
+// Email subscribers table
+export const subscribers = pgTable("subscribers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email", { length: 255 }).notNull().unique(),
+  firstName: varchar("first_name", { length: 100 }),
+  subscribedAt: timestamp("subscribed_at").defaultNow(),
+  isActive: integer("is_active").default(1),
+  source: varchar("source", { length: 50 }),
+});
+
+export const insertSubscriberSchema = createInsertSchema(subscribers).omit({
+  id: true,
+  subscribedAt: true,
+}).extend({
+  isActive: z.number().optional(),
+});
+
+export type InsertSubscriber = z.infer<typeof insertSubscriberSchema>;
+export type Subscriber = typeof subscribers.$inferSelect;
+
+// Email logs table (track sent emails)
+export const emailLogs = pgTable("email_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  subscriberId: varchar("subscriber_id").references(() => subscribers.id),
+  userId: varchar("user_id", { length: 255 }),
+  emailType: varchar("email_type", { length: 50 }).notNull(),
+  sentAt: timestamp("sent_at").defaultNow(),
+  status: varchar("status", { length: 20 }).default("pending"),
+});
+
+export const insertEmailLogSchema = createInsertSchema(emailLogs).omit({
+  id: true,
+  sentAt: true,
+}).extend({
+  status: z.string().optional(),
+});
+
+export type InsertEmailLog = z.infer<typeof insertEmailLogSchema>;
+export type EmailLog = typeof emailLogs.$inferSelect;
