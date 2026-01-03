@@ -28,9 +28,14 @@ Preferred communication style: Simple, everyday language.
 - Responsive breakpoints and mobile-first design approach
 
 **Key Pages:**
-- Home: Hero section, product carousels, feature highlights, testimonials, and CTAs
+- Home: Hero section, product carousels, feature highlights, testimonials, lead capture, and CTAs
 - Library: Product browsing with search and category filtering
 - Product Detail: Individual product information with features and pricing
+- Checkout: Stripe payment integration with order bump display
+- PurchaseSuccess: Post-purchase confirmation with funnel redirect
+- FunnelOffer: Upsell/downsell pages with countdown timers and benefit stacks
+- Dashboard: User purchase history and download management
+- Admin: Funnel management, order bumps, and analytics dashboard
 - 404: Custom not-found page
 
 **Component Architecture:**
@@ -112,6 +117,58 @@ Preferred communication style: Simple, everyday language.
   - `id`: UUID primary key (auto-generated)
   - `purchaseId`: UUID, FK to purchases.id
   - `downloadedAt`: Timestamp with default
+
+- **Funnels Table** (ClickFunnels-style sales funnels):
+  - `id`: UUID primary key
+  - `name`: Text, required
+  - `description`: Text
+  - `entryProductId`: UUID, FK to products.id (trigger product)
+  - `isActive`: Integer (0/1), default 1
+
+- **Funnel Steps Table** (upsells/downsells):
+  - `id`: UUID primary key
+  - `funnelId`: UUID, FK to funnels.id
+  - `offerProductId`: UUID, FK to products.id
+  - `stepType`: Text ("upsell" or "downsell")
+  - `priority`: Integer (step order)
+  - `headline`, `subheadline`, `ctaText`, `declineText`: Customizable copy
+  - `priceOverride`: Integer (optional discounted price)
+  - `countdown`: Integer (urgency timer seconds)
+  - `isActive`: Integer (0/1)
+
+- **Order Bumps Table** (checkout add-ons):
+  - `id`: UUID primary key
+  - `productId`: UUID, FK to products.id (main product)
+  - `bumpProductId`: UUID, FK to products.id (bump offer)
+  - `headline`, `description`: Customizable copy
+  - `price`: Integer (bump price in cents)
+  - `isActive`: Integer (0/1)
+
+- **Funnel Sessions Table** (tracks user journey):
+  - `id`: UUID primary key
+  - `funnelId`: UUID, FK to funnels.id
+  - `userId`: Varchar, FK to users.id
+  - `entryPurchaseId`: UUID (initial purchase)
+  - `currentStepIndex`: Integer
+  - `acceptedSteps`, `declinedSteps`: Text arrays
+  - `totalRevenue`: Integer (session revenue)
+  - `status`: Text ("active", "completed", "abandoned")
+
+- **Subscribers Table** (email marketing):
+  - `id`: UUID primary key
+  - `email`: Varchar, unique
+  - `firstName`: Varchar
+  - `subscribedAt`: Timestamp
+  - `isActive`: Integer (0/1)
+  - `source`: Varchar ("homepage", "checkout", etc.)
+
+- **Email Logs Table** (email tracking):
+  - `id`: UUID primary key
+  - `subscriberId`: UUID, FK to subscribers.id
+  - `userId`: Varchar
+  - `emailType`: Varchar
+  - `sentAt`: Timestamp
+  - `status`: Varchar
 
 **Schema Validation:**
 - Drizzle Zod integration for runtime type validation
