@@ -9,10 +9,10 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-xl font-bold text-primary mb-4" data-testid="text-footer-brand">
-              ProductHub
+              DealControl
             </h3>
             <p className="text-muted-foreground" data-testid="text-footer-description">
-              Your source for done-for-you digital products to grow your business.
+              Tools for When Deals Matter
             </p>
           </div>
 
@@ -91,7 +91,7 @@ export function Footer() {
 
         <div className="border-t pt-8 text-center text-muted-foreground">
           <p data-testid="text-footer-copyright">
-            © 2025 ProductHub. All rights reserved.
+            © 2025 DealControl. All rights reserved.
           </p>
         </div>
       </div>

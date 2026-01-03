@@ -23,13 +23,13 @@ export function HeroSection() {
       
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight mb-6" data-testid="text-hero-title">
-          Done-For-You Digital Products <br className="hidden sm:block" />
-          to Grow Your Business
+          Tools for When <br className="hidden sm:block" />
+          Deals Matter
         </h1>
         
         <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto" data-testid="text-hero-subtitle">
-          You can instantly have your own digital products. Rebrand, sell, or use in any way. 
-          Without high investments or months of creation.
+          Professional SOPs, checklists, and playbooks for Texas real estate agents. 
+          Prevent costly mistakes and close deals with confidence.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -56,7 +56,7 @@ export function HeroSection() {
             ))}
           </div>
           <p className="text-foreground font-semibold text-lg" data-testid="text-social-proof">
-            Loved by 20,000+ entrepreneurs
+            Trusted by Texas real estate professionals
           </p>
           <div className="flex items-center gap-2">
             <div className="flex">
