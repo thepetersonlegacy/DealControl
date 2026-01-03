@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import Stripe from "stripe";
-import { insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema } from "@shared/schema";
+import { insertProductSchema, insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema } from "@shared/schema";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -71,6 +71,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(product);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch product" });
+    }
+  });
+
+  // Admin: Create product
+  app.post("/api/products", isAuthenticated, async (req: any, res) => {
+    try {
+      const parsed = insertProductSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ error: "Invalid product data", details: parsed.error.format() });
+      }
+      const product = await storage.createProduct(parsed.data);
+      res.status(201).json(product);
+    } catch (error) {
+      console.error("Error creating product:", error);
+      res.status(500).json({ error: "Failed to create product" });
+    }
+  });
+
+  // Admin: Bulk create products
+  app.post("/api/products/bulk", isAuthenticated, async (req: any, res) => {
+    try {
+      const { products: productsArray } = req.body;
+      if (!Array.isArray(productsArray)) {
+        return res.status(400).json({ error: "Expected products array" });
+      }
+      const created = [];
+      for (const productData of productsArray) {
+        const parsed = insertProductSchema.safeParse(productData);
+        if (parsed.success) {
+          const product = await storage.createProduct(parsed.data);
+          created.push(product);
+        }
+      }
+      res.status(201).json({ created: created.length, products: created });
+    } catch (error) {
+      console.error("Error bulk creating products:", error);
+      res.status(500).json({ error: "Failed to bulk create products" });
     }
   });
 
