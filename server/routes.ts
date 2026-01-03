@@ -246,6 +246,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ========== USER DASHBOARD ENDPOINTS ==========
+
+  app.get("/api/user/purchases", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const purchases = await storage.getUserPurchases(userId);
+      
+      const purchasesWithProducts = await Promise.all(
+        purchases.map(async (purchase) => {
+          const product = await storage.getProduct(purchase.productId);
+          return { purchase, product };
+        })
+      );
+      
+      res.json(purchasesWithProducts);
+    } catch (error: any) {
+      console.error("Error fetching user purchases:", error);
+      res.status(500).json({ error: "Failed to fetch purchases: " + error.message });
+    }
+  });
+
+  app.get("/api/user/purchases/:purchaseId/download", isAuthenticated, async (req: any, res) => {
+    try {
+      const { purchaseId } = req.params;
+      const userId = req.user.claims.sub;
+      
+      const purchase = await storage.getPurchase(purchaseId);
+      
+      if (!purchase) {
+        return res.status(404).json({ error: "Purchase not found" });
+      }
+      
+      if (purchase.userId !== userId) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+      
+      const product = await storage.getProduct(purchase.productId);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      
+      const recentDownload = await storage.getRecentDownloadForPurchase(purchaseId, 10);
+      const download = recentDownload || await storage.createDownload({ purchaseId });
+      
+      res.json({
+        download,
+        product,
+        downloadUrl: `/api/downloads/${product.id}`,
+      });
+    } catch (error: any) {
+      console.error("Error creating download:", error);
+      res.status(500).json({ error: "Failed to create download: " + error.message });
+    }
+  });
+
+  app.get("/api/user/downloads", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const downloads = await storage.getUserDownloads(userId);
+      res.json(downloads);
+    } catch (error: any) {
+      console.error("Error fetching user downloads:", error);
+      res.status(500).json({ error: "Failed to fetch downloads: " + error.message });
+    }
+  });
+
+  // ========== DOWNLOAD ENDPOINT ==========
+
+  app.get("/api/downloads/:productId", isAuthenticated, async (req: any, res) => {
+    try {
+      const { productId } = req.params;
+      const userId = req.user.claims.sub;
+      
+      const product = await storage.getProduct(productId);
+      
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+      
+      const purchases = await storage.getUserPurchases(userId);
+      const hasPurchased = purchases.some(p => p.productId === productId);
+      
+      if (!hasPurchased) {
+        return res.status(403).json({ error: "You have not purchased this product" });
+      }
+      
+      if (product.imageUrl) {
+        return res.redirect(product.imageUrl);
+      }
+      
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Content-Disposition', `attachment; filename="${product.title.replace(/\s+/g, '-').toLowerCase()}.txt"`);
+      res.send(`Thank you for purchasing "${product.title}"!\n\nThis is a demo download file.\n\nIn a real application, this would be the actual product content.\n\nProduct Details:\n- Title: ${product.title}\n- Description: ${product.description}\n- Format: ${product.format}\n- Category: ${product.category}`);
+    } catch (error: any) {
+      console.error("Error downloading product:", error);
+      res.status(500).json({ error: "Failed to download product: " + error.message });
+    }
+  });
+
   // ========== ORDER BUMP ENDPOINTS ==========
 
   app.get("/api/order-bump/:productId", isAuthenticated, async (req: any, res) => {

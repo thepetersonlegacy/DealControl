@@ -31,6 +31,8 @@ export interface IStorage {
   
   createDownload(download: InsertDownload): Promise<Download>;
   getPurchaseDownloads(purchaseId: string): Promise<Download[]>;
+  getRecentDownloadForPurchase(purchaseId: string, withinSeconds: number): Promise<Download | undefined>;
+  getUserDownloads(userId: string): Promise<{ download: Download; purchase: Purchase; product: Product | null }[]>;
 
   createFunnel(funnel: InsertFunnel): Promise<Funnel>;
   getFunnel(id: string): Promise<Funnel | undefined>;
@@ -62,10 +64,14 @@ export interface IStorage {
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private products: Map<string, Product>;
+  private purchases: Map<string, Purchase>;
+  private downloads: Map<string, Download>;
 
   constructor() {
     this.users = new Map();
     this.products = new Map();
+    this.purchases = new Map();
+    this.downloads = new Map();
     this.seedProducts();
   }
 
@@ -281,27 +287,72 @@ export class MemStorage implements IStorage {
   }
 
   async createPurchase(purchase: InsertPurchase): Promise<Purchase> {
-    throw new Error("Purchases not supported in MemStorage");
+    const id = randomUUID();
+    const newPurchase: Purchase = {
+      ...purchase,
+      id,
+      stripePaymentId: purchase.stripePaymentId || null,
+      purchasedAt: Math.floor(Date.now() / 1000),
+      funnelSessionId: purchase.funnelSessionId || null,
+      funnelStepId: purchase.funnelStepId || null,
+      isOrderBump: purchase.isOrderBump ?? 0,
+      parentPurchaseId: purchase.parentPurchaseId || null,
+    };
+    this.purchases.set(id, newPurchase);
+    return newPurchase;
   }
 
   async getPurchase(id: string): Promise<Purchase | undefined> {
-    return undefined;
+    return this.purchases.get(id);
   }
 
   async getUserPurchases(userId: string): Promise<Purchase[]> {
-    return [];
+    return Array.from(this.purchases.values()).filter(p => p.userId === userId);
   }
 
   async getPurchaseWithChildren(id: string): Promise<{ purchase: Purchase; children: Purchase[] } | undefined> {
-    return undefined;
+    const purchase = this.purchases.get(id);
+    if (!purchase) return undefined;
+    const children = Array.from(this.purchases.values()).filter(p => p.parentPurchaseId === id);
+    return { purchase, children };
   }
 
   async createDownload(download: InsertDownload): Promise<Download> {
-    throw new Error("Downloads not supported in MemStorage");
+    const id = randomUUID();
+    const newDownload: Download = {
+      id,
+      purchaseId: download.purchaseId,
+      downloadedAt: Math.floor(Date.now() / 1000),
+    };
+    this.downloads.set(id, newDownload);
+    return newDownload;
   }
 
   async getPurchaseDownloads(purchaseId: string): Promise<Download[]> {
-    return [];
+    return Array.from(this.downloads.values()).filter(d => d.purchaseId === purchaseId);
+  }
+
+  async getRecentDownloadForPurchase(purchaseId: string, withinSeconds: number): Promise<Download | undefined> {
+    const now = Math.floor(Date.now() / 1000);
+    const downloads = Array.from(this.downloads.values())
+      .filter(d => d.purchaseId === purchaseId && (now - d.downloadedAt) <= withinSeconds)
+      .sort((a, b) => b.downloadedAt - a.downloadedAt);
+    return downloads[0];
+  }
+
+  async getUserDownloads(userId: string): Promise<{ download: Download; purchase: Purchase; product: Product | null }[]> {
+    const userPurchases = await this.getUserPurchases(userId);
+    const results: { download: Download; purchase: Purchase; product: Product | null }[] = [];
+    
+    for (const purchase of userPurchases) {
+      const purchaseDownloads = await this.getPurchaseDownloads(purchase.id);
+      const product = await this.getProduct(purchase.productId);
+      for (const download of purchaseDownloads) {
+        results.push({ download, purchase, product: product || null });
+      }
+    }
+    
+    return results.sort((a, b) => b.download.downloadedAt - a.download.downloadedAt);
   }
 
   async createFunnel(funnel: InsertFunnel): Promise<Funnel> {
@@ -476,6 +527,30 @@ export class DatabaseStorage implements IStorage {
 
   async getPurchaseDownloads(purchaseId: string): Promise<Download[]> {
     return await this.db.select().from(downloads).where(eq(downloads.purchaseId, purchaseId));
+  }
+
+  async getRecentDownloadForPurchase(purchaseId: string, withinSeconds: number): Promise<Download | undefined> {
+    const now = Math.floor(Date.now() / 1000);
+    const allDownloads = await this.getPurchaseDownloads(purchaseId);
+    const recentDownloads = allDownloads
+      .filter(d => (now - d.downloadedAt) <= withinSeconds)
+      .sort((a, b) => b.downloadedAt - a.downloadedAt);
+    return recentDownloads[0];
+  }
+
+  async getUserDownloads(userId: string): Promise<{ download: Download; purchase: Purchase; product: Product | null }[]> {
+    const userPurchases = await this.getUserPurchases(userId);
+    const results: { download: Download; purchase: Purchase; product: Product | null }[] = [];
+    
+    for (const purchase of userPurchases) {
+      const purchaseDownloads = await this.getPurchaseDownloads(purchase.id);
+      const product = await this.getProduct(purchase.productId);
+      for (const download of purchaseDownloads) {
+        results.push({ download, purchase, product: product || null });
+      }
+    }
+    
+    return results.sort((a, b) => b.download.downloadedAt - a.download.downloadedAt);
   }
 
   async createFunnel(funnel: InsertFunnel): Promise<Funnel> {
