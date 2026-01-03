@@ -18,6 +18,8 @@ import KitTransactionRisk from "@/pages/KitTransactionRisk";
 import Office from "@/pages/Office";
 import LegalRefunds from "@/pages/LegalRefunds";
 import Downloads from "@/pages/Downloads";
+import Login from "@/pages/Login";
+import Register from "@/pages/Register";
 
 function Router() {
   return (
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/office" component={Office} />
       <Route path="/legal/refunds" component={LegalRefunds} />
       <Route path="/downloads" component={Downloads} />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
       <Route component={NotFound} />
     </Switch>
   );

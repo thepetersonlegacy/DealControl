@@ -1,13 +1,25 @@
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Menu, X, LogOut, User } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isAuthenticated, isLoading } = useAuth();
+  const [, setLocation] = useLocation();
+
+  const handleLogout = async () => {
+    try {
+      await apiRequest("POST", "/api/auth/logout");
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/user"] });
+      setLocation("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg bg-background/80 border-b">
@@ -42,7 +54,7 @@ export function Navigation() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => window.location.href = "/api/logout"}
+                    onClick={handleLogout}
                     data-testid="button-logout"
                   >
                     <LogOut className="h-4 w-4 mr-2" />
@@ -51,13 +63,14 @@ export function Navigation() {
                 </div>
               </div>
             ) : (
-              <Button
-                variant="default"
-                onClick={() => window.location.href = "/api/login"}
-                data-testid="button-login"
-              >
-                Log In
-              </Button>
+              <Link href="/login">
+                <Button
+                  variant="default"
+                  data-testid="button-login"
+                >
+                  Log In
+                </Button>
+              </Link>
             )}
           </div>
 
@@ -89,7 +102,7 @@ export function Navigation() {
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={() => window.location.href = "/api/logout"}
+                  onClick={handleLogout}
                   data-testid="button-mobile-logout"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
@@ -97,14 +110,15 @@ export function Navigation() {
                 </Button>
               </>
             ) : (
-              <Button
-                variant="default"
-                className="w-full"
-                onClick={() => window.location.href = "/api/login"}
-                data-testid="button-mobile-login"
-              >
-                Log In
-              </Button>
+              <Link href="/login">
+                <Button
+                  variant="default"
+                  className="w-full"
+                  data-testid="button-mobile-login"
+                >
+                  Log In
+                </Button>
+              </Link>
             )}
           </div>
         </div>
