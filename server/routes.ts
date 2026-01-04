@@ -866,6 +866,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ========== ADMIN: USERS & SALES ==========
+
+  app.get("/api/admin/users", isAuthenticated, localIsAdmin, async (req: any, res) => {
+    try {
+      const allUsers = await storage.getAllUsers();
+      // Return users without password hash for security
+      const sanitizedUsers = allUsers.map(({ passwordHash, ...user }) => user);
+      res.json(sanitizedUsers);
+    } catch (error: any) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ error: "Failed to fetch users: " + error.message });
+    }
+  });
+
+  app.get("/api/admin/purchases", isAuthenticated, localIsAdmin, async (req: any, res) => {
+    try {
+      const allPurchases = await storage.getAllPurchases();
+      const allUsers = await storage.getAllUsers();
+      
+      // Enrich purchases with user and product data
+      const enrichedPurchases = await Promise.all(
+        allPurchases.map(async (purchase) => {
+          const product = await storage.getProduct(purchase.productId);
+          const user = allUsers.find(u => u.id === purchase.userId);
+          return {
+            ...purchase,
+            product,
+            user: user ? { 
+              id: user.id, 
+              email: user.email, 
+              firstName: user.firstName, 
+              lastName: user.lastName 
+            } : null,
+          };
+        })
+      );
+      
+      // Sort by most recent first
+      enrichedPurchases.sort((a, b) => b.purchasedAt - a.purchasedAt);
+      
+      res.json(enrichedPurchases);
+    } catch (error: any) {
+      console.error("Error fetching purchases:", error);
+      res.status(500).json({ error: "Failed to fetch purchases: " + error.message });
+    }
+  });
+
+  app.get("/api/admin/stats", isAuthenticated, localIsAdmin, async (req: any, res) => {
+    try {
+      const allPurchases = await storage.getAllPurchases();
+      const allUsers = await storage.getAllUsers();
+      const allSubscribers = await storage.getAllSubscribers();
+      const allSessions = await storage.getAllFunnelSessions();
+      
+      // Calculate stats
+      const totalRevenue = allPurchases.reduce((sum, p) => sum + (p.amount || 0), 0);
+      const totalOrders = allPurchases.filter(p => !p.parentPurchaseId).length;
+      const totalCustomers = new Set(allPurchases.map(p => p.userId)).size;
+      const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+      
+      // Recent activity (last 30 days)
+      const thirtyDaysAgo = Math.floor(Date.now() / 1000) - (30 * 24 * 60 * 60);
+      const recentPurchases = allPurchases.filter(p => p.purchasedAt >= thirtyDaysAgo);
+      const recentRevenue = recentPurchases.reduce((sum, p) => sum + (p.amount || 0), 0);
+      const recentOrders = recentPurchases.filter(p => !p.parentPurchaseId).length;
+      
+      // Funnel stats
+      const activeSessions = allSessions.filter(s => s.status === "active").length;
+      const completedSessions = allSessions.filter(s => s.status === "completed").length;
+      const funnelConversionRate = allSessions.length > 0 
+        ? (completedSessions / allSessions.length) * 100 
+        : 0;
+      
+      res.json({
+        totalRevenue,
+        totalOrders,
+        totalCustomers,
+        totalUsers: allUsers.length,
+        totalSubscribers: allSubscribers.length,
+        avgOrderValue,
+        recentRevenue,
+        recentOrders,
+        activeFunnelSessions: activeSessions,
+        completedFunnelSessions: completedSessions,
+        funnelConversionRate,
+      });
+    } catch (error: any) {
+      console.error("Error fetching admin stats:", error);
+      res.status(500).json({ error: "Failed to fetch stats: " + error.message });
+    }
+  });
+
   app.get("/api/admin/order-bumps", isAuthenticated, localIsAdmin, async (req: any, res) => {
     try {
       const orderBumps = await storage.getAllOrderBumps();

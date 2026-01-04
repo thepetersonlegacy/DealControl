@@ -22,6 +22,7 @@ import { eq } from "drizzle-orm";
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
+  getAllUsers(): Promise<User[]>;
   createUser(user: UpsertUser): Promise<User>;
   upsertUser(user: UpsertUser): Promise<User>;
   
@@ -103,6 +104,10 @@ export class MemStorage implements IStorage {
 
   async getUserByEmail(email: string): Promise<User | undefined> {
     return Array.from(this.users.values()).find(u => u.email === email);
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return Array.from(this.users.values());
   }
 
   async createUser(userData: UpsertUser): Promise<User> {
@@ -569,6 +574,10 @@ export class DatabaseStorage implements IStorage {
   async getUserByEmail(email: string): Promise<User | undefined> {
     const result = await this.db.select().from(users).where(eq(users.email, email)).limit(1);
     return result[0];
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await this.db.select().from(users);
   }
 
   async createUser(userData: UpsertUser): Promise<User> {
