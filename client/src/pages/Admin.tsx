@@ -130,37 +130,46 @@ export default function Admin() {
   const [isCreateOrderBumpOpen, setIsCreateOrderBumpOpen] = useState(false);
   const [editingFunnel, setEditingFunnel] = useState<Funnel | null>(null);
 
+  const isAdmin = !authLoading && isAuthenticated && user?.isAdmin === 1;
+
   const { data: products, isLoading: productsLoading } = useQuery<Product[]>({
     queryKey: ["/api/products"],
+    enabled: isAdmin,
   });
 
   const { data: funnels, isLoading: funnelsLoading } = useQuery<Funnel[]>({
     queryKey: ["/api/funnels"],
+    enabled: isAdmin,
   });
 
   const { data: orderBumps, isLoading: orderBumpsLoading } = useQuery<OrderBump[]>({
     queryKey: ["/api/admin/order-bumps"],
+    enabled: isAdmin,
   });
 
   const { data: analytics, isLoading: analyticsLoading } = useQuery<FunnelAnalytics[]>({
     queryKey: ["/api/admin/analytics/funnels"],
+    enabled: isAdmin,
   });
 
   const { data: selectedFunnelAnalytics, isLoading: detailLoading } = useQuery<DetailedFunnelAnalytics>({
     queryKey: ["/api/admin/analytics/funnels", selectedFunnelId],
-    enabled: !!selectedFunnelId,
+    enabled: isAdmin && !!selectedFunnelId,
   });
 
   const { data: adminStats, isLoading: statsLoading } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
+    enabled: isAdmin,
   });
 
   const { data: adminUsers, isLoading: usersLoading } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/users"],
+    enabled: isAdmin,
   });
 
   const { data: adminPurchases, isLoading: purchasesLoading } = useQuery<AdminPurchase[]>({
     queryKey: ["/api/admin/purchases"],
+    enabled: isAdmin,
   });
 
   const funnelForm = useForm<z.infer<typeof funnelFormSchema>>({
@@ -338,7 +347,7 @@ export default function Admin() {
     );
   }
 
-  if (user?.isAdmin !== 1) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navigation />
