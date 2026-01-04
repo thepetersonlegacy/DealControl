@@ -2,7 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupLocalAuth, isAuthenticated, isAdmin as localIsAdmin } from "./localAuth";
-import Stripe from "stripe";
+import { getUncachableStripeClient, getStripePublishableKey } from "./stripeClient";
 import { insertProductSchema, insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema, insertDownloadEventSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -20,11 +20,6 @@ const downloadFileQuerySchema = z.object({
   token: z.string().min(1, "Token is required"),
   fileKey: z.string().min(1, "FileKey is required"),
 });
-
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
-}
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication (local auth with username/password)
@@ -111,6 +106,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/stripe/publishable-key", async (req, res) => {
+    try {
+      const publishableKey = await getStripePublishableKey();
+      res.json({ publishableKey });
+    } catch (error: any) {
+      console.error("Error getting Stripe publishable key:", error);
+      res.status(500).json({ error: "Failed to get Stripe publishable key" });
+    }
+  });
+
   app.post("/api/create-payment-intent", isAuthenticated, async (req: any, res) => {
     try {
       const { productId, tier, priceOverride } = req.body;
@@ -127,12 +132,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const amount = priceOverride && typeof priceOverride === 'number' ? priceOverride : product.price;
       
+      const stripe = await getUncachableStripeClient();
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: "usd",
         metadata: {
           productId: product.id,
-          userId: req.user.claims.sub,
+          userId: req.user.id,
           tier: tier || 'solo',
         },
       });
@@ -156,6 +162,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Product ID and Payment Intent ID are required" });
       }
       
+      const stripe = await getUncachableStripeClient();
       const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
       
       if (paymentIntent.status !== "succeeded") {
@@ -168,7 +175,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: "Product not found" });
       }
       
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       // Check if purchase already exists (idempotency)
       const existingPurchases = await storage.getUserPurchases(userId);
@@ -231,7 +238,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/purchases/:id", isAuthenticated, async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       const purchaseWithChildren = await storage.getPurchaseWithChildren(id);
       
@@ -268,7 +275,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/purchases", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const purchases = await storage.getUserPurchases(userId);
       res.json(purchases);
     } catch (error: any) {
@@ -281,7 +288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user/purchases", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const purchases = await storage.getUserPurchases(userId);
       
       const purchasesWithProducts = await Promise.all(
@@ -301,7 +308,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/user/purchases/:purchaseId/download", isAuthenticated, async (req: any, res) => {
     try {
       const { purchaseId } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       const purchase = await storage.getPurchase(purchaseId);
       
@@ -335,7 +342,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/user/downloads", isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const downloads = await storage.getUserDownloads(userId);
       res.json(downloads);
     } catch (error: any) {
@@ -349,7 +356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/downloads/:productId", isAuthenticated, async (req: any, res) => {
     try {
       const { productId } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       const product = await storage.getProduct(productId);
       
@@ -426,12 +433,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
+      const stripe = await getUncachableStripeClient();
       const paymentIntent = await stripe.paymentIntents.create({
         amount: totalAmount,
         currency: "usd",
         metadata: {
           productId: product.id,
-          userId: req.user.claims.sub,
+          userId: req.user.id,
           includeOrderBump: includeOrderBump ? "true" : "false",
           orderBumpId: orderBump?.id || "",
         },
@@ -454,7 +462,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/funnel/start", isAuthenticated, async (req: any, res) => {
     try {
       const { purchaseId, productId } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       if (!purchaseId || !productId) {
         return res.status(400).json({ error: "purchaseId and productId are required" });
@@ -506,7 +514,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/funnel/session/:sessionId/next", isAuthenticated, async (req: any, res) => {
     try {
       const { sessionId } = req.params;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       const session = await storage.getFunnelSession(sessionId);
       
@@ -545,7 +553,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { sessionId } = req.params;
       const { stepId, accepted } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       if (stepId === undefined || accepted === undefined) {
         return res.status(400).json({ error: "stepId and accepted are required" });
@@ -612,6 +620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
         
         // Paid offers require payment
+        const stripe = await getUncachableStripeClient();
         const paymentIntent = await stripe.paymentIntents.create({
           amount: price,
           currency: "usd",
@@ -654,7 +663,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { sessionId } = req.params;
       const { stepId, paymentIntentId } = req.body;
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       
       if (!stepId || !paymentIntentId) {
         return res.status(400).json({ error: "stepId and paymentIntentId are required" });
@@ -670,6 +679,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ error: "Access denied" });
       }
       
+      const stripe = await getUncachableStripeClient();
       const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
       
       if (paymentIntent.status !== "succeeded") {
