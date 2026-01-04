@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import type { Funnel, FunnelStep, OrderBump, Product, User, Purchase } from "@shared/schema";
 import { Navigation } from "@/components/Navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -119,6 +121,8 @@ const CHART_COLORS = ["#a855f7", "#22c55e", "#ef4444", "#f59e0b", "#3b82f6"];
 
 export default function Admin() {
   const { toast } = useToast();
+  const { user, isLoading: authLoading, isAuthenticated } = useAuth();
+  const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedFunnelId, setSelectedFunnelId] = useState<string | null>(null);
   const [isCreateFunnelOpen, setIsCreateFunnelOpen] = useState(false);
@@ -302,12 +306,54 @@ export default function Admin() {
     completionRate: a.completionRate,
   })) || [];
 
-  if (funnelsLoading || productsLoading) {
+  if (authLoading || funnelsLoading || productsLoading) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <main className="flex-1 pt-24 pb-16 flex items-center justify-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary" data-testid="loader-admin" />
+        </main>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1 pt-24 pb-16 flex items-center justify-center">
+          <Card className="max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle>Access Denied</CardTitle>
+              <CardDescription>Please log in to access the admin dashboard.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => setLocation("/login")} data-testid="button-login-redirect">
+                Go to Login
+              </Button>
+            </CardContent>
+          </Card>
+        </main>
+      </div>
+    );
+  }
+
+  if (user?.isAdmin !== 1) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navigation />
+        <main className="flex-1 pt-24 pb-16 flex items-center justify-center">
+          <Card className="max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle>Access Denied</CardTitle>
+              <CardDescription>You don't have permission to access the admin dashboard.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button onClick={() => setLocation("/")} data-testid="button-home-redirect">
+                Return to Home
+              </Button>
+            </CardContent>
+          </Card>
         </main>
       </div>
     );
