@@ -3,7 +3,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { Funnel, FunnelStep, OrderBump, Product } from "@shared/schema";
+import type { Funnel, FunnelStep, OrderBump, Product, User, Purchase } from "@shared/schema";
 import { Navigation } from "@/components/Navigation";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Loader2, Plus, Trash2, Edit, BarChart3, TrendingUp, DollarSign, Users, Target } from "lucide-react";
+import { Loader2, Plus, Trash2, Edit, BarChart3, TrendingUp, DollarSign, Users, Target, ShoppingCart, LayoutDashboard, UserCircle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from "recharts";
 
 interface FunnelAnalytics {
@@ -50,6 +50,40 @@ interface DetailedFunnelAnalytics {
   totalRevenue: number;
   avgOrderValue: number;
   stepAnalytics: StepAnalytics[];
+}
+
+interface AdminStats {
+  totalRevenue: number;
+  totalOrders: number;
+  totalCustomers: number;
+  totalUsers: number;
+  totalSubscribers: number;
+  avgOrderValue: number;
+  recentRevenue: number;
+  recentOrders: number;
+  activeFunnelSessions: number;
+  completedFunnelSessions: number;
+  funnelConversionRate: number;
+}
+
+interface AdminUser {
+  id: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  isAdmin: number | null;
+  createdAt: number | null;
+}
+
+interface AdminPurchase {
+  id: string;
+  userId: string;
+  productId: string;
+  amount: number;
+  stripePaymentId: string | null;
+  purchasedAt: number;
+  product: Product | null;
+  user: { id: string; email: string | null; firstName: string | null; lastName: string | null } | null;
 }
 
 const funnelFormSchema = z.object({
@@ -85,7 +119,7 @@ const CHART_COLORS = ["#a855f7", "#22c55e", "#ef4444", "#f59e0b", "#3b82f6"];
 
 export default function Admin() {
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("funnels");
+  const [activeTab, setActiveTab] = useState("overview");
   const [selectedFunnelId, setSelectedFunnelId] = useState<string | null>(null);
   const [isCreateFunnelOpen, setIsCreateFunnelOpen] = useState(false);
   const [isCreateStepOpen, setIsCreateStepOpen] = useState(false);
@@ -111,6 +145,18 @@ export default function Admin() {
   const { data: selectedFunnelAnalytics, isLoading: detailLoading } = useQuery<DetailedFunnelAnalytics>({
     queryKey: ["/api/admin/analytics/funnels", selectedFunnelId],
     enabled: !!selectedFunnelId,
+  });
+
+  const { data: adminStats, isLoading: statsLoading } = useQuery<AdminStats>({
+    queryKey: ["/api/admin/stats"],
+  });
+
+  const { data: adminUsers, isLoading: usersLoading } = useQuery<AdminUser[]>({
+    queryKey: ["/api/admin/users"],
+  });
+
+  const { data: adminPurchases, isLoading: purchasesLoading } = useQuery<AdminPurchase[]>({
+    queryKey: ["/api/admin/purchases"],
   });
 
   const funnelForm = useForm<z.infer<typeof funnelFormSchema>>({
@@ -283,11 +329,251 @@ export default function Admin() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 max-w-md" data-testid="tabs-admin">
+            <TabsList className="grid w-full grid-cols-6 max-w-2xl" data-testid="tabs-admin">
+              <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
+              <TabsTrigger value="sales" data-testid="tab-sales">Sales</TabsTrigger>
+              <TabsTrigger value="users" data-testid="tab-users">Users</TabsTrigger>
               <TabsTrigger value="funnels" data-testid="tab-funnels">Funnels</TabsTrigger>
               <TabsTrigger value="order-bumps" data-testid="tab-order-bumps">Order Bumps</TabsTrigger>
               <TabsTrigger value="analytics" data-testid="tab-analytics">Analytics</TabsTrigger>
             </TabsList>
+
+            <TabsContent value="overview" className="space-y-6">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <LayoutDashboard className="w-5 h-5" />
+                Dashboard Overview
+              </h2>
+              
+              {statsLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : adminStats ? (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold" data-testid="stat-overview-revenue">
+                          ${(adminStats.totalRevenue / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          ${(adminStats.recentRevenue / 100).toFixed(2)} last 30 days
+                        </p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold" data-testid="stat-overview-orders">{adminStats.totalOrders}</div>
+                        <p className="text-xs text-muted-foreground">{adminStats.recentOrders} last 30 days</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold" data-testid="stat-overview-customers">{adminStats.totalCustomers}</div>
+                        <p className="text-xs text-muted-foreground">{adminStats.totalUsers} registered users</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Avg Order Value</CardTitle>
+                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold" data-testid="stat-overview-aov">
+                          ${(adminStats.avgOrderValue / 100).toFixed(2)}
+                        </div>
+                        <p className="text-xs text-muted-foreground">per order</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Active Funnels</CardTitle>
+                        <Target className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold" data-testid="stat-overview-active-funnels">
+                          {adminStats.activeFunnelSessions}
+                        </div>
+                        <p className="text-xs text-muted-foreground">in progress</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Completed Funnels</CardTitle>
+                        <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold" data-testid="stat-overview-completed-funnels">
+                          {adminStats.completedFunnelSessions}
+                        </div>
+                        <p className="text-xs text-muted-foreground">total completed</p>
+                      </CardContent>
+                    </Card>
+                    <Card>
+                      <CardHeader className="flex flex-row items-center justify-between gap-2 space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Funnel Conversion</CardTitle>
+                        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                      </CardHeader>
+                      <CardContent>
+                        <div className="text-2xl font-bold" data-testid="stat-overview-conversion">
+                          {adminStats.funnelConversionRate.toFixed(1)}%
+                        </div>
+                        <p className="text-xs text-muted-foreground">completion rate</p>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Subscribers</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-2xl font-bold" data-testid="stat-overview-subscribers">
+                        {adminStats.totalSubscribers}
+                      </div>
+                      <p className="text-sm text-muted-foreground">email subscribers</p>
+                    </CardContent>
+                  </Card>
+                </>
+              ) : (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground">Unable to load stats.</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="sales" className="space-y-6">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <ShoppingCart className="w-5 h-5" />
+                All Sales
+              </h2>
+              
+              {purchasesLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : adminPurchases && adminPurchases.length > 0 ? (
+                <Card>
+                  <CardContent className="pt-6">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Customer</TableHead>
+                          <TableHead>Product</TableHead>
+                          <TableHead className="text-right">Amount</TableHead>
+                          <TableHead>Payment ID</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {adminPurchases.map((purchase) => (
+                          <TableRow key={purchase.id} data-testid={`row-purchase-${purchase.id}`}>
+                            <TableCell className="whitespace-nowrap">
+                              {new Date(purchase.purchasedAt * 1000).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell>
+                              <div>
+                                <div className="font-medium">
+                                  {purchase.user?.firstName || ''} {purchase.user?.lastName || ''}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {purchase.user?.email || 'Unknown'}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>{purchase.product?.title || 'Unknown Product'}</TableCell>
+                            <TableCell className="text-right font-medium">
+                              ${(purchase.amount / 100).toFixed(2)}
+                            </TableCell>
+                            <TableCell className="font-mono text-xs text-muted-foreground">
+                              {purchase.stripePaymentId ? purchase.stripePaymentId.slice(0, 20) + '...' : 'N/A'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground" data-testid="text-no-sales">No sales yet.</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+
+            <TabsContent value="users" className="space-y-6">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <UserCircle className="w-5 h-5" />
+                All Users
+              </h2>
+              
+              {usersLoading ? (
+                <div className="flex justify-center py-12">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary" />
+                </div>
+              ) : adminUsers && adminUsers.length > 0 ? (
+                <Card>
+                  <CardContent className="pt-6">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Email</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Registered</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {adminUsers.map((user) => (
+                          <TableRow key={user.id} data-testid={`row-user-${user.id}`}>
+                            <TableCell>
+                              <div className="font-medium">
+                                {user.firstName || ''} {user.lastName || ''}
+                                {!user.firstName && !user.lastName && <span className="text-muted-foreground">No name</span>}
+                              </div>
+                            </TableCell>
+                            <TableCell>{user.email || 'No email'}</TableCell>
+                            <TableCell>
+                              <Badge variant={user.isAdmin === 1 ? "default" : "secondary"} className="no-default-active-elevate">
+                                {user.isAdmin === 1 ? "Admin" : "User"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {user.createdAt ? new Date(user.createdAt * 1000).toLocaleDateString() : 'N/A'}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <p className="text-muted-foreground" data-testid="text-no-users">No users registered yet.</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
 
             <TabsContent value="funnels" className="space-y-6">
               <div className="flex justify-between items-center gap-4 flex-wrap">
