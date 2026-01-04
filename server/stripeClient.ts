@@ -30,6 +30,10 @@ async function getCredentials() {
     }
   });
 
+  if (!response.ok) {
+    throw new Error(`Failed to fetch Stripe credentials: ${response.status} ${response.statusText}`);
+  }
+
   const data = await response.json();
   
   connectionSettings = data.items?.[0];
