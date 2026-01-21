@@ -7,7 +7,7 @@ on:
     branches: [main, develop]
 
 env:
-  NODE_VERSION: '20'
+  NODE_VERSION: '22'
 
 jobs:
   build:
@@ -31,4 +31,7 @@ jobs:
         run: npm run typecheck
 
       - name: Build application
-        run: npm run build
+        run: |
+          echo "Starting build..."
+          npm run build || (echo "Build failed!" && exit 1)
+          echo "Build completed successfully"
