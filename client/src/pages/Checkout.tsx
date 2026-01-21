@@ -13,10 +13,10 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Lock } from "lucide-react";
 import { OrderBump, OrderBumpSkeleton } from "@/components/OrderBump";
 
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
-}
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+// Initialize Stripe only if key is available (set at build time)
+const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+  : null;
 
 interface OrderBumpWithProduct extends OrderBumpType {
   bumpProduct: Product;
@@ -159,6 +159,18 @@ export default function Checkout() {
   const [isLoading, setIsLoading] = useState(true);
   const [orderBumpSelected, setOrderBumpSelected] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
+
+  // Check if Stripe is configured
+  if (!stripePromise) {
+    return (
+      <div className="min-h-screen bg-[#0B0F1A] text-white flex items-center justify-center">
+        <Card className="p-8 max-w-md text-center">
+          <h1 className="text-xl font-bold mb-4">Checkout Unavailable</h1>
+          <p className="text-gray-400">Payment processing is not configured. Please contact support.</p>
+        </Card>
+      </div>
+    );
+  }
 
   const searchParams = new URLSearchParams(window.location.search);
   const productId = searchParams.get('productId');

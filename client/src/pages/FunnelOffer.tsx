@@ -11,7 +11,10 @@ import { Loader2, Check, Clock, Sparkles, ShieldCheck, Zap, Gift } from "lucide-
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+// Initialize Stripe only if key is available (set at build time)
+const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
+  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
+  : null;
 
 interface NextStepResponse {
   step: FunnelStep | null;
