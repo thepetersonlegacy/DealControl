@@ -4,8 +4,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import { runMigrations } from 'stripe-replit-sync';
-import { getStripeSync } from "./stripeClient";
 import { WebhookHandlers } from "./webhookHandlers";
 
 // Polyfill __dirname for ES modules (Node.js 18 compatibility)
@@ -30,52 +28,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Serve attached_assets as static files for product images
 app.use('/attached_assets', express.static(path.resolve(__dirname, '..', 'attached_assets')));
-
-// Initialize Stripe schema and sync data on startup
-async function initStripe() {
-  const databaseUrl = process.env.DATABASE_URL;
-
-  if (!databaseUrl) {
-    console.log('DATABASE_URL not found, skipping Stripe initialization');
-    return;
-  }
-
-  try {
-    console.log('Initializing Stripe schema...');
-    await runMigrations({ databaseUrl });
-    console.log('Stripe schema ready');
-
-    const stripeSync = await getStripeSync();
-
-    // Only setup managed webhook if REPLIT_DOMAINS is available
-    const replitDomains = process.env.REPLIT_DOMAINS;
-    if (replitDomains) {
-      console.log('Setting up managed webhook...');
-      const webhookBaseUrl = `https://${replitDomains.split(',')[0]}`;
-      try {
-        const result = await stripeSync.findOrCreateManagedWebhook(
-          `${webhookBaseUrl}/api/stripe/webhook`
-        );
-        console.log('Webhook configured:', result?.webhook?.url || 'webhook created');
-      } catch (webhookError: any) {
-        console.log('Webhook setup skipped (may already exist):', webhookError.message);
-      }
-    } else {
-      console.log('Skipping managed webhook setup (REPLIT_DOMAINS not available)');
-    }
-
-    console.log('Syncing Stripe data...');
-    stripeSync.syncBackfill()
-      .then(() => {
-        console.log('Stripe data synced');
-      })
-      .catch((err: any) => {
-        console.error('Error syncing Stripe data:', err);
-      });
-  } catch (error) {
-    console.error('Failed to initialize Stripe:', error);
-  }
-}
 
 // Register Stripe webhook route BEFORE express.json()
 app.post(
@@ -149,9 +101,6 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Initialize Stripe before starting server
-  await initStripe();
-
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
