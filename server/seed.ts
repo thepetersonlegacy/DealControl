@@ -1,10 +1,5 @@
-import ws from "ws";
 import { DatabaseStorage } from "./storage.js";
 import type { InsertProduct, InsertFunnel, InsertFunnelStep, InsertOrderBump } from "@shared/schema";
-
-if (!globalThis.WebSocket) {
-  globalThis.WebSocket = ws as any;
-}
 
 const storage = new DatabaseStorage();
 

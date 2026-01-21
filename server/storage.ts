@@ -170,10 +170,27 @@ export class MemStorage implements IStorage {
 
   async createProduct(insertProduct: InsertProduct): Promise<Product> {
     const id = randomUUID();
-    const product: Product = { 
-      ...insertProduct, 
+    const product: Product = {
       id,
-      isFeatured: insertProduct.isFeatured ?? 0 
+      title: insertProduct.title,
+      description: insertProduct.description,
+      category: insertProduct.category,
+      format: insertProduct.format,
+      imageUrl: insertProduct.imageUrl,
+      price: insertProduct.price,
+      isFeatured: insertProduct.isFeatured ?? 0,
+      assetType: insertProduct.assetType ?? null,
+      tier: insertProduct.tier ?? null,
+      priceSolo: insertProduct.priceSolo ?? null,
+      pricePro: insertProduct.pricePro ?? null,
+      priceOffice: insertProduct.priceOffice ?? null,
+      purposeScope: insertProduct.purposeScope ?? null,
+      useConditions: insertProduct.useConditions ?? null,
+      risksAddressed: insertProduct.risksAddressed ?? null,
+      coreContent: insertProduct.coreContent ?? null,
+      failurePoints: insertProduct.failurePoints ?? null,
+      recordkeepingGuidance: insertProduct.recordkeepingGuidance ?? null,
+      judgmentBoundary: insertProduct.judgmentBoundary ?? null,
     };
     this.products.set(id, product);
     return product;
@@ -329,10 +346,27 @@ export class MemStorage implements IStorage {
 
     productsData.forEach((productData) => {
       const id = randomUUID();
-      const product: Product = { 
-        ...productData, 
+      const product: Product = {
         id,
-        isFeatured: productData.isFeatured ?? 0 
+        title: productData.title,
+        description: productData.description,
+        category: productData.category,
+        format: productData.format,
+        imageUrl: productData.imageUrl,
+        price: productData.price,
+        isFeatured: productData.isFeatured ?? 0,
+        assetType: productData.assetType ?? null,
+        tier: productData.tier ?? null,
+        priceSolo: productData.priceSolo ?? null,
+        pricePro: productData.pricePro ?? null,
+        priceOffice: productData.priceOffice ?? null,
+        purposeScope: productData.purposeScope ?? null,
+        useConditions: productData.useConditions ?? null,
+        risksAddressed: productData.risksAddressed ?? null,
+        coreContent: productData.coreContent ?? null,
+        failurePoints: productData.failurePoints ?? null,
+        recordkeepingGuidance: productData.recordkeepingGuidance ?? null,
+        judgmentBoundary: productData.judgmentBoundary ?? null,
       };
       this.products.set(id, product);
     });
