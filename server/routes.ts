@@ -6,6 +6,12 @@ import { getUncachableStripeClient, getStripePublishableKey } from "./stripeClie
 import { insertProductSchema, insertFunnelSchema, insertFunnelStepSchema, insertOrderBumpSchema, insertSubscriberSchema, insertEmailLogSchema, insertDownloadEventSchema } from "@shared/schema";
 import { z } from "zod";
 
+// Environment configuration for sync gate
+const API_VERSION = process.env.API_VERSION || "1.0.0";
+const SPEC_VERSION = process.env.SPEC_VERSION || "v1";
+const BUILD_SHA = process.env.BUILD_SHA || process.env.RAILWAY_GIT_COMMIT_SHA || "unknown";
+const NODE_ENV = process.env.NODE_ENV || "development";
+
 const downloadLogSchema = z.object({
   token: z.string().min(1, "Token is required"),
   fileKey: z.string().min(1, "FileKey is required"),
@@ -21,9 +27,66 @@ const downloadFileQuerySchema = z.object({
   fileKey: z.string().min(1, "FileKey is required"),
 });
 
+// Helper to get requestId from request
+function getRequestId(req: Request): string {
+  return (req.headers['x-request-id'] as string) || 'unknown';
+}
+
+// Helper to create ErrorEnvelope response
+function errorEnvelope(req: Request, error: string, code?: string, details?: object) {
+  return {
+    error,
+    code,
+    requestId: getRequestId(req),
+    details,
+  };
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Setup authentication (local auth with username/password)
   await setupLocalAuth(app);
+
+  // ========== SYSTEM ENDPOINTS (Sync Gate) ==========
+
+  // GET /health - Health check endpoint
+  app.get("/health", async (req: Request, res: Response) => {
+    try {
+      // Check database connectivity
+      let dbHealthy = false;
+      try {
+        if (process.env.DATABASE_URL) {
+          // Simple health check - try to access storage
+          await storage.getAllProducts();
+          dbHealthy = true;
+        }
+      } catch {
+        dbHealthy = false;
+      }
+
+      const status = dbHealthy || !process.env.DATABASE_URL ? "ok" : "degraded";
+
+      res.json({
+        status,
+        service: "dealcontrol-api",
+        version: API_VERSION,
+        commit: BUILD_SHA,
+        env: NODE_ENV,
+        specVersion: SPEC_VERSION,
+        sync: dbHealthy,
+      });
+    } catch (error: any) {
+      res.status(503).json(errorEnvelope(req, "Service unhealthy", "SERVICE_UNHEALTHY"));
+    }
+  });
+
+  // GET /version - Version information endpoint
+  app.get("/version", (req: Request, res: Response) => {
+    res.json({
+      apiVersion: API_VERSION,
+      specVersion: SPEC_VERSION,
+      buildSha: BUILD_SHA,
+    });
+  });
 
   // Public product routes
   app.get("/api/products", async (req, res) => {

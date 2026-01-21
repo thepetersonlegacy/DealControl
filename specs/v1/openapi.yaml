@@ -1,0 +1,139 @@
+openapi: 3.1.0
+info:
+  title: DealControl API
+  version: "1.0.0"
+  description: |
+    DealControl API - Contract-first specification.
+    All endpoints must conform to this spec.
+  contact:
+    name: DealControl Team
+  license:
+    name: MIT
+
+servers:
+  - url: "{protocol}://{host}"
+    variables:
+      protocol:
+        default: https
+        enum: [http, https]
+      host:
+        default: dealcontrol-production.up.railway.app
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Health check endpoint
+      description: Returns service health status, version info, and sync state
+      tags: [System]
+      responses:
+        "200":
+          description: Service is healthy
+          headers:
+            x-request-id:
+              schema:
+                type: string
+              description: Unique request identifier for tracing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+        "503":
+          description: Service unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /version:
+    get:
+      operationId: getVersion
+      summary: Version information endpoint
+      description: Returns API version, spec version, and build SHA
+      tags: [System]
+      responses:
+        "200":
+          description: Version information
+          headers:
+            x-request-id:
+              schema:
+                type: string
+              description: Unique request identifier for tracing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionResponse"
+
+components:
+  schemas:
+    HealthResponse:
+      type: object
+      required: [status, service, version, env, specVersion, sync]
+      properties:
+        status:
+          type: string
+          enum: [ok, degraded, unhealthy]
+        service:
+          type: string
+          example: dealcontrol-api
+        version:
+          type: string
+          example: "1.0.0"
+        commit:
+          type: string
+          description: Git commit SHA (optional)
+          example: "abc123"
+        env:
+          type: string
+          enum: [development, staging, production]
+        specVersion:
+          type: string
+          example: "v1"
+        sync:
+          type: boolean
+          description: Whether database sync is healthy
+
+    VersionResponse:
+      type: object
+      required: [apiVersion, specVersion]
+      properties:
+        apiVersion:
+          type: string
+          example: "1.0.0"
+        specVersion:
+          type: string
+          example: "v1"
+        buildSha:
+          type: string
+          example: "abc123def456"
+
+    ErrorEnvelope:
+      type: object
+      required: [error, requestId]
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+        requestId:
+          type: string
+          description: Request ID for tracing
+        details:
+          type: object
+          additionalProperties: true
+          description: Additional error context
+
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: connect.sid
+
+security: []
+
+tags:
+  - name: System
+    description: System health and version endpoints
+

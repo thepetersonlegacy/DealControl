@@ -1,4 +1,4 @@
-import ws from "ws";
+import crypto from "crypto";
 import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -12,12 +12,21 @@ import { WebhookHandlers } from "./webhookHandlers";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Polyfill WebSocket for Neon serverless PostgreSQL
-if (!globalThis.WebSocket) {
-  (globalThis as any).WebSocket = ws;
-}
+// Environment configuration for sync gate
+const API_VERSION = process.env.API_VERSION || "1.0.0";
+const SPEC_VERSION = process.env.SPEC_VERSION || "v1";
+const BUILD_SHA = process.env.BUILD_SHA || process.env.RAILWAY_GIT_COMMIT_SHA || "unknown";
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 const app = express();
+
+// Request ID middleware - generates or propagates x-request-id
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const requestId = (req.headers['x-request-id'] as string) || crypto.randomUUID();
+  req.headers['x-request-id'] = requestId;
+  res.setHeader('x-request-id', requestId);
+  next();
+});
 
 // Serve attached_assets as static files for product images
 app.use('/attached_assets', express.static(path.resolve(__dirname, '..', 'attached_assets')));

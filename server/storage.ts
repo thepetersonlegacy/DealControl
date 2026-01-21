@@ -15,9 +15,11 @@ import {
   accessTokens, downloadEvents
 } from "@shared/schema";
 import { randomUUID } from "crypto";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { Pool } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/node-postgres";
+import pg from "pg";
 import { eq } from "drizzle-orm";
+
+const { Pool } = pg;
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;

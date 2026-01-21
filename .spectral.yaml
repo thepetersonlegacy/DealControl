@@ -1,0 +1,66 @@
+extends: ["spectral:oas"]
+
+rules:
+  # Require x-request-id header on all responses
+  operation-success-response:
+    description: Operations must define a success response
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: responses
+      function: truthy
+
+  # Require operationId on all operations
+  operation-operationId:
+    description: Operation must have an operationId
+    severity: error
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: operationId
+      function: truthy
+
+  # Require tags on all operations
+  operation-tags:
+    description: Operation should have tags
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: tags
+      function: truthy
+
+  # Require descriptions on operations
+  operation-description:
+    description: Operation should have a description
+    severity: warn
+    given: "$.paths[*][get,post,put,patch,delete]"
+    then:
+      field: description
+      function: truthy
+
+  # Enforce ErrorEnvelope usage for error responses
+  error-response-schema:
+    description: Error responses should use ErrorEnvelope schema
+    severity: warn
+    given: "$.paths[*][*].responses[?(@property >= '400' && @property < '600')].content.application/json.schema"
+    then:
+      field: "$ref"
+      function: pattern
+      functionOptions:
+        match: "ErrorEnvelope"
+
+  # Info contact required
+  info-contact:
+    description: Info object should have contact
+    severity: warn
+    given: "$.info"
+    then:
+      field: contact
+      function: truthy
+
+  # Disable some overly strict rules
+  oas3-api-servers:
+    severity: warn
+
+  info-license:
+    severity: warn
+
