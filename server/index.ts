@@ -1,11 +1,16 @@
 import ws from "ws";
 import express, { type Request, Response, NextFunction } from "express";
 import path from "path";
+import { fileURLToPath } from "url";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { runMigrations } from 'stripe-replit-sync';
 import { getStripeSync } from "./stripeClient";
 import { WebhookHandlers } from "./webhookHandlers";
+
+// Polyfill __dirname for ES modules (Node.js 18 compatibility)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Polyfill WebSocket for Neon serverless PostgreSQL
 if (!globalThis.WebSocket) {
@@ -15,7 +20,7 @@ if (!globalThis.WebSocket) {
 const app = express();
 
 // Serve attached_assets as static files for product images
-app.use('/attached_assets', express.static(path.resolve(import.meta.dirname, '..', 'attached_assets')));
+app.use('/attached_assets', express.static(path.resolve(__dirname, '..', 'attached_assets')));
 
 // Initialize Stripe schema and sync data on startup
 async function initStripe() {
