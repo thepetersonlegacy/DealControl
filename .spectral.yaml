@@ -58,9 +58,5 @@ rules:
       function: truthy
 
   # Disable some overly strict rules
-  oas3-api-servers:
-    severity: warn
-
-  info-license:
-    severity: warn
-
+  oas3-api-servers: warn
+  info-license: warn
