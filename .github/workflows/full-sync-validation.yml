@@ -30,11 +30,8 @@ jobs:
       - name: TypeScript type check
         run: npm run typecheck
 
-      - name: Build Vite frontend
-        run: npx vite build --debug 2>&1 || (echo "=== VITE BUILD FAILED ===" && exit 1)
+      - name: Build (frontend + server)
+        run: npm run build
         env:
           CI: true
           NODE_OPTIONS: "--max_old_space_size=4096"
-
-      - name: Build server with esbuild
-        run: npx esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
