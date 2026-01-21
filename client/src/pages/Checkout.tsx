@@ -160,18 +160,6 @@ export default function Checkout() {
   const [orderBumpSelected, setOrderBumpSelected] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
 
-  // Check if Stripe is configured
-  if (!stripePromise) {
-    return (
-      <div className="min-h-screen bg-[#0B0F1A] text-white flex items-center justify-center">
-        <Card className="p-8 max-w-md text-center">
-          <h1 className="text-xl font-bold mb-4">Checkout Unavailable</h1>
-          <p className="text-gray-400">Payment processing is not configured. Please contact support.</p>
-        </Card>
-      </div>
-    );
-  }
-
   const searchParams = new URLSearchParams(window.location.search);
   const productId = searchParams.get('productId');
   const selectedTier = searchParams.get('tier') || 'solo';
@@ -179,7 +167,7 @@ export default function Checkout() {
 
   const tierLabels: Record<string, string> = {
     solo: 'Solo License',
-    pro: 'Pro License', 
+    pro: 'Pro License',
     office: 'Office License (Annual)',
   };
 
@@ -189,31 +177,33 @@ export default function Checkout() {
   });
 
   useEffect(() => {
-    if (!productId) {
-      toast({
-        title: "Error",
-        description: "No product specified",
-        variant: "destructive",
-      });
-      setLocation("/library");
+    if (!productId || !stripePromise) {
+      if (!productId) {
+        toast({
+          title: "Error",
+          description: "No product specified",
+          variant: "destructive",
+        });
+        setLocation("/library");
+      }
       return;
     }
 
     const initCheckout = async () => {
       try {
         const includeOrderBump = orderBumpSelected && orderBumpData;
-        
-        const endpoint = includeOrderBump 
-          ? "/api/checkout/with-bump" 
+
+        const endpoint = includeOrderBump
+          ? "/api/checkout/with-bump"
           : "/api/create-payment-intent";
-        
-        const body = includeOrderBump 
+
+        const body = includeOrderBump
           ? { productId, includeOrderBump: true, tier: selectedTier, priceOverride: overridePrice }
           : { productId, tier: selectedTier, priceOverride: overridePrice };
 
         const res = await apiRequest("POST", endpoint, body);
         const data = await res.json();
-        
+
         setClientSecret(data.clientSecret);
         setProduct(data.product);
         setTotalAmount(data.totalAmount || data.product.price);
@@ -231,7 +221,7 @@ export default function Checkout() {
     };
 
     initCheckout();
-  }, [productId, orderBumpSelected, orderBumpData]);
+  }, [productId, orderBumpSelected, orderBumpData, toast, setLocation]);
 
   const handleOrderBumpToggle = (selected: boolean) => {
     setOrderBumpSelected(selected);
@@ -241,6 +231,18 @@ export default function Checkout() {
   const handleSuccess = (purchaseId: string) => {
     setLocation(`/purchase-success?purchaseId=${purchaseId}`);
   };
+
+  // Check if Stripe is configured - must be after all hooks
+  if (!stripePromise) {
+    return (
+      <div className="min-h-screen bg-[#0B0F1A] text-white flex items-center justify-center">
+        <Card className="p-8 max-w-md text-center">
+          <h1 className="text-xl font-bold mb-4">Checkout Unavailable</h1>
+          <p className="text-gray-400">Payment processing is not configured. Please contact support.</p>
+        </Card>
+      </div>
+    );
+  }
 
   if (isLoading && !product) {
     return (
