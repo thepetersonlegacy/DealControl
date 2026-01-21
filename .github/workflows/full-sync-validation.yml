@@ -31,7 +31,16 @@ jobs:
         run: npm run typecheck
 
       - name: Build application
+        run: npm run build
+        continue-on-error: true
+        id: build_step
+
+      - name: Check build result
+        if: steps.build_step.outcome == 'failure'
         run: |
-          echo "Starting build..."
-          npm run build || (echo "Build failed!" && exit 1)
-          echo "Build completed successfully"
+          echo "Build failed! Dumping environment info..."
+          node --version
+          npm --version
+          cat package.json | head -20
+          ls -la
+          exit 1
