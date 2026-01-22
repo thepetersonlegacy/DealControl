@@ -457,10 +457,30 @@ export class MemStorage implements IStorage {
 
 export class DatabaseStorage implements IStorage {
   private db;
+  private seeded = false;
 
   constructor() {
     const pool = new Pool({ connectionString: process.env.DATABASE_URL });
     this.db = drizzle(pool);
+  }
+
+  private async seedIfEmpty(): Promise<void> {
+    if (this.seeded) return;
+    this.seeded = true;
+
+    try {
+      const existingProducts = await this.db.select().from(products).limit(1);
+      if (existingProducts.length === 0) {
+        console.log('Database empty, seeding products...');
+        for (const productData of dealControlProducts) {
+          await this.db.insert(products).values(productData);
+        }
+        console.log(`Seeded ${dealControlProducts.length} products`);
+      }
+    } catch (error) {
+      console.error('Error checking/seeding products:', error);
+      this.seeded = false; // Allow retry on next call
+    }
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -498,19 +518,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllProducts(): Promise<Product[]> {
+    await this.seedIfEmpty();
     return await this.db.select().from(products);
   }
 
   async getProduct(id: string): Promise<Product | undefined> {
+    await this.seedIfEmpty();
     const result = await this.db.select().from(products).where(eq(products.id, id)).limit(1);
     return result[0];
   }
 
   async getProductsByCategory(category: string): Promise<Product[]> {
+    await this.seedIfEmpty();
     return await this.db.select().from(products).where(eq(products.category, category));
   }
 
   async getFeaturedProducts(): Promise<Product[]> {
+    await this.seedIfEmpty();
     return await this.db.select().from(products).where(eq(products.isFeatured, 1));
   }
 
