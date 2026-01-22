@@ -1,13 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import { useLocation, Link } from 'wouter';
 import { useQuery, useMutation } from '@tanstack/react-query';
+import { motion } from 'framer-motion';
 import type { Product, Purchase, FunnelSession } from "@shared/schema";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle, Calendar, CreditCard, Package } from "lucide-react";
+import { Loader2, CheckCircle, Calendar, CreditCard, Package, Download, ArrowRight, Star, Zap, Gift, ShieldCheck } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import confetti from 'canvas-confetti';
 
 interface PurchaseResponse {
   purchase: Purchase;
@@ -63,6 +65,39 @@ export default function PurchaseSuccess() {
     },
   });
 
+  // Trigger confetti on successful purchase
+  const confettiTriggeredRef = useRef(false);
+  useEffect(() => {
+    if (data && !confettiTriggeredRef.current) {
+      confettiTriggeredRef.current = true;
+      // Fire confetti celebration
+      const duration = 3000;
+      const end = Date.now() + duration;
+
+      const frame = () => {
+        confetti({
+          particleCount: 3,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0 },
+          colors: ['#22c55e', '#3b82f6', '#a855f7']
+        });
+        confetti({
+          particleCount: 3,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1 },
+          colors: ['#22c55e', '#3b82f6', '#a855f7']
+        });
+
+        if (Date.now() < end) {
+          requestAnimationFrame(frame);
+        }
+      };
+      frame();
+    }
+  }, [data]);
+
   useEffect(() => {
     if (data && !funnelStartedRef.current) {
       funnelStartedRef.current = true;
@@ -114,43 +149,64 @@ export default function PurchaseSuccess() {
 
       <main className="flex-1 pt-24 pb-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full mb-4">
-              <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" data-testid="icon-success" />
-            </div>
+          <motion.div
+            className="text-center mb-8"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.div
+              className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full mb-4"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+            >
+              <CheckCircle className="w-12 h-12 text-green-600 dark:text-green-400" data-testid="icon-success" />
+            </motion.div>
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2" data-testid="text-success-title">
-              Purchase Successful!
+              🎉 Purchase Successful!
             </h1>
             <p className="text-lg text-muted-foreground" data-testid="text-success-subtitle">
-              Thank you for your purchase
+              Thank you for your purchase. Your transaction has been completed.
             </p>
-          </div>
+          </motion.div>
 
-          <Card className="p-6 mb-6 bg-primary/5 border-primary/20">
-            <div className="flex items-start gap-4">
-              <Package className="w-6 h-6 text-primary mt-1" />
-              <div>
-                <h3 className="font-semibold text-foreground mb-1 text-lg">Your files are ready</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  These materials are licensed for internal use only. All sales are final once accessed.
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Button asChild data-testid="button-download-main">
-                    <a href={`/api/download/${purchase.id}`} download>
-                      Download {product.title}
-                    </a>
-                  </Button>
-                  {orderBumpPurchase && orderBumpProduct && (
-                    <Button asChild variant="outline" data-testid="button-download-bump">
-                      <a href={`/api/download/${orderBumpPurchase.id}`} download>
-                        Download {orderBumpProduct.title}
+          {/* Download Section - Priority */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Card className="p-6 mb-6 bg-gradient-to-r from-primary/10 to-primary/5 border-primary/30">
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-primary/20 rounded-full">
+                  <Download className="w-6 h-6 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-foreground mb-1 text-xl">🚀 Your files are ready!</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Click below to download your purchase. These materials are licensed for internal use only.
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    <Button asChild size="lg" className="gap-2" data-testid="button-download-main">
+                      <a href={`/api/download/${purchase.id}`} download>
+                        <Download className="w-4 h-4" />
+                        Download {product.title}
                       </a>
                     </Button>
-                  )}
+                    {orderBumpPurchase && orderBumpProduct && (
+                      <Button asChild variant="outline" size="lg" className="gap-2" data-testid="button-download-bump">
+                        <a href={`/api/download/${orderBumpPurchase.id}`} download>
+                          <Gift className="w-4 h-4" />
+                          Download {orderBumpProduct.title}
+                        </a>
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </motion.div>
 
           <Card className="p-6 mb-6">
             <h2 className="text-xl font-semibold text-foreground mb-4">Order Details</h2>
@@ -240,20 +296,56 @@ export default function PurchaseSuccess() {
           </Card>
 
           {orderBumpProduct && (
-            <Card className="p-6 mb-6 bg-primary/5 border-primary/20">
-              <h3 className="font-semibold text-foreground mb-2">You now have access to:</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                  <span data-testid="text-access-main-product">{product.title}</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                  <span data-testid="text-access-bump-product">{orderBumpProduct.title}</span>
-                </li>
-              </ul>
-            </Card>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Card className="p-6 mb-6 bg-primary/5 border-primary/20">
+                <h3 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                  <Star className="w-5 h-5 text-yellow-500" />
+                  You now have access to:
+                </h3>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span data-testid="text-access-main-product">{product.title}</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-600" />
+                    <span data-testid="text-access-bump-product">{orderBumpProduct.title}</span>
+                  </li>
+                </ul>
+              </Card>
+            </motion.div>
           )}
+
+          {/* Special Upsell CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Card className="p-6 mb-6 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Zap className="w-5 h-5 text-amber-500" />
+                <span className="text-sm font-semibold text-amber-600 dark:text-amber-400">EXCLUSIVE OFFER</span>
+              </div>
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                Level Up Your Real Estate Business
+              </h3>
+              <p className="text-muted-foreground mb-4">
+                Unlock our complete toolkit and get everything you need to close more deals, protect more transactions, and grow your revenue.
+              </p>
+              <Button asChild className="gap-2 bg-amber-500 hover:bg-amber-600 text-white">
+                <Link href="/library">
+                  <a className="flex items-center gap-2">
+                    Browse Complete Collection <ArrowRight className="w-4 h-4" />
+                  </a>
+                </Link>
+              </Button>
+            </Card>
+          </motion.div>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button asChild className="flex-1" data-testid="button-view-purchases">
@@ -268,14 +360,37 @@ export default function PurchaseSuccess() {
             </Button>
           </div>
 
-          <Card className="p-6 mt-6 bg-muted/50">
-            <h3 className="font-semibold text-foreground mb-2">What's Next?</h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>• You'll receive a confirmation email with your purchase details</li>
-              <li>• Access your purchased product{orderBumpProduct ? 's' : ''} anytime from your library</li>
-              <li>• Download the product files and start using them immediately</li>
-            </ul>
-          </Card>
+          {/* Trust & What's Next Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <Card className="p-6 mt-6 bg-muted/50">
+              <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-primary" />
+                What's Next?
+              </h3>
+              <ul className="space-y-3 text-sm text-muted-foreground">
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
+                  <span>You'll receive a confirmation email with your purchase details</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
+                  <span>Access your purchased product{orderBumpProduct ? 's' : ''} anytime from your library</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
+                  <span>Download and start implementing these strategies today</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5" />
+                  <span>Join our community of 10,000+ successful real estate professionals</span>
+                </li>
+              </ul>
+            </Card>
+          </motion.div>
         </div>
       </main>
 

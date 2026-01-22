@@ -10,8 +10,32 @@ import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2, Lock, ShieldCheck, Clock, CheckCircle2, Download, AlertTriangle } from "lucide-react";
 import { OrderBump, OrderBumpSkeleton } from "@/components/OrderBump";
+import { motion } from 'framer-motion';
+
+// Urgency Timer Component
+function CheckoutTimer() {
+  const [timeLeft, setTimeLeft] = useState(900); // 15 minutes
+
+  useEffect(() => {
+    if (timeLeft <= 0) return;
+    const timer = setInterval(() => setTimeLeft(t => Math.max(0, t - 1)), 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft]);
+
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  const isUrgent = timeLeft < 300;
+
+  return (
+    <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${isUrgent ? 'bg-destructive/10 text-destructive' : 'bg-primary/10 text-primary'}`}>
+      <Clock className="w-4 h-4" />
+      <span className="font-mono font-semibold">{String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}</span>
+      <span>price reserved</span>
+    </div>
+  );
+}
 
 // Initialize Stripe only if key is available (set at build time)
 const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
@@ -277,42 +301,66 @@ export default function Checkout() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
 
-      <main className="flex-1 pt-24 pb-16">
+      {/* Urgency Banner */}
+      <div className="bg-primary/10 border-b border-primary/20 py-2 px-4 mt-16">
+        <div className="max-w-3xl mx-auto flex items-center justify-center gap-4 flex-wrap text-sm">
+          <CheckoutTimer />
+          <span className="text-muted-foreground">•</span>
+          <div className="flex items-center gap-2 text-green-600">
+            <ShieldCheck className="w-4 h-4" />
+            <span>30-Day Money Back Guarantee</span>
+          </div>
+        </div>
+      </div>
+
+      <main className="flex-1 pt-8 pb-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8" data-testid="text-checkout-title">
-            Complete Your Purchase
-          </h1>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2" data-testid="text-checkout-title">
+              Complete Your Purchase
+            </h1>
+            <p className="text-muted-foreground mb-8">Secure checkout • Instant download after payment</p>
+          </motion.div>
 
           <div className="space-y-6">
-            <Card className="p-6">
-              <div className="flex gap-6">
-                <img
-                  src={product.imageUrl}
-                  alt={product.title}
-                  className="w-24 h-24 object-cover rounded-md"
-                  data-testid="img-product"
-                />
-                <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-foreground mb-2" data-testid="text-product-title">
-                    {product.title}
-                  </h2>
-                  <p className="text-sm text-muted-foreground mb-3" data-testid="text-product-description">
-                    {product.description}
-                  </p>
-                  <div className="flex items-center justify-between flex-wrap gap-2">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-sm text-muted-foreground">Format: {product.format}</span>
-                      <span className="text-sm font-medium text-primary" data-testid="text-license-tier">
-                        {tierLabels[selectedTier] || 'Solo License'}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <Card className="p-6">
+                <div className="flex gap-6">
+                  <img
+                    src={product.imageUrl}
+                    alt={product.title}
+                    className="w-24 h-24 object-cover rounded-md"
+                    data-testid="img-product"
+                  />
+                  <div className="flex-1">
+                    <h2 className="text-xl font-semibold text-foreground mb-2" data-testid="text-product-title">
+                      {product.title}
+                    </h2>
+                    <p className="text-sm text-muted-foreground mb-3" data-testid="text-product-description">
+                      {product.description}
+                    </p>
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm text-muted-foreground">Format: {product.format}</span>
+                        <span className="text-sm font-medium text-primary" data-testid="text-license-tier">
+                          {tierLabels[selectedTier] || 'Solo License'}
+                        </span>
+                      </div>
+                      <span className="text-2xl font-bold text-foreground" data-testid="text-product-price">
+                        ${((overridePrice || product.price) / 100).toFixed(2)}
                       </span>
                     </div>
-                    <span className="text-2xl font-bold text-foreground" data-testid="text-product-price">
-                      ${((overridePrice || product.price) / 100).toFixed(2)}
-                    </span>
                   </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </motion.div>
 
             {isLoadingOrderBump && (
               <OrderBumpSkeleton />
@@ -369,10 +417,25 @@ export default function Checkout() {
               )}
             </Card>
 
-            <p className="text-sm text-muted-foreground text-center" data-testid="text-secure-checkout">
-              <Lock className="w-4 h-4 inline mr-1" />
-              Your payment information is encrypted and secure
-            </p>
+            {/* Trust Badges */}
+            <motion.div
+              className="grid grid-cols-4 gap-4 pt-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              {[
+                { icon: Lock, label: "256-bit SSL" },
+                { icon: ShieldCheck, label: "Secure Checkout" },
+                { icon: Download, label: "Instant Access" },
+                { icon: CheckCircle2, label: "30-Day Guarantee" },
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col items-center text-center text-xs text-muted-foreground">
+                  <item.icon className="w-5 h-5 mb-1" />
+                  <span>{item.label}</span>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </main>

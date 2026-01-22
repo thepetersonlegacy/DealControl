@@ -159,7 +159,7 @@ export type FunnelSession = typeof funnelSessions.$inferSelect;
 
 export const purchases = pgTable("purchases", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id").references(() => users.id), // Nullable for guest checkout
   productId: varchar("product_id").notNull().references(() => products.id),
   amount: integer("amount").notNull(),
   stripePaymentId: text("stripe_payment_id"),
@@ -168,6 +168,7 @@ export const purchases = pgTable("purchases", {
   funnelStepId: varchar("funnel_step_id").references(() => funnelSteps.id),
   isOrderBump: integer("is_order_bump").notNull().default(0),
   parentPurchaseId: varchar("parent_purchase_id"), // Self-reference FK managed at app level
+  guestEmail: varchar("guest_email", { length: 255 }), // For guest checkout tracking
 });
 
 export const insertPurchaseSchema = createInsertSchema(purchases).omit({

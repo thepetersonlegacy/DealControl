@@ -179,34 +179,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/create-payment-intent", isAuthenticated, async (req: any, res) => {
+  // Guest checkout enabled - no authentication required
+  app.post("/api/create-payment-intent", async (req: any, res) => {
     try {
-      const { productId, tier, priceOverride } = req.body;
-      
+      const { productId, tier, priceOverride, guestEmail } = req.body;
+
       if (!productId) {
         return res.status(400).json({ error: "Product ID is required" });
       }
-      
+
       const product = await storage.getProduct(productId);
-      
+
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
-      
+
       const amount = priceOverride && typeof priceOverride === 'number' ? priceOverride : product.price;
-      
+
       const stripe = await getUncachableStripeClient();
       const paymentIntent = await stripe.paymentIntents.create({
         amount,
         currency: "usd",
         metadata: {
           productId: product.id,
-          userId: req.user.id,
+          userId: req.user?.id || 'guest',
+          guestEmail: guestEmail || '',
           tier: tier || 'solo',
         },
       });
-      
-      res.json({ 
+
+      res.json({
         clientSecret: paymentIntent.client_secret,
         product,
         totalAmount: amount,
@@ -217,34 +219,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/confirm-purchase", isAuthenticated, async (req: any, res) => {
+  // Guest checkout enabled - no authentication required
+  app.post("/api/confirm-purchase", async (req: any, res) => {
     try {
-      const { productId, paymentIntentId, includeOrderBump, orderBumpId } = req.body;
-      
+      const { productId, paymentIntentId, includeOrderBump, orderBumpId, guestEmail } = req.body;
+
       if (!productId || !paymentIntentId) {
         return res.status(400).json({ error: "Product ID and Payment Intent ID are required" });
       }
-      
+
       const stripe = await getUncachableStripeClient();
       const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
-      
+
       if (paymentIntent.status !== "succeeded") {
         return res.status(400).json({ error: "Payment not successful" });
       }
-      
+
       const product = await storage.getProduct(productId);
-      
+
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
-      
-      const userId = req.user.id;
-      
-      // Check if purchase already exists (idempotency)
-      const existingPurchases = await storage.getUserPurchases(userId);
-      const existingPurchase = existingPurchases.find(p => p.stripePaymentId === paymentIntentId && !p.parentPurchaseId);
-      
-      if (existingPurchase) {
+
+      // Support both authenticated users and guests
+      const userId = req.user?.id || null;
+      const purchaseGuestEmail = guestEmail || paymentIntent.metadata?.guestEmail || null;
+
+      // Check if purchase already exists (idempotency) - check by stripePaymentId
+      const existingPurchase = await storage.getPurchaseByStripePaymentId(paymentIntentId);
+
+      if (existingPurchase && !existingPurchase.parentPurchaseId) {
         const existingProduct = await storage.getProduct(existingPurchase.productId);
         const purchaseWithChildren = await storage.getPurchaseWithChildren(existingPurchase.id);
         let orderBumpPurchase = null;
@@ -260,15 +264,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           orderBumpProduct,
         });
       }
-      
-      // Create main product purchase
+
+      // Create main product purchase (userId can be null for guests)
       const purchase = await storage.createPurchase({
         userId,
         productId,
         amount: product.price,
         stripePaymentId: paymentIntentId,
+        guestEmail: purchaseGuestEmail,
       });
-      
+
       // Create order bump purchase as child if included
       let orderBumpPurchase = null;
       let orderBumpProduct = null;
@@ -281,11 +286,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             amount: orderBump.bumpPrice,
             stripePaymentId: paymentIntentId,
             parentPurchaseId: purchase.id,
+            guestEmail: purchaseGuestEmail,
           });
           orderBumpProduct = await storage.getProduct(orderBump.bumpProductId);
         }
       }
-      
+
       res.json({
         purchase,
         product,
@@ -449,15 +455,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ========== ORDER BUMP ENDPOINTS ==========
 
-  app.get("/api/order-bump/:productId", isAuthenticated, async (req: any, res) => {
+  // Guest checkout enabled - no authentication required
+  app.get("/api/order-bump/:productId", async (req: any, res) => {
     try {
       const { productId } = req.params;
       const orderBump = await storage.getOrderBumpByProduct(productId);
-      
+
       if (!orderBump || orderBump.isActive !== 1) {
         return res.json(null);
       }
-      
+
       const bumpProduct = await storage.getProduct(orderBump.bumpProductId);
       res.json({ ...orderBump, bumpProduct });
     } catch (error: any) {
@@ -466,23 +473,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/checkout/with-bump", isAuthenticated, async (req: any, res) => {
+  // Guest checkout enabled - no authentication required
+  app.post("/api/checkout/with-bump", async (req: any, res) => {
     try {
-      const { productId, includeOrderBump } = req.body;
-      
+      const { productId, includeOrderBump, guestEmail } = req.body;
+
       if (!productId) {
         return res.status(400).json({ error: "Product ID is required" });
       }
-      
+
       const product = await storage.getProduct(productId);
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
-      
+
       let totalAmount = product.price;
       let orderBump = null;
       let bumpProduct = null;
-      
+
       if (includeOrderBump) {
         orderBump = await storage.getOrderBumpByProduct(productId);
         if (orderBump) {
@@ -495,19 +503,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
       }
-      
+
       const stripe = await getUncachableStripeClient();
       const paymentIntent = await stripe.paymentIntents.create({
         amount: totalAmount,
         currency: "usd",
         metadata: {
           productId: product.id,
-          userId: req.user.id,
+          userId: req.user?.id || 'guest',
+          guestEmail: guestEmail || '',
           includeOrderBump: includeOrderBump ? "true" : "false",
           orderBumpId: orderBump?.id || "",
         },
       });
-      
+
       res.json({
         clientSecret: paymentIntent.client_secret,
         product,

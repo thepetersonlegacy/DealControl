@@ -20,11 +20,16 @@ import LegalRefunds from "@/pages/LegalRefunds";
 import Downloads from "@/pages/Downloads";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
+import LandingPage from "@/pages/LandingPage";
+import OfferPage from "@/pages/OfferPage";
+import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/landing" component={LandingPage} />
+      <Route path="/offer/:offerId" component={OfferPage} />
       <Route path="/library" component={Library} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/checkout" component={Checkout} />
@@ -51,6 +56,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <ExitIntentPopup />
       </TooltipProvider>
     </QueryClientProvider>
   );
