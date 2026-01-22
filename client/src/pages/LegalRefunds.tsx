@@ -133,7 +133,7 @@ export default function LegalRefunds() {
                 .
               </p>
               <p className="text-sm text-muted-foreground">Last Updated: January 2026</p>
-              <p className="mt-2 text-sm text-muted-foreground">© 2026 DealControl. All rights reserved.</p>
+              <p className="mt-2 text-sm text-muted-foreground">© 2026 DealControl a <a href="https://petersonproservices.com/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline">Peterson Pro Services, LLC</a> Product. All rights reserved.</p>
             </div>
           </div>
         </div>

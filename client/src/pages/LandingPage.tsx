@@ -458,7 +458,7 @@ export default function LandingPage() {
       {/* Minimal Footer */}
       <footer className="py-8 border-t">
         <div className="max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} DealControl. All rights reserved.</p>
+          <p>© 2026 DealControl a <a href="https://petersonproservices.com/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline">Peterson Pro Services, LLC</a> Product. All rights reserved.</p>
           <div className="flex items-center justify-center gap-4 mt-2">
             <a href="/terms" className="hover:text-foreground">Terms</a>
             <a href="/legal/refunds" className="hover:text-foreground">Refund Policy</a>

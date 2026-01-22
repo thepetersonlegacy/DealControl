@@ -95,12 +95,16 @@ export function Footer() {
 
         <div className="border-t pt-8 space-y-4">
           <p className="text-sm text-muted-foreground text-center max-w-3xl mx-auto" data-testid="text-footer-disclaimer">
-            All materials are provided for educational and operational support purposes only. 
-            They do not constitute legal advice. Users are responsible for compliance with local, state, and federal laws. 
+            All materials are provided for educational and operational support purposes only.
+            They do not constitute legal advice. Users are responsible for compliance with local, state, and federal laws.
             Brokerage and office license assets are intended for internal use only.
           </p>
           <p className="text-center text-muted-foreground" data-testid="text-footer-copyright">
-            © 2026 DealControl All rights reserved
+            © 2026 DealControl a{" "}
+            <a href="https://petersonproservices.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors underline">
+              Peterson Pro Services, LLC
+            </a>{" "}
+            Product. All rights reserved.
           </p>
         </div>
       </div>

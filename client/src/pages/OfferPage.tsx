@@ -389,7 +389,7 @@ export default function OfferPage() {
       {/* Minimal Footer */}
       <footer className="py-8 border-t mt-12">
         <div className="max-w-4xl mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} DealControl. All rights reserved.</p>
+          <p>© 2026 DealControl a <a href="https://petersonproservices.com/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline">Peterson Pro Services, LLC</a> Product. All rights reserved.</p>
         </div>
       </footer>
     </div>

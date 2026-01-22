@@ -212,7 +212,7 @@ export default function Terms() {
 
             <div className="text-center text-sm text-muted-foreground pt-8">
               <p>Last Updated: January 2026</p>
-              <p className="mt-2">© 2026 DealControl. All rights reserved.</p>
+              <p className="mt-2">© 2026 DealControl a <a href="https://petersonproservices.com/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground underline">Peterson Pro Services, LLC</a> Product. All rights reserved.</p>
             </div>
           </div>
         </div>
