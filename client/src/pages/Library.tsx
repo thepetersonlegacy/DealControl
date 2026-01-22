@@ -33,18 +33,26 @@ export default function Library() {
     }
   }, [window.location.search]);
 
+  // Hidden categories (MIFGE and OTO are only shown via funnels, not in library)
+  const hiddenCategories = ['MIFGE', 'OTO'];
+
+  // Filter out hidden products first
+  const visibleProducts = products?.filter(
+    (product) => !hiddenCategories.includes(product.category)
+  ) || [];
+
   const categories = Array.from(
-    new Set(products?.map((p) => p.category) || [])
+    new Set(visibleProducts.map((p) => p.category))
   );
 
-  const filteredProducts = products?.filter((product) => {
+  const filteredProducts = visibleProducts.filter((product) => {
     const matchesSearch =
       product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory =
       !selectedCategory || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
-  }) || [];
+  });
 
   return (
     <div className="min-h-screen flex flex-col">
