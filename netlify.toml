@@ -1,7 +1,7 @@
 [build]
   publish = "dist/public"
-  # Clean install to fix Rollup platform-specific dependency issue
-  command = "rm -rf node_modules && npm install && npm run build"
+  # Use npm ci for deterministic install that includes optional dependencies
+  command = "rm -rf node_modules && npm ci && npm run build"
 
 [build.environment]
   NODE_VERSION = "20"
