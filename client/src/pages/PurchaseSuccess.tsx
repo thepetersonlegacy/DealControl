@@ -101,12 +101,28 @@ export default function PurchaseSuccess() {
   useEffect(() => {
     if (data && !funnelStartedRef.current) {
       funnelStartedRef.current = true;
+
+      // Check if user should see OTO (first purchase and haven't seen OTO)
+      const hasSeenOTO = sessionStorage.getItem('oto_seen');
+      const purchaseCount = sessionStorage.getItem('purchase_count') || '0';
+      const newCount = parseInt(purchaseCount) + 1;
+      sessionStorage.setItem('purchase_count', newCount.toString());
+
+      // Show OTO after first purchase if they haven't seen it
+      if (newCount === 1 && !hasSeenOTO) {
+        setTimeout(() => {
+          navigate('/oto');
+        }, 3000); // Show success briefly, then redirect to OTO
+        return;
+      }
+
+      // Otherwise, try regular funnel
       startFunnelMutation.mutate({
         purchaseId: data.purchase.id,
         productId: data.product.id,
       });
     }
-  }, [data]);
+  }, [data, navigate]);
 
   if (isLoading) {
     return (

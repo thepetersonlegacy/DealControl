@@ -22,6 +22,8 @@ import Login from "@/pages/Login";
 import Register from "@/pages/Register";
 import LandingPage from "@/pages/LandingPage";
 import OfferPage from "@/pages/OfferPage";
+import MIFGEThankYou from "@/pages/MIFGEThankYou";
+import OTOPage from "@/pages/OTOPage";
 import { ExitIntentPopup } from "@/components/ExitIntentPopup";
 
 function Router() {
@@ -29,6 +31,8 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/landing" component={LandingPage} />
+      <Route path="/mifge-thank-you" component={MIFGEThankYou} />
+      <Route path="/oto" component={OTOPage} />
       <Route path="/offer/:offerId" component={OfferPage} />
       <Route path="/library" component={Library} />
       <Route path="/product/:id" component={ProductDetail} />

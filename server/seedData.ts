@@ -549,5 +549,45 @@ export const dealControlProducts: InsertProduct[] = [
     priceOffice: 249900,
     risksAddressed: "Fair housing violations, security deposit claims, eviction errors, lease gaps",
   },
+
+  // ============================================
+  // M.I.F.G.E. - Most Incredible Free Gift Ever
+  // HIDDEN - Not shown in library, only via funnel
+  // ============================================
+  {
+    title: "DealControl Starter System",
+    description: "The complete done-for-you system to protect every transaction from day one. Includes 12 battle-tested SOPs, checklists, and scripts worth $1,497 - yours FREE. Contains: Transaction Risk Control Kit (Solo), Earnest Money Dispute Prevention SOP, Mortgage Fallout Prevention Checklist, Inspection Negotiation Script, Appraisal Gap Strategy Guide, Financing Fallout Playbook, Client Expectation Setting Script, Buyer Credit Pre-Screen SOP, Transaction Timeline Template, Quick-Start Implementation Guide, and Video Training Overview.",
+    category: "MIFGE",
+    format: "System",
+    imageUrl: "/attached_assets/generated_images/transaction_risk_control_kit_solo.png",
+    price: 0,
+    isFeatured: 0,
+    assetType: "mifge",
+    tier: "starter",
+    priceSolo: 0,
+    pricePro: 0,
+    priceOffice: 0,
+    risksAddressed: "Transaction failures, financing issues, client disputes, deal collapse, commission loss, liability exposure",
+  },
+
+  // ============================================
+  // OTO - One Time Offer (Best Thing)
+  // HIDDEN - Only shown after first purchase
+  // ============================================
+  {
+    title: "DealControl Ultimate Mastery System",
+    description: "The COMPLETE DealControl arsenal - every SOP, checklist, script, playbook, and bundle we've ever created, PLUS exclusive bonuses you can't get anywhere else. Includes: ALL 37 individual assets (Office-level licenses), ALL 9 premium bundles, Lifetime updates & new releases, Priority implementation support, Private Mastermind Community access, Monthly live Q&A calls, Custom white-label rights, and Founding Member status. This is the ONE TIME you'll ever see this offer at this price. Total value: $8,994 - Today only: $1,997",
+    category: "OTO",
+    format: "Ultimate",
+    imageUrl: "/attached_assets/generated_images/transaction_risk_control_office_license.png",
+    price: 199700,
+    isFeatured: 0,
+    assetType: "oto",
+    tier: "ultimate",
+    priceSolo: 199700,
+    pricePro: 199700,
+    priceOffice: 199700,
+    risksAddressed: "Every transaction risk, liability exposure, compliance gaps, team training, scalability limitations",
+  },
 ];
 
