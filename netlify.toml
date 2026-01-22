@@ -1,6 +1,10 @@
 [build]
   publish = "dist/public"
-  command = "npm run build"
+  # Clean install to fix Rollup platform-specific dependency issue
+  command = "rm -rf node_modules && npm install && npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
 
 # Production context
 [context.production]
