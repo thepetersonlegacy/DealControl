@@ -1,12 +1,16 @@
+import { Resend } from 'resend';
 import { storage } from './storage';
 import type { Purchase, Product } from '@shared/schema';
 
-// Email service using Resend
+// Email service using Resend SDK
 // Set RESEND_API_KEY environment variable in Railway
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.FROM_EMAIL || 'DealControl <noreply@dealcontrol.com>';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'DealControl <onboarding@resend.dev>';
 const SITE_URL = process.env.SITE_URL || 'https://dealcontrol.netlify.app';
+
+// Initialize Resend client
+const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;
 
 interface EmailData {
   to: string;
@@ -15,35 +19,26 @@ interface EmailData {
 }
 
 async function sendEmail(data: EmailData): Promise<boolean> {
-  if (!RESEND_API_KEY) {
+  if (!resend) {
     console.warn('RESEND_API_KEY not set - email not sent:', data.subject);
-    // Log the email attempt for debugging
     console.log('Would have sent email to:', data.to);
     return false;
   }
 
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: FROM_EMAIL,
-        to: data.to,
-        subject: data.subject,
-        html: data.html,
-      }),
+    const { data: result, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: data.to,
+      subject: data.subject,
+      html: data.html,
     });
 
-    if (!response.ok) {
-      const error = await response.text();
+    if (error) {
       console.error('Failed to send email:', error);
       return false;
     }
 
-    console.log('Email sent successfully to:', data.to);
+    console.log('Email sent successfully to:', data.to, 'ID:', result?.id);
     return true;
   } catch (error) {
     console.error('Error sending email:', error);

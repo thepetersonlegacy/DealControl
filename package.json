@@ -82,6 +82,7 @@
     "react-icons": "^5.4.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "^2.15.2",
+    "resend": "^6.8.0",
     "stripe": "^20.0.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
@@ -118,7 +119,7 @@
     "vite": "^5.4.20"
   },
   "optionalDependencies": {
-    "bufferutil": "^4.0.8",
-    "@rollup/rollup-linux-x64-gnu": "^4.0.0"
+    "@rollup/rollup-linux-x64-gnu": "^4.0.0",
+    "bufferutil": "^4.0.8"
   }
 }
