@@ -194,6 +194,7 @@ export class MemStorage implements IStorage {
       failurePoints: insertProduct.failurePoints ?? null,
       recordkeepingGuidance: insertProduct.recordkeepingGuidance ?? null,
       judgmentBoundary: insertProduct.judgmentBoundary ?? null,
+      downloadFile: insertProduct.downloadFile ?? null,
     };
     this.products.set(id, product);
     return product;
@@ -223,6 +224,7 @@ export class MemStorage implements IStorage {
         failurePoints: productData.failurePoints ?? null,
         recordkeepingGuidance: productData.recordkeepingGuidance ?? null,
         judgmentBoundary: productData.judgmentBoundary ?? null,
+        downloadFile: productData.downloadFile ?? null,
       };
       this.products.set(id, product);
     });
