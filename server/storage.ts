@@ -81,6 +81,7 @@ export interface IStorage {
   // Access tokens and download events (Elite Tier)
   createAccessToken(data: InsertAccessToken): Promise<AccessToken>;
   getAccessTokenByToken(token: string): Promise<AccessToken | undefined>;
+  getAccessTokenByPurchaseId(purchaseId: string): Promise<AccessToken | undefined>;
   updateAccessTokenFirstAccess(id: string): Promise<AccessToken | undefined>;
   createDownloadEvent(data: InsertDownloadEvent): Promise<DownloadEvent>;
   getDownloadEventsByPurchase(purchaseId: string): Promise<DownloadEvent[]>;
@@ -442,6 +443,10 @@ export class MemStorage implements IStorage {
     return undefined;
   }
 
+  async getAccessTokenByPurchaseId(purchaseId: string): Promise<AccessToken | undefined> {
+    return undefined;
+  }
+
   async updateAccessTokenFirstAccess(id: string): Promise<AccessToken | undefined> {
     throw new Error("Access tokens not supported in MemStorage");
   }
@@ -769,6 +774,11 @@ export class DatabaseStorage implements IStorage {
 
   async getAccessTokenByToken(token: string): Promise<AccessToken | undefined> {
     const result = await this.db.select().from(accessTokens).where(eq(accessTokens.token, token)).limit(1);
+    return result[0];
+  }
+
+  async getAccessTokenByPurchaseId(purchaseId: string): Promise<AccessToken | undefined> {
+    const result = await this.db.select().from(accessTokens).where(eq(accessTokens.purchaseId, purchaseId)).limit(1);
     return result[0];
   }
 

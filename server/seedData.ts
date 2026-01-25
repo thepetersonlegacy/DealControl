@@ -19,6 +19,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Probate delays, title defects, disclosure violations, heir disputes",
+    downloadFile: "texas-executor-property-sale-checklist.pdf",
   },
   {
     title: "Earnest Money Dispute Prevention SOP",
@@ -33,6 +34,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Earnest money disputes, escrow violations, buyer/seller conflicts",
+    downloadFile: "earnest-money-dispute-prevention-sop.pdf",
   },
   {
     title: "First-Time Landlord Mistake Prevention SOP",
@@ -47,6 +49,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Fair housing violations, security deposit mishandling, lease gaps, eviction errors",
+    downloadFile: "first-time-landlord-mistake-prevention-sop.pdf",
   },
   {
     title: "Heir Interference Prevention SOP",
@@ -61,6 +64,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Heir conflicts, unauthorized property access, sale delays, legal disputes",
+    downloadFile: "heir-interference-prevention-sop.pdf",
   },
   {
     title: "Mortgage Loan Fallout Prevention Checklist",
@@ -75,6 +79,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Financing denial, closing delays, deal collapse, commission loss",
+    downloadFile: "mortgage-loan-fallout-prevention-checklist.pdf",
   },
   {
     title: "Buyer Credit Readiness Pre-Screen SOP",
@@ -89,6 +94,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Unqualified buyers, wasted showings, financing failures",
+    downloadFile: "buyer-credit-readiness-pre-screen-sop.pdf",
   },
   {
     title: "Inspection Objection Negotiation Script",
@@ -103,6 +109,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Deal collapse from inspection issues, over-negotiation, liability exposure",
+    downloadFile: "inspection-objection-negotiation-script.pdf",
   },
   {
     title: "Appraisal Gap Strategy Guide",
@@ -117,6 +124,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Appraisal shortfalls, deal collapse, renegotiation failures",
+    downloadFile: "appraisal-gap-strategy-guide.pdf",
   },
   {
     title: "Financing Fallout Response Playbook",
@@ -131,6 +139,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Financing denial, closing deadline failures, backup plan gaps",
+    downloadFile: "financing-fallout-response-playbook.pdf",
   },
   {
     title: "Divorce-Related Property Sale Playbook",
@@ -145,6 +154,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 24900,
     priceOffice: 79900,
     risksAddressed: "Dual-representation conflicts, court compliance, proceeds distribution disputes",
+    downloadFile: "divorce-related-property-sale-playbook.pdf",
   },
 
   // ============================================
@@ -163,6 +173,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Disclosure violations, bid manipulation claims, seller liability",
+    downloadFile: "multiple-offer-handling-checklist.pdf",
   },
   {
     title: "Backup Offer Management SOP",
@@ -177,6 +188,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Backup offer disputes, contract priority conflicts, earnest money confusion",
+    downloadFile: "backup-offer-management-sop.pdf",
   },
   {
     title: "Price Reduction Decision Framework",
@@ -191,6 +203,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Stale listings, seller resistance, overpricing consequences",
+    downloadFile: "price-reduction-decision-framework.pdf",
   },
   {
     title: "Days-on-Market Reset Playbook",
@@ -205,6 +218,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "DOM stigma, stale inventory, seller frustration",
+    downloadFile: "days-on-market-reset-playbook.pdf",
   },
   {
     title: "New Client Intake SOP - Buyer",
@@ -219,6 +233,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Agency violations, unqualified clients, misaligned expectations",
+    downloadFile: "new-client-intake-sop-buyer.pdf",
   },
   {
     title: "New Client Intake SOP - Seller",
@@ -233,6 +248,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Disclosure gaps, pricing disputes, marketing commitment issues",
+    downloadFile: "new-client-intake-sop-seller.pdf",
   },
   {
     title: "Seller Readiness Checklist",
@@ -247,6 +263,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 17900,
     priceOffice: 49900,
     risksAddressed: "Unprepared listings, showing access issues, disclosure gaps",
+    downloadFile: "seller-readiness-checklist.pdf",
   },
   {
     title: "Transaction Timeline Communication Template",
@@ -261,6 +278,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 17900,
     priceOffice: 49900,
     risksAddressed: "Missed deadlines, communication gaps, client confusion",
+    downloadFile: "transaction-timeline-communication-template.pdf",
   },
   {
     title: "Client Expectation Setting Script",
@@ -275,6 +293,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Unrealistic expectations, client disappointment, relationship damage",
+    downloadFile: "client-expectation-setting-script.pdf",
   },
   {
     title: "Seller Expectation Alignment Script",
@@ -289,6 +308,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Overpricing resistance, timeline disputes, market denial",
+    downloadFile: "seller-expectation-alignment-script.pdf",
   },
 
   // ============================================
@@ -307,6 +327,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Fair housing violations, discrimination claims, bad tenant selection",
+    downloadFile: "tenant-screening-compliance-checklist.pdf",
   },
   {
     title: "Security Deposit Handling SOP",
@@ -321,6 +342,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Deposit disputes, statutory violations, penalty exposure",
+    downloadFile: "security-deposit-handling-sop.pdf",
   },
   {
     title: "Lease Violation Response Checklist",
@@ -335,6 +357,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Improper notice, eviction dismissal, retaliation claims",
+    downloadFile: "lease-violation-response-checklist.pdf",
   },
   {
     title: "Contractor Scope Control Checklist",
@@ -349,6 +372,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 21900,
     priceOffice: 69900,
     risksAddressed: "Scope creep, cost overruns, lien exposure, quality disputes",
+    downloadFile: "contractor-scope-control-checklist.pdf",
   },
   {
     title: "FSBO Rescue Agent Playbook",
@@ -363,6 +387,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 24900,
     priceOffice: 79900,
     risksAddressed: "Lost listing opportunities, poor conversion rates, competitive loss",
+    downloadFile: "fsbo-rescue-agent-playbook.pdf",
   },
   {
     title: "Investor Kill-Criteria Checklist",
@@ -377,6 +402,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 24900,
     priceOffice: 79900,
     risksAddressed: "Bad investment decisions, hidden problems, ROI miscalculation",
+    downloadFile: "investor-kill-criteria-checklist.pdf",
   },
   {
     title: "Mortgage Denial Recovery Playbook",
@@ -391,6 +417,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 24900,
     priceOffice: 79900,
     risksAddressed: "Lost deals, client abandonment, commission loss",
+    downloadFile: "mortgage-denial-recovery-playbook.pdf",
   },
 
   // ============================================
@@ -408,6 +435,7 @@ export const dealControlProducts: InsertProduct[] = [
     priceSolo: 14900,
     pricePro: 24900,
     priceOffice: 79900,
+    downloadFile: "out-of-state-executor-sop.pdf",
     risksAddressed: "Remote management gaps, local compliance issues, communication failures",
   },
 
@@ -428,6 +456,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 89900,
     priceOffice: 249900,
     risksAddressed: "Transaction failures, financing issues, negotiation gaps, timeline mismanagement",
+    downloadFile: "transaction-risk-control-kit-solo.pdf",
   },
   {
     title: "Transaction Risk Control Kit - Pro",
@@ -443,6 +472,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 89900,
     priceOffice: 249900,
     risksAddressed: "Transaction failures, financing issues, negotiation gaps, timeline mismanagement",
+    downloadFile: "transaction-risk-control-kit-pro.pdf",
   },
   {
     title: "Transaction Risk Control Kit - Office",
@@ -458,6 +488,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 89900,
     priceOffice: 249900,
     risksAddressed: "Transaction failures, financing issues, negotiation gaps, timeline mismanagement",
+    downloadFile: "transaction-risk-control-kit-office.pdf",
   },
   {
     title: "Estate Sale Control Pack - Solo",
@@ -473,6 +504,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 99900,
     priceOffice: 299900,
     risksAddressed: "Probate complications, heir conflicts, executor liability, compliance gaps",
+    downloadFile: "estate-sale-control-pack-solo.pdf",
   },
   {
     title: "Estate Sale Control Pack - Pro",
@@ -488,6 +520,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 99900,
     priceOffice: 299900,
     risksAddressed: "Probate complications, heir conflicts, executor liability, compliance gaps",
+    downloadFile: "estate-sale-control-pack-pro.pdf",
   },
   {
     title: "Estate Sale Control Pack - Office",
@@ -503,6 +536,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 99900,
     priceOffice: 299900,
     risksAddressed: "Probate complications, heir conflicts, executor liability, compliance gaps",
+    downloadFile: "estate-sale-control-pack-office.pdf",
   },
   {
     title: "Landlord Liability Shield - Solo",
@@ -518,6 +552,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 89900,
     priceOffice: 249900,
     risksAddressed: "Fair housing violations, security deposit claims, eviction errors, lease gaps",
+    downloadFile: "landlord-liability-shield-solo.pdf",
   },
   {
     title: "Landlord Liability Shield - Pro",
@@ -533,6 +568,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 89900,
     priceOffice: 249900,
     risksAddressed: "Fair housing violations, security deposit claims, eviction errors, lease gaps",
+    downloadFile: "landlord-liability-shield-pro.pdf",
   },
   {
     title: "Landlord Liability Shield - Office",
@@ -548,6 +584,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 89900,
     priceOffice: 249900,
     risksAddressed: "Fair housing violations, security deposit claims, eviction errors, lease gaps",
+    downloadFile: "landlord-liability-shield-office.pdf",
   },
 
   // ============================================
@@ -568,6 +605,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 0,
     priceOffice: 0,
     risksAddressed: "Transaction failures, financing issues, client disputes, deal collapse, commission loss, liability exposure",
+    downloadFile: "transaction-risk-control-kit-solo.pdf",
   },
 
   // ============================================
@@ -588,6 +626,7 @@ export const dealControlProducts: InsertProduct[] = [
     pricePro: 199700,
     priceOffice: 199700,
     risksAddressed: "Every transaction risk, liability exposure, compliance gaps, team training, scalability limitations",
+    downloadFile: "transaction-risk-control-kit-office.pdf",
   },
 ];
 

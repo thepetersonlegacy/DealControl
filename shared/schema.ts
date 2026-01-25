@@ -24,6 +24,7 @@ export const products = pgTable("products", {
   failurePoints: text("failure_points"),
   recordkeepingGuidance: text("recordkeeping_guidance"),
   judgmentBoundary: text("judgment_boundary"),
+  downloadFile: text("download_file"), // Filename for the downloadable PDF
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({

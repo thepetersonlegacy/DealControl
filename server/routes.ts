@@ -257,11 +257,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           orderBumpPurchase = purchaseWithChildren.children[0];
           orderBumpProduct = await storage.getProduct(orderBumpPurchase.productId);
         }
+
+        // Return existing token if found
+        const existingToken = await storage.getAccessTokenByPurchaseId(existingPurchase.id);
         return res.json({
           purchase: existingPurchase,
           product: existingProduct,
           orderBumpPurchase,
           orderBumpProduct,
+          accessToken: existingToken?.token,
         });
       }
 
@@ -292,11 +296,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Generate secure access token for downloads
+      const crypto = await import('crypto');
+      const tokenValue = crypto.randomBytes(32).toString('hex');
+      const licenseType = product.tier || 'solo';
+
+      const accessToken = await storage.createAccessToken({
+        token: tokenValue,
+        purchaseId: purchase.id,
+        userId: userId,
+        licenseType: licenseType,
+      });
+
+      // Send confirmation email with download link
+      const customerEmail = purchaseGuestEmail || (userId ? (await storage.getUser(userId))?.email : null);
+      if (customerEmail) {
+        const { sendPurchaseConfirmationEmail } = await import('./emailService');
+        sendPurchaseConfirmationEmail(
+          customerEmail,
+          purchase,
+          product,
+          tokenValue,
+          orderBumpProduct
+        ).catch((error: unknown) => console.error('Failed to send confirmation email:', error));
+      }
+
       res.json({
         purchase,
         product,
         orderBumpPurchase,
         orderBumpProduct,
+        accessToken: tokenValue,
       });
     } catch (error: any) {
       console.error("Error confirming purchase:", error);
@@ -1374,11 +1404,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ error: "Invalid or revoked token" });
       }
 
-      // For now, return a placeholder response
-      // In production, this would serve actual files from storage
+      // Sanitize fileKey to prevent path traversal attacks
+      const sanitizedFileKey = fileKey.replace(/[^a-zA-Z0-9\-_]/g, '');
+      const filename = `${sanitizedFileKey}.pdf`;
+
+      // Resolve path relative to project root
+      const path = await import('path');
+      const fs = await import('fs');
+      const filePath = path.join(process.cwd(), 'public', 'downloads', filename);
+
+      // Check if file exists
+      if (!fs.existsSync(filePath)) {
+        console.error(`File not found: ${filePath}`);
+        return res.status(404).json({ error: "File not found" });
+      }
+
+      // Log download event for chargeback protection
+      const purchase = await storage.getPurchase(accessToken.purchaseId);
+      if (purchase) {
+        await storage.createDownloadEvent({
+          purchaseId: purchase.id,
+          tokenId: accessToken.id,
+          eventType: 'DOWNLOAD',
+          fileKey: sanitizedFileKey,
+          ip: req.ip || req.headers['x-forwarded-for']?.toString() || 'unknown',
+          userAgent: req.headers['user-agent'] || 'unknown',
+        });
+      }
+
+      // Serve the actual PDF file
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', `attachment; filename="${fileKey}.pdf"`);
-      res.send('Placeholder PDF content - replace with actual file in production');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.sendFile(filePath);
     } catch (error: any) {
       console.error("Error downloading file:", error);
       res.status(500).json({ error: "Failed to download file: " + error.message });
