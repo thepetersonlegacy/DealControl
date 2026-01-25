@@ -38,6 +38,7 @@ export interface IStorage {
   createPurchase(purchase: InsertPurchase): Promise<Purchase>;
   getPurchase(id: string): Promise<Purchase | undefined>;
   getPurchaseByStripePaymentId(stripePaymentId: string): Promise<Purchase | undefined>;
+  getPurchaseByStripeSessionId(stripeSessionId: string): Promise<Purchase | undefined>;
   getUserPurchases(userId: string): Promise<Purchase[]>;
   getPurchaseWithChildren(id: string): Promise<{ purchase: Purchase; children: Purchase[] } | undefined>;
   
@@ -237,12 +238,14 @@ export class MemStorage implements IStorage {
       id,
       userId: purchase.userId || null, // Allow null for guest checkout
       stripePaymentId: purchase.stripePaymentId || null,
+      stripeSessionId: purchase.stripeSessionId || null,
       purchasedAt: Math.floor(Date.now() / 1000),
       funnelSessionId: purchase.funnelSessionId || null,
       funnelStepId: purchase.funnelStepId || null,
       isOrderBump: purchase.isOrderBump ?? 0,
       parentPurchaseId: purchase.parentPurchaseId || null,
       guestEmail: purchase.guestEmail || null,
+      tosAcceptedAt: purchase.tosAcceptedAt || null,
     };
     this.purchases.set(id, newPurchase);
     return newPurchase;
@@ -254,6 +257,10 @@ export class MemStorage implements IStorage {
 
   async getPurchaseByStripePaymentId(stripePaymentId: string): Promise<Purchase | undefined> {
     return Array.from(this.purchases.values()).find(p => p.stripePaymentId === stripePaymentId);
+  }
+
+  async getPurchaseByStripeSessionId(stripeSessionId: string): Promise<Purchase | undefined> {
+    return Array.from(this.purchases.values()).find(p => p.stripeSessionId === stripeSessionId);
   }
 
   async getUserPurchases(userId: string): Promise<Purchase[]> {
@@ -578,6 +585,11 @@ export class DatabaseStorage implements IStorage {
 
   async getPurchaseByStripePaymentId(stripePaymentId: string): Promise<Purchase | undefined> {
     const result = await this.db.select().from(purchases).where(eq(purchases.stripePaymentId, stripePaymentId)).limit(1);
+    return result[0];
+  }
+
+  async getPurchaseByStripeSessionId(stripeSessionId: string): Promise<Purchase | undefined> {
+    const result = await this.db.select().from(purchases).where(eq(purchases.stripeSessionId, stripeSessionId)).limit(1);
     return result[0];
   }
 

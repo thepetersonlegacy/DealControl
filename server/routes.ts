@@ -219,6 +219,111 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe Checkout Session with mandatory ToS acceptance for chargeback protection
+  app.post("/api/checkout/create-session", async (req: any, res) => {
+    try {
+      const { productId, licenseType, guestEmail, orderBumpId } = req.body;
+
+      if (!productId) {
+        return res.status(400).json({ error: "Product ID is required" });
+      }
+
+      const product = await storage.getProduct(productId);
+      if (!product) {
+        return res.status(404).json({ error: "Product not found" });
+      }
+
+      // Determine price based on license type
+      let price: number;
+      const tier = licenseType || 'solo';
+      switch (tier) {
+        case 'pro':
+          price = product.pricePro || product.price;
+          break;
+        case 'office':
+          price = product.priceOffice || product.price;
+          break;
+        case 'solo':
+        default:
+          price = product.priceSolo || product.price;
+          break;
+      }
+
+      const stripe = await getUncachableStripeClient();
+      const frontendUrl = process.env.FRONTEND_URL || 'https://dealcontrol.netlify.app';
+
+      // Build line items
+      const lineItems: any[] = [{
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: product.title,
+            description: product.description?.substring(0, 500) || undefined,
+          },
+          unit_amount: price, // Already in cents
+        },
+        quantity: 1,
+      }];
+
+      // Add order bump if selected
+      let orderBumpProduct = null;
+      if (orderBumpId) {
+        orderBumpProduct = await storage.getProduct(orderBumpId);
+        if (orderBumpProduct) {
+          lineItems.push({
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: `BONUS: ${orderBumpProduct.title}`,
+                description: orderBumpProduct.description?.substring(0, 500) || undefined,
+              },
+              unit_amount: orderBumpProduct.price,
+            },
+            quantity: 1,
+          });
+        }
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        line_items: lineItems,
+        success_url: `${frontendUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${frontendUrl}/checkout/${productId}?canceled=true`,
+        customer_email: guestEmail || undefined,
+
+        // REQUIRED: Mandatory ToS checkbox for chargeback protection
+        consent_collection: {
+          terms_of_service: "required",
+        },
+
+        // Custom checkbox text with "all sales final" language
+        custom_text: {
+          terms_of_service_acceptance: {
+            message: "I agree to the [Terms of Service](https://dealcontrol.netlify.app/terms) and acknowledge that all sales are final for digital products once files are accessed or downloaded.",
+          },
+        },
+
+        // Store metadata for webhook processing
+        metadata: {
+          productId: product.id,
+          licenseType: tier,
+          userId: req.user?.id || 'guest',
+          guestEmail: guestEmail || '',
+          orderBumpId: orderBumpId || '',
+        },
+      });
+
+      res.json({
+        sessionId: session.id,
+        url: session.url,
+        product,
+      });
+    } catch (error: any) {
+      console.error("Error creating checkout session:", error);
+      res.status(500).json({ error: "Failed to create checkout session: " + error.message });
+    }
+  });
+
   // Guest checkout enabled - no authentication required
   app.post("/api/confirm-purchase", async (req: any, res) => {
     try {

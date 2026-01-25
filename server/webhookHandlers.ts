@@ -60,10 +60,105 @@ export class WebhookHandlers {
 
   static async handleCheckoutSessionCompleted(session: Stripe.Checkout.Session): Promise<void> {
     try {
-      // This is called when a Stripe Checkout session completes
-      // Most of our logic is in the payment_intent.succeeded handler
-      // but we can use this for additional logging or Checkout-specific features
-      console.log('Checkout session completed for:', session.customer_email || session.customer);
+      console.log('Processing checkout session:', session.id);
+
+      // Verify ToS was accepted (critical for chargeback protection)
+      const tosAccepted = session.consent?.terms_of_service === 'accepted';
+      if (!tosAccepted) {
+        console.error('Checkout completed without ToS acceptance:', session.id);
+        // Still process but log the warning - this shouldn't happen with consent_collection: required
+      }
+
+      const { productId, licenseType, userId, guestEmail, orderBumpId } = session.metadata || {};
+
+      if (!productId) {
+        console.error('No productId in session metadata:', session.id);
+        return;
+      }
+
+      // Check if purchase already exists for this session (idempotency)
+      const existingPurchase = await storage.getPurchaseByStripeSessionId(session.id);
+      if (existingPurchase) {
+        console.log('Purchase already exists for session:', session.id);
+        return;
+      }
+
+      // Get the product
+      const product = await storage.getProduct(productId);
+      if (!product) {
+        console.error('Product not found:', productId);
+        return;
+      }
+
+      // Create purchase record with session ID for dispute evidence
+      const purchase = await storage.createPurchase({
+        userId: userId !== 'guest' ? userId : undefined,
+        productId: productId,
+        amount: session.amount_total || 0,
+        stripePaymentId: session.payment_intent as string || null,
+        stripeSessionId: session.id,
+        guestEmail: guestEmail || session.customer_email || undefined,
+        tosAcceptedAt: tosAccepted ? Math.floor(Date.now() / 1000) : undefined,
+      });
+
+      console.log('Created purchase from checkout session:', purchase.id);
+
+      // Generate access token
+      const tokenValue = crypto.randomBytes(32).toString('hex');
+      const accessToken = await storage.createAccessToken({
+        token: tokenValue,
+        purchaseId: purchase.id,
+        userId: userId !== 'guest' ? userId : undefined,
+        licenseType: licenseType || 'solo',
+      });
+
+      console.log('Created access token for purchase:', purchase.id);
+
+      // Handle order bump if included
+      let orderBumpProduct = null;
+      if (orderBumpId) {
+        orderBumpProduct = await storage.getProduct(orderBumpId);
+        if (orderBumpProduct) {
+          // Create separate purchase for order bump
+          const bumpPurchase = await storage.createPurchase({
+            userId: userId !== 'guest' ? userId : undefined,
+            productId: orderBumpId,
+            amount: orderBumpProduct.price,
+            stripePaymentId: session.payment_intent as string || null,
+            stripeSessionId: session.id,
+            guestEmail: guestEmail || session.customer_email || undefined,
+            isOrderBump: 1,
+            parentPurchaseId: purchase.id,
+            tosAcceptedAt: tosAccepted ? Math.floor(Date.now() / 1000) : undefined,
+          });
+
+          // Create access token for order bump
+          const bumpTokenValue = crypto.randomBytes(32).toString('hex');
+          await storage.createAccessToken({
+            token: bumpTokenValue,
+            purchaseId: bumpPurchase.id,
+            userId: userId !== 'guest' ? userId : undefined,
+            licenseType: licenseType || 'solo',
+          });
+
+          console.log('Created order bump purchase:', bumpPurchase.id);
+        }
+      }
+
+      // Send confirmation email
+      const customerEmail = guestEmail || session.customer_email;
+      if (customerEmail) {
+        await sendPurchaseConfirmationEmail(
+          customerEmail,
+          purchase,
+          product,
+          tokenValue,
+          orderBumpProduct
+        );
+        console.log('Sent confirmation email to:', customerEmail);
+      }
+
+      console.log('Checkout session completed with ToS acceptance:', session.id, 'ToS accepted:', tosAccepted);
     } catch (error) {
       console.error('Error handling checkout session completed:', error);
     }

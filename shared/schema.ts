@@ -164,12 +164,14 @@ export const purchases = pgTable("purchases", {
   productId: varchar("product_id").notNull().references(() => products.id),
   amount: integer("amount").notNull(),
   stripePaymentId: text("stripe_payment_id"),
+  stripeSessionId: text("stripe_session_id"), // Checkout Session ID for ToS acceptance evidence
   purchasedAt: integer("purchased_at").notNull().default(sql`extract(epoch from now())`),
   funnelSessionId: varchar("funnel_session_id").references(() => funnelSessions.id),
   funnelStepId: varchar("funnel_step_id").references(() => funnelSteps.id),
   isOrderBump: integer("is_order_bump").notNull().default(0),
   parentPurchaseId: varchar("parent_purchase_id"), // Self-reference FK managed at app level
   guestEmail: varchar("guest_email", { length: 255 }), // For guest checkout tracking
+  tosAcceptedAt: integer("tos_accepted_at"), // Timestamp when ToS was accepted (from Stripe Checkout)
 });
 
 export const insertPurchaseSchema = createInsertSchema(purchases).omit({

@@ -1,5 +1,3 @@
-import { useStripe, Elements, PaymentElement, useElements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
@@ -13,6 +11,11 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Lock, ShieldCheck, Clock, CheckCircle2, Download, AlertTriangle } from "lucide-react";
 import { OrderBump, OrderBumpSkeleton } from "@/components/OrderBump";
 import { motion } from 'framer-motion';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
+// Check if Stripe is configured (for showing appropriate UI)
+const stripeConfigured = !!import.meta.env.VITE_STRIPE_PUBLIC_KEY;
 
 // Urgency Timer Component
 function CheckoutTimer() {
@@ -37,90 +40,58 @@ function CheckoutTimer() {
   );
 }
 
-// Initialize Stripe only if key is available (set at build time)
-const stripePromise = import.meta.env.VITE_STRIPE_PUBLIC_KEY
-  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY)
-  : null;
-
 interface OrderBumpWithProduct extends OrderBumpType {
   bumpProduct: Product;
 }
 
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-
 interface CheckoutFormProps {
   product: Product;
-  paymentIntentId: string;
   totalAmount: number;
   orderBumpSelected: boolean;
   orderBump: OrderBumpWithProduct | null;
-  onSuccess: (purchaseId: string) => void;
+  selectedTier: string;
 }
 
-const CheckoutForm = ({ product, paymentIntentId, totalAmount, orderBumpSelected, orderBump, onSuccess }: CheckoutFormProps) => {
-  const stripe = useStripe();
-  const elements = useElements();
+const CheckoutForm = ({ product, totalAmount, orderBumpSelected, orderBump, selectedTier }: CheckoutFormProps) => {
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [agreed, setAgreed] = useState(false);
+  const [email, setEmail] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!stripe || !elements) {
-      return;
-    }
-
-    if (!agreed) {
+    if (!email || !email.includes('@')) {
       toast({
-        title: "Required",
-        description: "Please agree to the license terms and refund policy to continue.",
+        title: "Email Required",
+        description: "Please enter a valid email address to receive your download link.",
         variant: "destructive",
       });
       return;
     }
 
     setIsProcessing(true);
-    // ... rest of code
 
     try {
-      const { error, paymentIntent } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: window.location.origin,
-        },
-        redirect: "if_required",
+      // Create Stripe Checkout Session with ToS acceptance
+      const response = await apiRequest("POST", "/api/checkout/create-session", {
+        productId: product.id,
+        licenseType: selectedTier,
+        guestEmail: email,
+        orderBumpId: orderBumpSelected && orderBump ? orderBump.bumpProductId : undefined,
       });
 
-      if (error) {
-        toast({
-          title: "Payment Failed",
-          description: error.message,
-          variant: "destructive",
-        });
-        setIsProcessing(false);
-      } else if (paymentIntent && paymentIntent.status === "succeeded") {
-        const response = await apiRequest("POST", "/api/confirm-purchase", {
-          productId: product.id,
-          paymentIntentId: paymentIntent.id,
-          includeOrderBump: orderBumpSelected,
-          orderBumpId: orderBump?.id,
-        });
-        
-        const purchase = await response.json();
-        
-        toast({
-          title: "Payment Successful",
-          description: "Thank you for your purchase!",
-        });
-        
-        onSuccess(purchase.id);
+      const { url } = await response.json();
+
+      if (url) {
+        // Redirect to Stripe Checkout
+        window.location.href = url;
+      } else {
+        throw new Error("Failed to create checkout session");
       }
     } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message || "An error occurred processing your payment",
+        description: error.message || "Failed to start checkout",
         variant: "destructive",
       });
       setIsProcessing(false);
@@ -128,45 +99,48 @@ const CheckoutForm = ({ product, paymentIntentId, totalAmount, orderBumpSelected
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
-      
-      <div className="bg-accent/10 p-4 rounded-md space-y-3 border border-accent/20">
-        <h4 className="font-semibold text-sm text-foreground">Refund Policy</h4>
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          All sales are final. This is a digital product. Once files are accessed or downloaded, refunds are not available.
-          If you experience a technical issue accessing your files, we will provide a replacement.
+    <form onSubmit={handleCheckout} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="email">Email Address</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          data-testid="input-email"
+        />
+        <p className="text-xs text-muted-foreground">
+          Your download link will be sent to this email
         </p>
-        <div className="flex items-start space-x-2 pt-2">
-          <Checkbox 
-            id="terms-agree" 
-            checked={agreed} 
-            onCheckedChange={(checked) => setAgreed(checked as boolean)}
-            className="mt-1"
-            data-testid="checkbox-terms-agree"
-          />
-          <Label htmlFor="terms-agree" className="text-xs leading-normal font-normal text-muted-foreground cursor-pointer">
-            I understand this is a digital product. All sales are final once files are accessed or downloaded. 
-            I agree to the <a href="/terms" target="_blank" className="text-primary hover:underline">license terms and refund policy</a>.
-          </Label>
-        </div>
+      </div>
+
+      <div className="bg-accent/10 p-4 rounded-md space-y-3 border border-accent/20">
+        <h4 className="font-semibold text-sm text-foreground">What happens next?</h4>
+        <ul className="text-xs text-muted-foreground leading-relaxed space-y-1">
+          <li>• You'll be redirected to Stripe's secure checkout</li>
+          <li>• You must accept our Terms of Service to complete payment</li>
+          <li>• All sales are final for digital products</li>
+          <li>• Download link sent immediately after payment</li>
+        </ul>
       </div>
 
       <Button
         type="submit"
         className="w-full"
-        disabled={!stripe || isProcessing}
-        data-testid="button-pay"
+        disabled={isProcessing}
+        data-testid="button-checkout"
       >
         {isProcessing ? (
           <>
             <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            Processing...
+            Redirecting to Checkout...
           </>
         ) : (
           <>
             <Lock className="w-4 h-4 mr-2" />
-            Pay ${(totalAmount / 100).toFixed(2)}
+            Continue to Secure Checkout - ${(totalAmount / 100).toFixed(2)}
           </>
         )}
       </Button>
@@ -175,11 +149,9 @@ const CheckoutForm = ({ product, paymentIntentId, totalAmount, orderBumpSelected
 };
 
 export default function Checkout() {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const { toast } = useToast();
-  const [clientSecret, setClientSecret] = useState("");
   const [product, setProduct] = useState<Product | null>(null);
-  const [paymentIntentId, setPaymentIntentId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [orderBumpSelected, setOrderBumpSelected] = useState(false);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -200,64 +172,65 @@ export default function Checkout() {
     enabled: !!productId,
   });
 
+  // Fetch product data
   useEffect(() => {
-    if (!productId || !stripePromise) {
-      if (!productId) {
-        toast({
-          title: "Error",
-          description: "No product specified",
-          variant: "destructive",
-        });
-        setLocation("/library");
-      }
+    if (!productId) {
+      toast({
+        title: "Error",
+        description: "No product specified",
+        variant: "destructive",
+      });
+      setLocation("/library");
       return;
     }
 
-    const initCheckout = async () => {
+    const fetchProduct = async () => {
       try {
-        const includeOrderBump = orderBumpSelected && orderBumpData;
+        const res = await apiRequest("GET", `/api/products/${productId}`);
+        const productData = await res.json();
+        setProduct(productData);
 
-        const endpoint = includeOrderBump
-          ? "/api/checkout/with-bump"
-          : "/api/create-payment-intent";
-
-        const body = includeOrderBump
-          ? { productId, includeOrderBump: true, tier: selectedTier, priceOverride: overridePrice }
-          : { productId, tier: selectedTier, priceOverride: overridePrice };
-
-        const res = await apiRequest("POST", endpoint, body);
-        const data = await res.json();
-
-        setClientSecret(data.clientSecret);
-        setProduct(data.product);
-        setTotalAmount(data.totalAmount || data.product.price);
-        const intentId = data.clientSecret.split('_secret_')[0];
-        setPaymentIntentId(intentId);
+        // Calculate price based on tier
+        const price = selectedTier === 'solo' ? productData.priceSolo :
+                      selectedTier === 'pro' ? productData.pricePro :
+                      productData.priceOffice;
+        setTotalAmount(overridePrice || price || productData.price);
         setIsLoading(false);
       } catch (error: any) {
         toast({
           title: "Error",
-          description: error.message || "Failed to initialize checkout",
+          description: error.message || "Failed to load product",
           variant: "destructive",
         });
         setLocation("/library");
       }
     };
 
-    initCheckout();
-  }, [productId, orderBumpSelected, orderBumpData, toast, setLocation]);
+    fetchProduct();
+  }, [productId, selectedTier, overridePrice, toast, setLocation]);
+
+  // Update total when order bump is selected
+  useEffect(() => {
+    if (product && orderBumpData) {
+      const basePrice = selectedTier === 'solo' ? product.priceSolo :
+                        selectedTier === 'pro' ? product.pricePro :
+                        product.priceOffice;
+      const price = overridePrice || basePrice || product.price;
+
+      if (orderBumpSelected) {
+        setTotalAmount(price + orderBumpData.bumpPrice);
+      } else {
+        setTotalAmount(price);
+      }
+    }
+  }, [orderBumpSelected, orderBumpData, product, selectedTier, overridePrice]);
 
   const handleOrderBumpToggle = (selected: boolean) => {
     setOrderBumpSelected(selected);
-    setIsLoading(true);
-  };
-
-  const handleSuccess = (purchaseId: string) => {
-    setLocation(`/purchase-success?purchaseId=${purchaseId}`);
   };
 
   // Check if Stripe is configured - must be after all hooks
-  if (!stripePromise) {
+  if (!stripeConfigured) {
     return (
       <div className="min-h-screen bg-[#0B0F1A] text-white flex items-center justify-center">
         <Card className="p-8 max-w-md text-center">
@@ -268,30 +241,12 @@ export default function Checkout() {
     );
   }
 
-  if (isLoading && !product) {
+  if (isLoading || !product) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navigation />
         <div className="flex-1 flex items-center justify-center">
           <Loader2 className="w-12 h-12 animate-spin text-primary" data-testid="loader-checkout" />
-        </div>
-      </div>
-    );
-  }
-
-  if (!clientSecret || !product) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Navigation />
-        <div className="flex-1 flex items-center justify-center pt-24">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-foreground mb-4" data-testid="text-checkout-error">
-              Unable to load checkout
-            </h2>
-            <Button asChild data-testid="button-back-to-library">
-              <a href="/library">Back to Library</a>
-            </Button>
-          </div>
         </div>
       </div>
     );
@@ -398,23 +353,14 @@ export default function Checkout() {
             )}
 
             <Card className="p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Payment Details</h3>
-              {isLoading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" data-testid="loader-payment" />
-                </div>
-              ) : (
-                <Elements stripe={stripePromise} options={{ clientSecret }} key={clientSecret}>
-                  <CheckoutForm 
-                    product={product} 
-                    paymentIntentId={paymentIntentId}
-                    totalAmount={totalAmount}
-                    orderBumpSelected={orderBumpSelected}
-                    orderBump={orderBumpData || null}
-                    onSuccess={handleSuccess} 
-                  />
-                </Elements>
-              )}
+              <h3 className="text-lg font-semibold text-foreground mb-4">Enter Your Email</h3>
+              <CheckoutForm
+                product={product}
+                totalAmount={totalAmount}
+                orderBumpSelected={orderBumpSelected}
+                orderBump={orderBumpData || null}
+                selectedTier={selectedTier}
+              />
             </Card>
 
             {/* Trust Badges */}
