@@ -18,7 +18,7 @@ import { randomUUID } from "crypto";
 import { dealControlProducts } from "./seedData";
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
-import { eq } from "drizzle-orm";
+import { eq, isNull } from "drizzle-orm";
 
 const { Pool } = pg;
 
@@ -481,6 +481,22 @@ export class DatabaseStorage implements IStorage {
           await this.db.insert(products).values(productData);
         }
         console.log(`Seeded ${dealControlProducts.length} products`);
+      } else {
+        // Check if downloadFile needs to be updated for existing products
+        const productsWithoutDownloadFile = await this.db.select().from(products).where(isNull(products.downloadFile));
+        if (productsWithoutDownloadFile.length > 0) {
+          console.log(`Updating ${productsWithoutDownloadFile.length} products with downloadFile mappings...`);
+          for (const existingProduct of productsWithoutDownloadFile) {
+            // Find matching seed data by title
+            const seedProduct = dealControlProducts.find(p => p.title === existingProduct.title);
+            if (seedProduct && seedProduct.downloadFile) {
+              await this.db.update(products)
+                .set({ downloadFile: seedProduct.downloadFile })
+                .where(eq(products.id, existingProduct.id));
+            }
+          }
+          console.log('Updated products with downloadFile mappings');
+        }
       }
     } catch (error) {
       console.error('Error checking/seeding products:', error);
